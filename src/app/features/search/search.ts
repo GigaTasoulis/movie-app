@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { TmdbApiService } from '../../core/services/tmdb-api.service';
@@ -29,6 +29,7 @@ import { environment } from '../../../environments/environment';
 })
 export class SearchComponent implements OnDestroy, OnInit {
   private tmdbService = inject(TmdbApiService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   searchControl = new FormControl('', { updateOn: 'change' });
@@ -52,12 +53,15 @@ export class SearchComponent implements OnDestroy, OnInit {
         } else {
           this.movies = [];
           this.totalResults = 0;
+          this.currentQuery = '';
+          this.cdr.markForCheck();
         }
       });
   }
 
   search(): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.tmdbService
       .searchMovies(this.currentQuery, this.currentPage)
       .pipe(takeUntil(this.destroy$))
@@ -66,9 +70,11 @@ export class SearchComponent implements OnDestroy, OnInit {
           this.movies = response.results;
           this.totalResults = response.total_results;
           this.isLoading = false;
+          this.cdr.markForCheck();
         },
         error: () => {
           this.isLoading = false;
+          this.cdr.markForCheck();
         },
       });
   }
