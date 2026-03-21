@@ -38,3 +38,11 @@ export interface RatingResponse {
   status_code: number;
   status_message: string;
 }
+
+export interface Collection {
+  id: string;
+  title: string;
+  description: string;
+  movies: Movie[];
+  createdAt: string;
+}
