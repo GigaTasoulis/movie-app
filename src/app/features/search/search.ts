@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { TmdbApiService } from '../../core/services/tmdb-api.service';
@@ -27,7 +27,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './search.html',
   styleUrl: './search.scss',
 })
-export class SearchComponent implements OnDestroy {
+export class SearchComponent implements OnDestroy, OnInit {
   private tmdbService = inject(TmdbApiService);
   private destroy$ = new Subject<void>();
 
@@ -42,10 +42,11 @@ export class SearchComponent implements OnDestroy {
 
   ngOnInit(): void {
     this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value && value.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(value)) {
-          this.currentQuery = value;
+        const trimmed = value?.trim() ?? '';
+        if (trimmed.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(trimmed)) {
+          this.currentQuery = trimmed;
           this.currentPage = 1;
           this.search();
         } else {
@@ -78,6 +79,7 @@ export class SearchComponent implements OnDestroy {
   }
 
   getErrorMessage(): string | null {
+    if (!this.searchControl.touched) return null;
     const value = this.searchControl.value;
     if (!value) return null;
     if (value.length < 3) return 'Minimum 3 characters required';
