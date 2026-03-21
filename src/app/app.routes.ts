@@ -8,6 +8,7 @@ export const routes: Routes = [
 
   {
     path: 'movie/:id',
-    loadComponent: () => import('./features/movie-details/movie-details').then((m) => m.MovieDetails),
-  }
+    loadComponent: () =>
+      import('./features/movie-details/movie-details').then((m) => m.MovieDetailsComponent),
+  },
 ];
