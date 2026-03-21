@@ -1,0 +1,41 @@
+.detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+    color: gray;
+  }
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.movie-card {
+  img {
+    height: 300px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: gray;
+  padding: 3rem;
+}

@@ -1,0 +1,35 @@
+<div class="detail-container">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1>{{ collection?.title }}</h1>
+      <p>{{ collection?.description }}</p>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="collection?.movies?.length === 0">
+    <p>No movies in this collection yet. Add some from the search page!</p>
+  </div>
+
+  <div class="movies-grid" *ngIf="collection?.movies?.length! > 0">
+    <mat-card class="movie-card" *ngFor="let movie of collection?.movies">
+      <img
+        mat-card-image
+        [src]="imageBaseUrl + movie.poster_path"
+        [alt]="movie.title"
+        (click)="openMovieDetails(movie.id)"
+      />
+      <mat-card-content>
+        <h3>{{ movie.title }}</h3>
+        <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-icon-button color="warn" (click)="removeMovie(movie.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

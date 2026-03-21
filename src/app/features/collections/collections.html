@@ -1,0 +1,33 @@
+<div class="collections-container">
+  <div class="header">
+    <h1>My Collections</h1>
+    <button mat-raised-button color="primary" (click)="goToCreate()">
+      <mat-icon>add</mat-icon> New Collection
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="collections.length === 0">
+    <p>No collections yet. Create your first one!</p>
+  </div>
+
+  <div class="collections-grid" *ngIf="collections.length > 0">
+    <mat-card
+      class="collection-card"
+      *ngFor="let collection of collections"
+      (click)="goToCollection(collection.id)"
+    >
+      <mat-card-header>
+        <mat-card-title>{{ collection.title }}</mat-card-title>
+        <mat-card-subtitle>{{ collection.movies.length }} movies</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ collection.description }}</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-icon-button color="warn" (click)="deleteCollection($event, collection.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

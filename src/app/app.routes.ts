@@ -11,4 +11,24 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/movie-details/movie-details').then((m) => m.MovieDetailsComponent),
   },
+
+  {
+    path: 'collections',
+    loadComponent: () =>
+      import('./features/collections/collections').then((m) => m.CollectionsComponent),
+  },
+  {
+    path: 'collections/create',
+    loadComponent: () =>
+      import('./features/collections/collection-create/collection-create').then(
+        (m) => m.CollectionCreate
+      ),
+  },
+  {
+    path: 'collections/:id',
+    loadComponent: () =>
+      import('./features/collections/collection-detail/collection-detail').then(
+        (m) => m.CollectionDetail
+      ),
+  },
 ];

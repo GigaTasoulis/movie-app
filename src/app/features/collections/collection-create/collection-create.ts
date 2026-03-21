@@ -1,0 +1,33 @@
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { CollectionsService } from '../../../core/services/collections';
+
+@Component({
+  selector: 'app-collection-create',
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  templateUrl: './collection-create.html',
+  styleUrl: './collection-create.scss',
+})
+export class CollectionCreate {
+  private collectionsService = inject(CollectionsService);
+  private router = inject(Router);
+
+  form = new FormGroup({
+    title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    description: new FormControl('', [Validators.required]),
+  });
+
+  submit(): void {
+    if (this.form.invalid) return;
+    this.collectionsService.createCollection(this.form.value.title!, this.form.value.description!);
+    this.router.navigate(['/collections']);
+  }
+
+  cancel(): void {
+    this.router.navigate(['/collections']);
+  }
+}
