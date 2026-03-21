@@ -1,1 +1,8 @@
-<router-outlet> </router-outlet>
+<mat-toolbar color="primary">
+  <span routerLink="/" style="cursor: pointer">🎬 Movie App</span>
+  <span class="spacer"></span>
+  <button mat-button routerLink="/">Search</button>
+  <button mat-button routerLink="/collections">Collections</button>
+</mat-toolbar>
+
+<router-outlet />

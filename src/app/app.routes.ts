@@ -15,7 +15,7 @@ export const routes: Routes = [
   {
     path: 'collections',
     loadComponent: () =>
-      import('./features/collections/collections').then((m) => m.Collections),
+      import('./features/collections/collections').then((m) => m.CollectionsComponent),
   },
   {
     path: 'collections/create',
