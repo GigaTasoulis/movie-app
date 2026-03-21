@@ -31,7 +31,7 @@ export class SearchComponent implements OnDestroy {
   private tmdbService = inject(TmdbApiService);
   private destroy$ = new Subject<void>();
 
-  searchControl = new FormControl('');
+  searchControl = new FormControl('', { updateOn: 'change' });
   movies: Movie[] = [];
   totalResults = 0;
   currentPage = 1;
