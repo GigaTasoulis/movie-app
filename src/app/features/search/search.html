@@ -1,0 +1,35 @@
+<div class="search-container">
+  <h1>Movie Search</h1>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search movies...</mat-label>
+    <input matInput [formControl]="searchControl" appSearchInput placeholder="e.g. Inception" />
+    <mat-error *ngIf="getErrorMessage()">{{ getErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div class="movies-grid" *ngIf="!isLoading && movies.length > 0">
+    <mat-card class="movie-card" *ngFor="let movie of movies">
+      <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title" />
+      <mat-card-content>
+        <h3>{{ movie.title }}</h3>
+        <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="no-results" *ngIf="!isLoading && currentQuery && movies.length === 0">
+    <p>No movies found for "{{ currentQuery }}"</p>
+  </div>
+
+  <mat-paginator
+    *ngIf="totalResults > 0"
+    [length]="totalResults"
+    [pageSize]="pageSize"
+    [pageIndex]="currentPage - 1"
+    (page)="onPageChange($event)"
+  ></mat-paginator>
+</div>

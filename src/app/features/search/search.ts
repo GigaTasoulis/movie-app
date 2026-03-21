@@ -1,0 +1,100 @@
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { TmdbApiService } from '../../core/services/tmdb-api.service';
+import { Movie } from '../../core/models/movie.model';
+import { SearchInputDirective } from '../../core/directives/search-input';
+import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { environment } from '../../../environments/environment';
+
+@Component({
+  selector: 'app-search',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SearchInputDirective,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './search.html',
+  styleUrl: './search.scss',
+})
+export class SearchComponent implements OnDestroy, OnInit {
+  private tmdbService = inject(TmdbApiService);
+  private cdr = inject(ChangeDetectorRef);
+  private destroy$ = new Subject<void>();
+
+  searchControl = new FormControl('', { updateOn: 'change' });
+  movies: Movie[] = [];
+  totalResults = 0;
+  currentPage = 1;
+  pageSize = 20;
+  isLoading = false;
+  currentQuery = '';
+  imageBaseUrl = environment.tmdbImageBaseUrl;
+
+  ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const trimmed = value?.trim() ?? '';
+        if (trimmed.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(trimmed)) {
+          this.currentQuery = trimmed;
+          this.currentPage = 1;
+          this.search();
+        } else {
+          this.movies = [];
+          this.totalResults = 0;
+          this.currentQuery = '';
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  search(): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
+    this.tmdbService
+      .searchMovies(this.currentQuery, this.currentPage)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.movies = response.results;
+          this.totalResults = response.total_results;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.search();
+  }
+
+  getErrorMessage(): string | null {
+    if (!this.searchControl.touched) return null;
+    const value = this.searchControl.value;
+    if (!value) return null;
+    if (value.length < 3) return 'Minimum 3 characters required';
+    if (!/^[a-zA-Z0-9 ]*$/.test(value)) return 'Only letters and numbers allowed';
+    return null;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}

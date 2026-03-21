@@ -2,10 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { MovieDetails, MovieSearchResponse, GuestSession, RatingResponse } from '../models/movie.model';
+import {
+  MovieDetails,
+  MovieSearchResponse,
+  GuestSession,
+  RatingResponse,
+} from '../models/movie.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TmdbApiService {
   private http = inject(HttpClient);
@@ -22,17 +27,17 @@ export class TmdbApiService {
   }
 
   getMovieDetails(movieId: number): Observable<MovieDetails> {
-    const params = new HttpParams()
-      .set('api_key', this.apiKey);
+    const params = new HttpParams().set('api_key', this.apiKey);
 
     return this.http.get<MovieDetails>(`${this.baseUrl}/movie/${movieId}`, { params });
   }
 
   createGuestSession(): Observable<GuestSession> {
-    const params = new HttpParams()
-      .set('api_key', this.apiKey);
+    const params = new HttpParams().set('api_key', this.apiKey);
 
-    return this.http.get<GuestSession>(`${this.baseUrl}/authentication/guest_session/new`, { params });
+    return this.http.get<GuestSession>(`${this.baseUrl}/authentication/guest_session/new`, {
+      params,
+    });
   }
 
   rateMovie(movieId: number, rating: number, guestSessionId: string): Observable<RatingResponse> {
