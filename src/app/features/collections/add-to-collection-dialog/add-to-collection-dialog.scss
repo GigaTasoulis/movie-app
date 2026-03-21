@@ -1,0 +1,14 @@
+.collection-item {
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: gray;
+  padding: 1rem;
+}

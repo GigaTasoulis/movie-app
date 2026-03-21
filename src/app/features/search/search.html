@@ -1,6 +1,13 @@
 <div class="search-container">
   <h1>Movie Search</h1>
 
+  <div class="selection-bar" *ngIf="selectedMovies.length > 0">
+    <span>{{ selectedMovies.length }} movie(s) selected</span>
+    <button mat-raised-button color="accent" (click)="openAddToCollection()">
+      Add to Collection
+    </button>
+  </div>
+
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Search movies...</mat-label>
     <input matInput [formControl]="searchControl" appSearchInput placeholder="e.g. Inception" />
@@ -12,7 +19,17 @@
   </div>
 
   <div class="movies-grid" *ngIf="!isLoading && movies.length > 0">
-    <mat-card class="movie-card" *ngFor="let movie of movies" (click)="onMovieClick(movie.id)">
+    <mat-card
+      class="movie-card"
+      *ngFor="let movie of movies"
+      (click)="onMovieClick(movie.id)"
+      [class.selected]="isSelected(movie.id)"
+    >
+      <mat-checkbox
+        class="movie-checkbox"
+        [checked]="isSelected(movie.id)"
+        (click)="toggleMovieSelection($event, movie)"
+      ></mat-checkbox>
       <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title" />
       <mat-card-content>
         <h3>{{ movie.title }}</h3>
