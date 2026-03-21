@@ -1,0 +1,65 @@
+<div class="dialog-container">
+  <img
+    *ngIf="data.movie.poster_path"
+    [src]="imageBaseUrl + data.movie.poster_path"
+    [alt]="data.movie.title"
+    class="poster"
+  />
+
+  <div class="details">
+    <h2 mat-dialog-title>{{ data.movie.title }}</h2>
+
+    <mat-dialog-content>
+      <p class="overview">{{ data.movie.overview }}</p>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Release Date</span>
+          <span>{{ data.movie.release_date }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Budget</span>
+          <span>{{ data.movie.budget | currency }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Revenue</span>
+          <span>{{ data.movie.revenue | currency }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Vote Average</span>
+          <span>⭐ {{ data.movie.vote_average | number:'1.1-1' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Vote Count</span>
+          <span>{{ data.movie.vote_count }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Languages</span>
+          <span>{{ data.movie.spoken_languages | json }}</span>
+        </div>
+      </div>
+
+      <div class="rating-section">
+        <h3>Rate this movie</h3>
+        <mat-slider min="1" max="10" step="0.5">
+          <input matSliderThumb [(ngModel)]="rating" />
+        </mat-slider>
+        <span>{{ rating }}/10</span>
+
+        <div *ngIf="ratingSuccess" class="success-message">✅ Rating submitted successfully!</div>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="close()">Close</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submitRating()"
+        [disabled]="isRating || ratingSuccess"
+      >
+        {{ isRating ? 'Submitting...' : 'Submit Rating' }}
+      </button>
+    </mat-dialog-actions>
+  </div>
+</div>

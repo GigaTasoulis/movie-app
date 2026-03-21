@@ -11,6 +11,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
 
 @Component({
   selector: 'app-search',
@@ -31,6 +35,9 @@ export class SearchComponent implements OnDestroy, OnInit {
   private tmdbService = inject(TmdbApiService);
   private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+  private location = inject(Location);
 
   searchControl = new FormControl('', { updateOn: 'change' });
   movies: Movie[] = [];
@@ -82,6 +89,21 @@ export class SearchComponent implements OnDestroy, OnInit {
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex + 1;
     this.search();
+  }
+
+  onMovieClick(movieId: number): void {
+    this.tmdbService.getMovieDetails(movieId).subscribe((movie) => {
+      this.location.go(`/movie/${movieId}`);
+      const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
+        width: '800px',
+        maxHeight: '90vh',
+        data: { movie },
+      });
+
+      dialogRef.afterClosed().subscribe(() => {
+        this.location.go('/');
+      });
+    });
   }
 
   getErrorMessage(): string | null {
