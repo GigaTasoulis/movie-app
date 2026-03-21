@@ -15,6 +15,8 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
+import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-search',
@@ -27,6 +29,7 @@ import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dial
     MatCardModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -38,6 +41,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private location = inject(Location);
+  selectedMovies: Movie[] = [];
 
   searchControl = new FormControl('', { updateOn: 'change' });
   movies: Movie[] = [];
@@ -103,6 +107,27 @@ export class SearchComponent implements OnDestroy, OnInit {
       dialogRef.afterClosed().subscribe(() => {
         this.location.go('/');
       });
+    });
+  }
+
+  toggleMovieSelection(event: Event, movie: Movie): void {
+    event.stopPropagation();
+    const index = this.selectedMovies.findIndex((m) => m.id === movie.id);
+    if (index === -1) {
+      this.selectedMovies.push(movie);
+    } else {
+      this.selectedMovies.splice(index, 1);
+    }
+  }
+
+  isSelected(movieId: number): boolean {
+    return this.selectedMovies.some((m) => m.id === movieId);
+  }
+
+  openAddToCollection(): void {
+    this.dialog.open(AddToCollectionDialog, {
+      width: '500px',
+      data: { movies: this.selectedMovies },
     });
   }
 

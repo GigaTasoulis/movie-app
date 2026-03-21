@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Add to Collection</h2>
+
+<mat-dialog-content>
+  <p>Select a collection to add {{ data.movies.length }} movie(s) to:</p>
+
+  <div class="empty-state" *ngIf="collections.length === 0">
+    <p>No collections yet. Create one first!</p>
+  </div>
+
+  <mat-list>
+    <mat-list-item
+      *ngFor="let collection of collections"
+      (click)="addToCollection(collection.id)"
+      class="collection-item"
+    >
+      <mat-icon matListItemIcon>folder</mat-icon>
+      <span matListItemTitle>{{ collection.title }}</span>
+      <span matListItemLine>{{ collection.movies.length }} movies</span>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+</mat-dialog-actions>
