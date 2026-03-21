@@ -17,10 +17,10 @@ import { environment } from '../../../../environments/environment';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSliderModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './movie-details-dialog.html',
-  styleUrl: './movie-details-dialog.scss'
+  styleUrl: './movie-details-dialog.scss',
 })
 export class MovieDetailsDialogComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
@@ -42,17 +42,15 @@ export class MovieDetailsDialogComponent implements OnInit {
   submitRating(): void {
     if (!this.guestSessionId) return;
     this.isRating = true;
-    this.tmdbService
-      .rateMovie(this.data.movie.id, this.rating, this.guestSessionId)
-      .subscribe({
-        next: () => {
-          this.isRating = false;
-          this.ratingSuccess = true;
-        },
-        error: () => {
-          this.isRating = false;
-        }
-      });
+    this.tmdbService.rateMovie(this.data.movie.id, this.rating, this.guestSessionId).subscribe({
+      next: () => {
+        this.isRating = false;
+        this.ratingSuccess = true;
+      },
+      error: () => {
+        this.isRating = false;
+      },
+    });
   }
 
   close(): void {

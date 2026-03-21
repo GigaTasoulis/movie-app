@@ -12,7 +12,7 @@
   </div>
 
   <div class="movies-grid" *ngIf="!isLoading && movies.length > 0">
-    <mat-card class="movie-card" *ngFor="let movie of movies">
+    <mat-card class="movie-card" *ngFor="let movie of movies" (click)="onMovieClick(movie.id)">
       <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title" />
       <mat-card-content>
         <h3>{{ movie.title }}</h3>
