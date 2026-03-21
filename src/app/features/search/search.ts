@@ -22,10 +22,10 @@ import { environment } from '../../../environments/environment';
     MatFormFieldModule,
     MatCardModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './search.html',
-  styleUrl: './search.scss'
+  styleUrl: './search.scss',
 })
 export class SearchComponent implements OnDestroy {
   private tmdbService = inject(TmdbApiService);
@@ -41,25 +41,24 @@ export class SearchComponent implements OnDestroy {
   imageBaseUrl = environment.tmdbImageBaseUrl;
 
   ngOnInit(): void {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(value => {
-      if (value && value.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(value)) {
-        this.currentQuery = value;
-        this.currentPage = 1;
-        this.search();
-      } else {
-        this.movies = [];
-        this.totalResults = 0;
-      }
-    });
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && value.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(value)) {
+          this.currentQuery = value;
+          this.currentPage = 1;
+          this.search();
+        } else {
+          this.movies = [];
+          this.totalResults = 0;
+        }
+      });
   }
 
   search(): void {
     this.isLoading = true;
-    this.tmdbService.searchMovies(this.currentQuery, this.currentPage)
+    this.tmdbService
+      .searchMovies(this.currentQuery, this.currentPage)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -69,7 +68,7 @@ export class SearchComponent implements OnDestroy {
         },
         error: () => {
           this.isLoading = false;
-        }
+        },
       });
   }
 
