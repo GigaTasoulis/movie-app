@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,7 @@ import { environment } from '../../../../environments/environment';
 export class MovieDetailsDialogComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
   private dialogRef = inject(MatDialogRef<MovieDetailsDialogComponent>);
+  private cdr = inject(ChangeDetectorRef);
   data = inject(MAT_DIALOG_DATA) as { movie: MovieDetails };
 
   imageBaseUrl = environment.tmdbImageBaseUrl;
@@ -46,6 +47,7 @@ export class MovieDetailsDialogComponent implements OnInit {
       next: () => {
         this.isRating = false;
         this.ratingSuccess = true;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isRating = false;
