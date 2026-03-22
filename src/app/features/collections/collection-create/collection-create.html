@@ -5,8 +5,11 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Title</mat-label>
       <input matInput formControlName="title" placeholder="My favourite movies" />
-      <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
-      <mat-error *ngIf="form.get('title')?.hasError('minlength')">Minimum 3 characters</mat-error>
+      @if (form.get('title')?.hasError('required')) {
+      <mat-error>Title is required</mat-error>
+      } @if (form.get('title')?.hasError('minlength')) {
+      <mat-error>Minimum 3 characters</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
@@ -17,9 +20,9 @@
         rows="4"
         placeholder="Describe your collection..."
       ></textarea>
-      <mat-error *ngIf="form.get('description')?.hasError('required')"
-        >Description is required</mat-error
-      >
+      @if (form.get('description')?.hasError('required')) {
+      <mat-error>Description is required</mat-error>
+      }
     </mat-form-field>
 
     <div class="actions">

@@ -10,6 +10,7 @@ import { CollectionsService } from '../../../core/services/collections';
 import { MovieDetailsDialogComponent } from '../../movie-details/movie-details-dialog/movie-details-dialog';
 import { Collection } from '../../../core/models/movie.model';
 import { environment } from '../../../../environments/environment';
+import { TmdbApiService } from '../../../core/services/tmdb-api.service';
 
 @Component({
   selector: 'app-collection-detail',
@@ -23,6 +24,7 @@ export class CollectionDetail implements OnInit {
   private location = inject(Location);
   private dialog = inject(MatDialog);
   private collectionsService = inject(CollectionsService);
+  private tmdbService = inject(TmdbApiService);
 
   collection: Collection | undefined;
   imageBaseUrl = environment.tmdbImageBaseUrl;
@@ -39,15 +41,16 @@ export class CollectionDetail implements OnInit {
   }
 
   openMovieDetails(movieId: number): void {
-    this.location.go(`/movie/${movieId}`);
-    const movie = this.collection!.movies.find((m) => m.id === movieId);
-    const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
-      width: '800px',
-      maxHeight: '90vh',
-      data: { movie },
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      this.location.go(`/collections/${this.collection!.id}`);
+    this.tmdbService.getMovieDetails(movieId).subscribe((movie) => {
+      this.location.go(`/movie/${movieId}`);
+      const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
+        width: '800px',
+        maxHeight: '90vh',
+        data: { movie },
+      });
+      dialogRef.afterClosed().subscribe(() => {
+        this.location.go(`/collections/${this.collection!.id}`);
+      });
     });
   }
 
