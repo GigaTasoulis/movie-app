@@ -1,59 +1,86 @@
-# MovieApp
+# CineVault
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+A movie discovery and collection management app built with Angular 21 and the TMDB API.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Search** — debounced movie search with paginated results
+- **Movie Details** — budget, revenue, vote average, languages and more in a modal dialog
+- **Rate Movies** — submit a personal rating (0.5–10) via TMDB guest sessions
+- **Collections** — create named collections, add movies from search results, and manage them
+- **Theming** — light / dark / system theme toggle, persisted in `localStorage`
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Angular 21 (standalone components) |
+| UI | Angular Material (MDC-based) |
+| Styling | SCSS with CSS custom properties |
+| State | Services + `localStorage` (no external store) |
+| API | TMDB REST API v3 |
+| Tests | Vitest (`ng test`) |
+
+---
+
+## Project Structure
+
+```
+src/app/
+├── core/
+│   ├── models/         # TypeScript interfaces (Movie, MovieDetails, Collection, …)
+│   ├── services/
+│   │   ├── tmdb-api.service.ts   # All TMDB HTTP calls
+│   │   └── collections.ts        # Collections CRUD, backed by localStorage
+│   └── directives/
+│       └── search-input.ts       # Debounce directive for the search field
+└── features/
+    ├── search/                   # Search page + paginator
+    ├── movie-details/
+    │   └── movie-details-dialog/ # Movie detail modal
+    └── collections/
+        ├── collections/          # Collections list
+        ├── collection-detail/    # Single collection view
+        ├── collection-create/    # Create form
+        └── add-to-collection-dialog/
+```
+
+### Architecture notes
+
+- **Standalone components** — every component declares its own `imports`, no `NgModule` anywhere.
+- **Dependency injection** — services are `providedIn: 'root'` and injected with `inject()`.
+- **No client-side state library** — `CollectionsService` reads/writes directly to `localStorage` and is the single source of truth for collections. Movie data is always fetched fresh from TMDB.
+- **TMDB guest sessions** — ratings use a temporary guest session created on dialog open. Sessions expire after their TTL and are not persisted.
+- **Theming** — a single `body.light-mode` CSS class is toggled by `AppComponent`. All colours are CSS custom properties defined on `:root` (dark) and overridden on `body.light-mode`.
+
+---
+
+## Getting Started
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+App runs at `http://localhost:4200`.
 
-## Code scaffolding
+## Environment
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Set your TMDB API key in `src/environments/environment.ts`:
 
-```bash
-ng generate component component-name
+```ts
+export const environment = {
+  tmdbApiKey: 'YOUR_API_KEY',
+  tmdbBaseUrl: 'https://api.themoviedb.org/3',
+  tmdbImageBaseUrl: 'https://image.tmdb.org/t/p/w500',
+};
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Build
 
 ```bash
-ng generate --help
+ng build   # output lands in dist/
+ng test    # run unit tests with Vitest
 ```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
