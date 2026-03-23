@@ -13,18 +13,6 @@
     <button mat-button routerLink="/popular" routerLinkActive="active">Popular</button>
 <button mat-button routerLink="/collections" routerLinkActive="active">Collections</button>
   </nav>
-  <span class="spacer"></span>
-  <div class="theme-switcher">
-    <button mat-icon-button (click)="setTheme('system')" [class.theme-active]="theme === 'system'">
-      <mat-icon>monitor</mat-icon>
-    </button>
-    <button mat-icon-button (click)="setTheme('light')" [class.theme-active]="theme === 'light'">
-      <mat-icon>light_mode</mat-icon>
-    </button>
-    <button mat-icon-button (click)="setTheme('dark')" [class.theme-active]="theme === 'dark'">
-      <mat-icon>dark_mode</mat-icon>
-    </button>
-  </div>
 </mat-toolbar>
 
 <router-outlet />

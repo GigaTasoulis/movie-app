@@ -6,14 +6,7 @@
   padding: 0;
 }
 
-body {
-  font-family: 'General Sans', sans-serif;
-  background-color: #0a0a0a;
-  color: #f0f0f0;
-  min-height: 100vh;
-}
-
-body.light-mode {
+:root {
   --color-bg: #f5f5f5;
   --color-surface: #ffffff;
   --color-surface-2: #eeeeee;
@@ -23,22 +16,14 @@ body.light-mode {
   --color-accent: #1a1a1a;
   --color-accent-dim: rgba(26, 26, 26, 0.08);
   --color-accent-text: #ffffff;
-
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
+  --color-white: #ffffff;
 }
 
-:root {
-  --color-bg: #0a0a0a;
-  --color-surface: #141414;
-  --color-surface-2: #1e1e1e;
-  --color-border: #2a2a2a;
-  --color-text-primary: #f0f0f0;
-  --color-text-secondary: #888888;
-  --color-accent: #d4d4d4;
-  --color-accent-dim: rgba(212, 212, 212, 0.10);
-  --color-accent-text: #111111;
-  --color-white: #ffffff;
+body {
+  font-family: 'General Sans', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  min-height: 100vh;
 }
 
 h1,
@@ -51,7 +36,7 @@ h5 {
   color: var(--color-text-primary);
 }
 
-/* Angular Material dark overrides */
+/* Angular Material surface / form overrides */
 .mat-mdc-card {
   background-color: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
@@ -156,7 +141,8 @@ h5 {
   --mdc-slider-handle-height: 18px;
 }
 
-.mat-mdc-raised-button.mat-primary {
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-raised-button.mat-accent {
   background-color: var(--color-accent) !important;
   color: var(--color-accent-text) !important;
 }
