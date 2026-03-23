@@ -1,3 +1,68 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+.app-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: -0.5px;
+  color: #fff;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+
+  button {
+    color: #888 !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    &.active {
+      color: #fff !important;
+      font-weight: 600;
+    }
+  }
+}
+
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 2px;
+
+  button {
+    color: #666 !important;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 6px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.theme-active {
+      background: #2a2a2a !important;
+      color: #fff !important;
+    }
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

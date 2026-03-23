@@ -44,8 +44,8 @@ export class CollectionDetail implements OnInit {
     this.tmdbService.getMovieDetails(movieId).subscribe((movie) => {
       this.location.go(`/movie/${movieId}`);
       const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
-        width: '800px',
-        maxHeight: '90vh',
+        width: '1020px',
+        maxHeight: '95vh',
         data: { movie },
       });
       dialogRef.afterClosed().subscribe(() => {

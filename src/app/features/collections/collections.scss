@@ -19,15 +19,20 @@
 
 .collection-card {
   cursor: pointer;
-  transition: transform 0.2s;
+  border-radius: 12px !important;
+  border: 1px solid var(--color-border) !important;
+  background-color: var(--color-surface) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 
   &:hover {
-    transform: scale(1.02);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5) !important;
+    border-color: var(--color-text-secondary) !important;
   }
 }
 
 .empty-state {
   text-align: center;
-  color: gray;
+  color: var(--color-text-secondary);
   padding: 3rem;
 }
