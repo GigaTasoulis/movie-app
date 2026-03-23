@@ -20,6 +20,9 @@ body.light-mode {
   --color-border: #dddddd;
   --color-text-primary: #111111;
   --color-text-secondary: #666666;
+  --color-accent: #1a1a1a;
+  --color-accent-dim: rgba(26, 26, 26, 0.08);
+  --color-accent-text: #ffffff;
 
   background-color: var(--color-bg);
   color: var(--color-text-primary);
@@ -32,8 +35,9 @@ body.light-mode {
   --color-border: #2a2a2a;
   --color-text-primary: #f0f0f0;
   --color-text-secondary: #888888;
-  --color-purple: #9b59ff;
-  --color-purple-dim: rgba(155, 89, 255, 0.15);
+  --color-accent: #d4d4d4;
+  --color-accent-dim: rgba(212, 212, 212, 0.10);
+  --color-accent-text: #111111;
   --color-white: #ffffff;
 }
 
@@ -67,26 +71,93 @@ h5 {
 .mat-mdc-form-field {
   .mdc-text-field {
     background-color: var(--color-surface-2) !important;
+    border-radius: 10px !important;
   }
+
+  .mdc-text-field--outlined {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: var(--color-border) !important;
+  }
+
+  .mdc-notched-outline__leading {
+    border-radius: 10px 0 0 10px !important;
+  }
+
+  .mdc-notched-outline__trailing {
+    border-radius: 0 10px 10px 0 !important;
+  }
+
+  &.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--color-text-secondary) !important;
+      border-width: 1.5px !important;
+    }
+  }
+
   .mdc-floating-label {
     color: var(--color-text-secondary) !important;
   }
+
   input {
     color: var(--color-text-primary) !important;
+    caret-color: var(--color-text-primary) !important;
+    font-size: 1rem !important;
   }
 }
 
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+  overflow-y: auto !important;
+}
+
+/* Remove the internal scrollbar Angular Material adds to dialog content */
+.mat-mdc-dialog-content {
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+/* Rounded, padded buttons globally */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button {
+  border-radius: 20px !important;
+  padding: 0 1.5rem !important;
+  min-height: 38px !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Slider accent color */
+.mat-mdc-slider {
+  --mdc-slider-active-track-color: var(--color-accent);
+  --mdc-slider-inactive-track-color: var(--color-border);
+  --mdc-slider-handle-color: var(--color-accent);
+  --mdc-slider-focus-handle-color: var(--color-text-primary);
+  --mdc-slider-hover-handle-color: var(--color-text-primary);
+  --mdc-slider-active-track-height: 4px;
+  --mdc-slider-inactive-track-height: 4px;
+  --mdc-slider-handle-width: 18px;
+  --mdc-slider-handle-height: 18px;
+}
+
 .mat-mdc-raised-button.mat-primary {
-  background-color: var(--color-purple) !important;
-  color: #fff !important;
+  background-color: var(--color-accent) !important;
+  color: var(--color-accent-text) !important;
 }
 
 .mat-mdc-button {
-  color: var(--color-purple) !important;
+  color: var(--color-accent) !important;
 }
 
 a {
-  color: var(--color-purple);
+  color: var(--color-accent);
 }
 
 ::-webkit-scrollbar {
@@ -100,5 +171,5 @@ a {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-purple);
+  background: var(--color-text-secondary);
 }

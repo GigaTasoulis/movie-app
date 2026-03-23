@@ -16,7 +16,7 @@
 
   p {
     margin: 0.25rem 0 0;
-    color: gray;
+    color: var(--color-text-secondary);
   }
 }
 
@@ -27,15 +27,49 @@
 }
 
 .movie-card {
+  border-radius: 12px !important;
+  overflow: hidden;
+  border: 1px solid var(--color-border) !important;
+  background-color: var(--color-surface) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55) !important;
+    border-color: var(--color-text-secondary) !important;
+  }
+
   img {
     height: 300px;
     object-fit: cover;
+    display: block;
+    width: 100%;
     cursor: pointer;
+  }
+
+  mat-card-content {
+    padding: 0.75rem 0.875rem !important;
+
+    h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--color-text-primary);
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: 0.8rem;
+    }
   }
 }
 
 .empty-state {
   text-align: center;
-  color: gray;
+  color: var(--color-text-secondary);
   padding: 3rem;
 }
