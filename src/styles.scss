@@ -61,6 +61,8 @@ h5 {
 .mat-mdc-dialog-container {
   background-color: var(--color-surface) !important;
   color: var(--color-text-primary) !important;
+  --mdc-dialog-subhead-color: var(--color-text-primary);
+  --mdc-dialog-supporting-text-color: var(--color-text-secondary);
 }
 
 .mat-toolbar {
@@ -115,13 +117,20 @@ h5 {
 
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 16px !important;
-  overflow-y: auto !important;
+  overflow: auto !important;
+  padding: 0 !important;
 }
 
-/* Remove the internal scrollbar Angular Material adds to dialog content */
+/* Remove internal constraints Angular Material adds to dialog content */
 .mat-mdc-dialog-content {
   max-height: none !important;
-  overflow-y: visible !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+.mat-mdc-dialog-title {
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* Rounded, padded buttons globally */

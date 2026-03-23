@@ -19,7 +19,7 @@ export class MovieDetailsComponent implements OnInit {
 
     this.tmdbService.getMovieDetails(movieId).subscribe((movie) => {
       const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
-        width: '900px',
+        width: '1020px',
         maxHeight: '95vh',
         data: { movie },
       });

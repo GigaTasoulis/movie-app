@@ -99,7 +99,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.tmdbService.getMovieDetails(movieId).subscribe((movie) => {
       this.location.go(`/movie/${movieId}`);
       const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
-        width: '900px',
+        width: '1020px',
         maxHeight: '95vh',
         data: { movie },
       });
