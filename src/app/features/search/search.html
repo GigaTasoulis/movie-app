@@ -1,6 +1,4 @@
 <div class="search-container">
-  <h1>Movie Search</h1>
-
   <div class="selection-bar" *ngIf="selectedMovies.length > 0">
     <span>{{ selectedMovies.length }} movie(s) selected</span>
     <button mat-raised-button color="accent" (click)="openAddToCollection()">
@@ -8,11 +6,51 @@
     </button>
   </div>
 
-  <mat-form-field appearance="outline" class="search-field">
-    <mat-label>Search movies...</mat-label>
-    <input matInput [formControl]="searchControl" appSearchInput placeholder="e.g. Inception" />
-    <mat-error *ngIf="getErrorMessage()">{{ getErrorMessage() }}</mat-error>
-  </mat-form-field>
+  <div class="search-block">
+    <div class="search-field-layout">
+      <div class="search-field-outer bg-search-input">
+        <div class="search-field-inner">
+          <span class="search-sliders" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="24" height="24">
+              <path
+                d="M40,86H74.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12H133.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12Zm64-24A18,18,0,1,1,86,80,18,18,0,0,1,104,62ZM216,170H197.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12h98.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12Zm-48,24a18,18,0,1,1,18-18A18,18,0,0,1,168,194Z"
+              />
+            </svg>
+          </span>
+          <div class="search-input-wrapper">
+            <input
+              type="search"
+              class="search-native-input"
+              [formControl]="searchControl"
+              appSearchInput
+              placeholder="Search for a movie"
+              aria-label="Search for a movie"
+              autocomplete="off"
+              (blur)="searchControl.markAsTouched()"
+            />
+            @if (!searchControl.value) {
+              <mat-icon class="search-trailing search-trailing--mag" aria-hidden="true">search</mat-icon>
+            } @else {
+              <button
+                type="button"
+                class="search-trailing search-trailing--clear"
+                aria-label="Clear input"
+                (click)="clearSearch()"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (getErrorMessage()) {
+      <p class="search-field-error" role="alert">{{ getErrorMessage() }}</p>
+    }
+  </div>
 
   <div class="spinner-container" *ngIf="isLoading">
     <mat-spinner diameter="50"></mat-spinner>
