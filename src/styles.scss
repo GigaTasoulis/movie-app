@@ -23,6 +23,10 @@
   --app-content-padding-x: clamp(1.25rem, 5vw, 2.5rem);
 }
 
+.bg-search-input {
+  background: linear-gradient(90deg, #e50914 -0.08%, #c94ff5 81.14%, #5b79f1 99.92%);
+}
+
 body {
   font-family: 'General Sans', sans-serif;
   background-color: var(--color-bg);

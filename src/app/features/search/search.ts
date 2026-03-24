@@ -5,8 +5,6 @@ import { TmdbApiService } from '../../core/services/tmdb-api.service';
 import { Movie } from '../../core/models/movie.model';
 import { SearchInputDirective } from '../../core/directives/search-input';
 import { CommonModule } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -25,8 +23,6 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     ReactiveFormsModule,
     SearchInputDirective,
-    MatInputModule,
-    MatFormFieldModule,
     MatCardModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -149,6 +145,11 @@ export class SearchComponent implements OnDestroy, OnInit {
     if (value.length < 3) return 'Minimum 3 characters required';
     if (!/^[a-zA-Z0-9 ]*$/.test(value)) return 'Only letters and numbers allowed';
     return null;
+  }
+
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.searchControl.markAsUntouched();
   }
 
   ngOnDestroy(): void {
