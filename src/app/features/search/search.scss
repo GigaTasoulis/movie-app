@@ -1,7 +1,7 @@
 .search-container {
-  max-width: 1200px;
+  max-width: var(--app-content-max-width);
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem var(--app-content-padding-x);
 
   h1 {
     text-align: center;
@@ -19,7 +19,7 @@
 .spinner-container {
   display: flex;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 0;
 }
 
 .movies-grid {
