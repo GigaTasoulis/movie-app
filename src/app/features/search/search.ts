@@ -16,7 +16,8 @@ import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
 import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-search',
@@ -29,7 +30,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCardModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatCheckboxModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -93,6 +95,15 @@ export class SearchComponent implements OnDestroy, OnInit {
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex + 1;
     this.search();
+  }
+
+  onPosterKeydown(event: Event, movieId: number): void {
+    const ke = event as KeyboardEvent;
+    if (ke.key !== 'Enter' && ke.key !== ' ') {
+      return;
+    }
+    ke.preventDefault();
+    this.onMovieClick(movieId);
   }
 
   onMovieClick(movieId: number): void {
