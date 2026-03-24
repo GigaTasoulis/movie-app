@@ -1,7 +1,12 @@
 .create-container {
-  max-width: 600px;
+  max-width: var(--app-content-max-width);
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem var(--app-content-padding-x);
+
+  form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
 }
 
 .full-width {

@@ -1,18 +1,24 @@
 <mat-toolbar class="app-toolbar">
-  <span class="app-logo" routerLink="/">🎬 CineVault</span>
-  <span class="spacer"></span>
-  <nav class="nav-links">
-    <button
-      mat-button
-      routerLink="/"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: true}"
-    >
-      Search
-    </button>
-    <button mat-button routerLink="/popular" routerLinkActive="active">Popular</button>
-<button mat-button routerLink="/collections" routerLinkActive="active">Collections</button>
-  </nav>
+  <div class="app-toolbar-inner">
+    <div class="toolbar-section toolbar-start">
+      <span class="app-logo" routerLink="/">🎬 CineVault</span>
+    </div>
+    <nav class="nav-links">
+      <button
+        mat-button
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}"
+      >
+        Search
+      </button>
+      <button mat-button routerLink="/popular" routerLinkActive="active">Popular</button>
+      <button mat-button routerLink="/collections" routerLinkActive="active">Collections</button>
+    </nav>
+    <div class="toolbar-section toolbar-end" aria-hidden="true"></div>
+  </div>
 </mat-toolbar>
 
-<router-outlet />
+<main>
+  <router-outlet />
+</main>

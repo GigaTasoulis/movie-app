@@ -1,5 +1,35 @@
-.spacer {
-  flex: 1 1 auto;
+.app-toolbar {
+  position: relative;
+}
+
+.app-toolbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--app-content-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--app-content-padding-x);
+  padding-right: var(--app-content-padding-x);
+  box-sizing: border-box;
+}
+
+
+.toolbar-section {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-start {
+  justify-content: flex-start;
+}
+
+.toolbar-end {
+  justify-content: flex-end;
+  pointer-events: none;
 }
 
 .app-logo {
@@ -16,17 +46,30 @@
 }
 
 .nav-links {
+  flex: 0 0 auto;
   display: flex;
+  align-items: center;
   gap: 0.25rem;
 
   button {
     color: #888 !important;
     font-size: 0.9rem;
     font-weight: 500;
+    filter: blur(0);
+    opacity: 1;
+    transition:
+      filter 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.2s ease;
 
     &.active {
       color: #fff !important;
       font-weight: 600;
     }
+  }
+
+  &:has(button:hover) button:not(:hover) {
+    filter: blur(5px);
+    opacity: 0.45;
   }
 }

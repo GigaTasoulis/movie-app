@@ -19,21 +19,35 @@
   </div>
 
   <div class="movies-grid" *ngIf="!isLoading && movies.length > 0">
-    <mat-card
-      class="movie-card"
-      *ngFor="let movie of movies"
-      (click)="onMovieClick(movie.id)"
-      [class.selected]="isSelected(movie.id)"
-    >
-      <mat-checkbox
-        class="movie-checkbox"
-        [checked]="isSelected(movie.id)"
-        (click)="toggleMovieSelection($event, movie)"
-      ></mat-checkbox>
-      <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title" />
-      <mat-card-content>
-        <h3>{{ movie.title }}</h3>
-        <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+    <mat-card class="movie-card" *ngFor="let movie of movies" [class.selected]="isSelected(movie.id)">
+      <div
+        class="poster-hit"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'View details for ' + movie.title"
+        (click)="onMovieClick(movie.id)"
+        (keydown)="onPosterKeydown($event, movie.id)"
+      >
+        <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+      </div>
+      <mat-card-content class="movie-card-footer">
+        <div class="card-meta">
+          <h3>{{ movie.title }}</h3>
+          <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+        </div>
+        <button
+          type="button"
+          class="select-pill"
+          [class.is-selected]="isSelected(movie.id)"
+          (click)="toggleMovieSelection($event, movie)"
+          [attr.aria-pressed]="isSelected(movie.id)"
+          [attr.aria-label]="
+            isSelected(movie.id) ? 'Remove ' + movie.title + ' from collection selection' : 'Select ' + movie.title + ' for a collection'
+          "
+        >
+          <mat-icon aria-hidden="true">{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+          <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
+        </button>
       </mat-card-content>
     </mat-card>
   </div>

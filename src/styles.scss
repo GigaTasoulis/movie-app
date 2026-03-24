@@ -17,6 +17,10 @@
   --color-accent-dim: rgba(26, 26, 26, 0.08);
   --color-accent-text: #ffffff;
   --color-white: #ffffff;
+
+  /* Shared layout: header + page content use the same horizontal bounds */
+  --app-content-max-width: 1200px;
+  --app-content-padding-x: clamp(1.25rem, 5vw, 2.5rem);
 }
 
 body {
@@ -53,6 +57,11 @@ h5 {
 .mat-toolbar {
   background-color: #0d0d0d !important;
   border-bottom: 1px solid #1f1f1f !important;
+}
+
+.app-toolbar.mat-toolbar {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .mat-mdc-form-field {
