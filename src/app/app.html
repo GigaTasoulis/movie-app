@@ -1,7 +1,19 @@
 <mat-toolbar class="app-toolbar">
   <div class="app-toolbar-inner">
     <div class="toolbar-section toolbar-start">
-      <span class="app-logo" routerLink="/">🎬 CineVault</span>
+      <span class="app-logo" routerLink="/">
+        <svg class="app-logo-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="4" y="6" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2" />
+          <circle cx="7" cy="9" r="1.1" fill="currentColor" stroke="none" />
+          <circle cx="7" cy="12" r="1.1" fill="currentColor" stroke="none" />
+          <circle cx="7" cy="15" r="1.1" fill="currentColor" stroke="none" />
+          <circle cx="17" cy="9" r="1.1" fill="currentColor" stroke="none" />
+          <circle cx="17" cy="12" r="1.1" fill="currentColor" stroke="none" />
+          <circle cx="17" cy="15" r="1.1" fill="currentColor" stroke="none" />
+          <path d="M11 10.2l6 1.8-6 1.8v-3.6z" fill="currentColor" stroke="none" />
+        </svg>
+        CineVault
+      </span>
     </div>
     <nav class="nav-links">
       <button
@@ -12,7 +24,6 @@
       >
         Search
       </button>
-      <button mat-button routerLink="/popular" routerLinkActive="active">Popular</button>
       <button mat-button routerLink="/collections" routerLinkActive="active">Collections</button>
     </nav>
     <div class="toolbar-section toolbar-end" aria-hidden="true"></div>

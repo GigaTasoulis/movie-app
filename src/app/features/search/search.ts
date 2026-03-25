@@ -16,6 +16,9 @@ import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dial
 import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CollectionsService } from '../../core/services/collections';
+
+type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
 
 @Component({
   selector: 'app-search',
@@ -39,18 +42,54 @@ export class SearchComponent implements OnDestroy, OnInit {
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private location = inject(Location);
+  private collectionsService = inject(CollectionsService);
   selectedMovies: Movie[] = [];
 
   searchControl = new FormControl('', { updateOn: 'change' });
   movies: Movie[] = [];
+  creatorSelections: MovieWithFavoriteCount[] = [];
   totalResults = 0;
   currentPage = 1;
   pageSize = 20;
   isLoading = false;
   currentQuery = '';
   imageBaseUrl = environment.tmdbImageBaseUrl;
+  private readonly noImageFallbackSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#eeeeee"/>
+          <stop offset="1" stop-color="#dcdcdc"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="800" height="600" fill="url(#g)"/>
+      <rect x="48" y="48" width="704" height="504" rx="28" ry="28" fill="none" stroke="#bdbdbd" stroke-width="10"/>
+      <text x="400" y="325" font-size="44" font-family="Arial, sans-serif" text-anchor="middle" fill="#9e9e9e">No Image</text>
+    </svg>
+  `)}`;
+
+  get showCreatorSelections(): boolean {
+    return !this.isLoading && !(this.searchControl.value ?? '').trim();
+  }
+
+  private getFallbackPosterSrc(): string {
+    // This is what the UI requests; if it doesn't exist in the project, the (error) handler will swap it.
+    return '/assets/no-image-placeholder-DA-yB8fJ.png';
+  }
+
+  getPosterSrc(movie: Movie): string {
+    return movie.poster_path ? this.imageBaseUrl + movie.poster_path : this.getFallbackPosterSrc();
+  }
+
+  onPosterImgError(event: Event): void {
+    const target = event.target as HTMLImageElement | null;
+    if (!target) return;
+    target.src = this.noImageFallbackSrc;
+  }
 
   ngOnInit(): void {
+    this.creatorSelections = this.buildCreatorSelections();
+
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -66,6 +105,69 @@ export class SearchComponent implements OnDestroy, OnInit {
           this.cdr.markForCheck();
         }
       });
+  }
+
+  private buildCreatorSelections(): MovieWithFavoriteCount[] {
+    const collections = this.collectionsService.getCollections();
+    const counts = new Map<number, { movie: Movie; count: number }>();
+
+    for (const collection of collections) {
+      for (const movie of collection.movies) {
+        const existing = counts.get(movie.id);
+        if (!existing) {
+          counts.set(movie.id, { movie, count: 1 });
+        } else {
+          existing.count += 1;
+        }
+      }
+    }
+
+    const fromStorage = Array.from(counts.values())
+      .map((v) => ({ ...v.movie, favoriteCount: v.count }))
+      .sort((a, b) => (b.favoriteCount ?? 0) - (a.favoriteCount ?? 0));
+
+    if (fromStorage.length > 0) return fromStorage.slice(0, 12);
+
+    // Fallback when the user has no saved movies yet.
+    // (IDs are common TMDB movies so clicking still tends to work.)
+    return [
+      {
+        id: 27205, // Inception
+        title: 'Inception',
+        poster_path: '',
+        vote_average: 8.3,
+        overview: 'A thief steals corporate secrets through use of dream-sharing technology.',
+        release_date: '2010-07-16',
+        favoriteCount: 12,
+      },
+      {
+        id: 155, // The Dark Knight
+        title: 'The Dark Knight',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: 'Batman raises the stakes in his war on crime.',
+        release_date: '2008-07-18',
+        favoriteCount: 10,
+      },
+      {
+        id: 603, // The Matrix
+        title: 'The Matrix',
+        poster_path: '',
+        vote_average: 8.7,
+        overview: 'A computer hacker learns about the true nature of his reality.',
+        release_date: '1999-03-31',
+        favoriteCount: 8,
+      },
+      {
+        id: 680, // Pulp Fiction
+        title: 'Pulp Fiction',
+        poster_path: '',
+        vote_average: 8.9,
+        overview: 'The lives of two mob hitmen intertwine in four tales of violence.',
+        release_date: '1994-10-14',
+        favoriteCount: 7,
+      },
+    ];
   }
 
   search(): void {
@@ -132,9 +234,15 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
 
   openAddToCollection(): void {
-    this.dialog.open(AddToCollectionDialog, {
+    const ref = this.dialog.open(AddToCollectionDialog, {
       width: '500px',
       data: { movies: this.selectedMovies },
+    });
+
+    ref.afterClosed().subscribe(() => {
+      // Update creator selection favorite counts after adding movies to collections.
+      this.creatorSelections = this.buildCreatorSelections();
+      this.cdr.markForCheck();
     });
   }
 

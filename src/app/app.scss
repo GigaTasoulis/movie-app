@@ -38,7 +38,17 @@
   cursor: pointer;
   letter-spacing: -0.5px;
   color: #fff;
+  display: inline-flex;
+  align-items: center;
   white-space: nowrap;
+}
+
+.app-logo-icon {
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.45rem;
+  display: block;
+  flex-shrink: 0;
 }
 
 .nav-links {

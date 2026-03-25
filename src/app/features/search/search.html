@@ -56,7 +56,70 @@
     <mat-spinner diameter="50"></mat-spinner>
   </div>
 
-  <div class="movies-grid" *ngIf="!isLoading && movies.length > 0">
+  <div class="creator-selections" *ngIf="showCreatorSelections">
+    <h2 class="creator-title">
+      Creator's Selections
+      <span class="creator-dot" aria-hidden="true"></span>
+    </h2>
+
+    <div class="movies-grid">
+      <mat-card
+        class="movie-card"
+        *ngFor="let movie of creatorSelections"
+        [class.selected]="isSelected(movie.id)"
+      >
+        <div
+          class="poster-hit"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'View details for ' + movie.title"
+          (click)="onMovieClick(movie.id)"
+          (keydown)="onPosterKeydown($event, movie.id)"
+        >
+          @if (movie.poster_path) {
+            <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+          } @else {
+            <div class="poster-placeholder">
+              <img
+                mat-card-image
+                [src]="getPosterSrc(movie)"
+                [alt]="'Movie image default placeholder for ' + movie.title"
+                (error)="onPosterImgError($event)"
+              />
+              <span class="poster-placeholder-title">{{ movie.title }}</span>
+            </div>
+          }
+
+          <span class="card-number" [attr.data-number]="movie.favoriteCount">{{ movie.favoriteCount }}</span>
+        </div>
+
+        <mat-card-content class="movie-card-footer">
+          <div class="card-meta">
+            <h3>{{ movie.title }}</h3>
+            <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+          </div>
+
+          <button
+            type="button"
+            class="select-pill"
+            [class.is-selected]="isSelected(movie.id)"
+            (click)="toggleMovieSelection($event, movie)"
+            [attr.aria-pressed]="isSelected(movie.id)"
+            [attr.aria-label]="
+              isSelected(movie.id)
+                ? 'Remove ' + movie.title + ' from collection selection'
+                : 'Select ' + movie.title + ' for a collection'
+            "
+          >
+            <mat-icon aria-hidden="true">{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+            <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="movies-grid" *ngIf="!isLoading && !showCreatorSelections && movies.length > 0">
     <mat-card class="movie-card" *ngFor="let movie of movies" [class.selected]="isSelected(movie.id)">
       <div
         class="poster-hit"
@@ -66,7 +129,19 @@
         (click)="onMovieClick(movie.id)"
         (keydown)="onPosterKeydown($event, movie.id)"
       >
-        <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+        @if (movie.poster_path) {
+          <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+        } @else {
+          <div class="poster-placeholder">
+            <img
+              mat-card-image
+              [src]="getPosterSrc(movie)"
+              [alt]="'Movie image default placeholder for ' + movie.title"
+              (error)="onPosterImgError($event)"
+            />
+            <span class="poster-placeholder-title">{{ movie.title }}</span>
+          </div>
+        }
       </div>
       <mat-card-content class="movie-card-footer">
         <div class="card-meta">

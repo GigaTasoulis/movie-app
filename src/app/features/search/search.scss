@@ -324,3 +324,111 @@
     color: var(--color-text-primary);
   }
 }
+
+.creator-selections {
+  margin-bottom: 2rem;
+}
+
+.creator-title {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  margin: 0 0 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.creator-dot {
+  position: absolute;
+  top: 0.1rem;
+  right: -1.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e50914; /* Netflix red vibe */
+  opacity: 0.75;
+}
+
+.creator-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #e50914;
+  opacity: 0.75;
+  animation: creatorPing 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes creatorPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.poster-placeholder {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+
+.poster-placeholder img {
+  height: 300px;
+  object-fit: cover;
+  width: 100%;
+  display: block;
+}
+
+.poster-placeholder-title {
+  position: absolute;
+  inset: 0;
+  top: 0.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 800;
+  color: #111111;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.card-number {
+  position: absolute;
+  left: -0.9rem;
+  bottom: -1.25rem;
+  z-index: 2;
+  display: block;
+  font-size: 5rem;
+  line-height: 1;
+  font-weight: 800;
+  pointer-events: none;
+
+  /* White outline with black fill behind */
+  color: transparent;
+  -webkit-text-stroke: 0.25rem #ffffff;
+  text-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
+}
+
+.card-number::before {
+  content: attr(data-number);
+  position: absolute;
+  inset: 0;
+  color: #000000;
+  -webkit-text-stroke: 0;
+  z-index: -1;
+}
+
+@media (min-width: 640px) {
+  .card-number {
+    bottom: 0;
+    left: -1.25rem;
+    font-size: 6rem;
+  }
+}
