@@ -126,11 +126,7 @@ export class SearchComponent implements OnDestroy, OnInit {
       .map((v) => ({ ...v.movie, favoriteCount: v.count }))
       .sort((a, b) => (b.favoriteCount ?? 0) - (a.favoriteCount ?? 0));
 
-    if (fromStorage.length > 0) return fromStorage.slice(0, 12);
-
-    // Fallback when the user has no saved movies yet.
-    // (IDs are common TMDB movies so clicking still tends to work.)
-    return [
+    const fallback: MovieWithFavoriteCount[] = [
       {
         id: 27205, // Inception
         title: 'Inception',
@@ -168,6 +164,20 @@ export class SearchComponent implements OnDestroy, OnInit {
         favoriteCount: 7,
       },
     ];
+
+    // "Always 15" behavior:
+    // - use saved movies ranked by how many collections contain them
+    // - then pad with fallback movies (cycled) to reach exactly 15 cards
+    const base = fromStorage.length > 0 ? fromStorage.slice(0, 15) : [];
+    const result: MovieWithFavoriteCount[] = [...base];
+
+    let i = 0;
+    while (result.length < 15) {
+      result.push({ ...fallback[i % fallback.length] });
+      i += 1;
+    }
+
+    return result.slice(0, 15);
   }
 
   search(): void {

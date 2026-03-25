@@ -65,7 +65,7 @@
     <div class="movies-grid">
       <mat-card
         class="movie-card"
-        *ngFor="let movie of creatorSelections"
+        *ngFor="let movie of creatorSelections; let i = index"
         [class.selected]="isSelected(movie.id)"
       >
         <div
@@ -90,7 +90,7 @@
             </div>
           }
 
-          <span class="card-number" [attr.data-number]="movie.favoriteCount">{{ movie.favoriteCount }}</span>
+          <span class="card-number" [attr.data-number]="i + 1">{{ i + 1 }}</span>
         </div>
 
         <mat-card-content class="movie-card-footer">
