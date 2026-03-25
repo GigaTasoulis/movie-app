@@ -4,6 +4,15 @@
     <button mat-raised-button color="accent" (click)="openAddToCollection()">
       Add to Collection
     </button>
+    <button
+      *ngIf="!hasSavedCreatorSelections"
+      mat-stroked-button
+      color="primary"
+      (click)="saveCreatorSelections()"
+      [disabled]="!canSaveCreatorSelections"
+    >
+      Save as Creator's Selections
+    </button>
   </div>
 
   <div class="search-block">

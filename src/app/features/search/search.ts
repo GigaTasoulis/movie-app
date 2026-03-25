@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, forkJoin, of, Subject, takeUntil } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { TmdbApiService } from '../../core/services/tmdb-api.service';
-import { Movie } from '../../core/models/movie.model';
+import { Movie, MovieDetails } from '../../core/models/movie.model';
 import { SearchInputDirective } from '../../core/directives/search-input';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -43,6 +44,10 @@ export class SearchComponent implements OnDestroy, OnInit {
   private dialog = inject(MatDialog);
   private location = inject(Location);
   private collectionsService = inject(CollectionsService);
+  private platformId = inject(PLATFORM_ID);
+  private readonly creatorSelectionsStorageKey = 'creator_selections_movie_ids';
+  private usingSavedCreatorSelections = false;
+  private savedCreatorSelectionIds: number[] | null = null;
   selectedMovies: Movie[] = [];
 
   searchControl = new FormControl('', { updateOn: 'change' });
@@ -69,7 +74,23 @@ export class SearchComponent implements OnDestroy, OnInit {
   `)}`;
 
   get showCreatorSelections(): boolean {
-    return !this.isLoading && !(this.searchControl.value ?? '').trim();
+    // When user has saved their own 15, we show those as the default movie grid.
+    // In that mode we no longer show the "Creator's Selections" section.
+    return (
+      !this.isLoading &&
+      !(this.searchControl.value ?? '').trim() &&
+      !this.usingSavedCreatorSelections
+    );
+  }
+
+  get canSaveCreatorSelections(): boolean {
+    if (this.selectedMovies.length !== 15) return false;
+    const unique = new Set<number>(this.selectedMovies.map((m) => m.id));
+    return unique.size === 15;
+  }
+
+  get hasSavedCreatorSelections(): boolean {
+    return this.usingSavedCreatorSelections;
   }
 
   private getFallbackPosterSrc(): string {
@@ -88,7 +109,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.creatorSelections = this.buildCreatorSelections();
+    this.initCreatorSelections();
 
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
@@ -99,11 +120,130 @@ export class SearchComponent implements OnDestroy, OnInit {
           this.currentPage = 1;
           this.search();
         } else {
-          this.movies = [];
-          this.totalResults = 0;
+          // If user saved their 15, keep them visible as the default grid whenever
+          // the search input is empty/invalid.
+          if (this.usingSavedCreatorSelections && this.creatorSelections.length === 15) {
+            this.movies = this.creatorSelections;
+            this.totalResults = this.creatorSelections.length;
+            this.currentPage = 1;
+          } else {
+            this.movies = [];
+            this.totalResults = 0;
+            this.currentPage = 1;
+          }
+
           this.currentQuery = '';
           this.cdr.markForCheck();
         }
+      });
+  }
+
+  private initCreatorSelections(): void {
+    const savedIds = this.getSavedCreatorSelectionIds();
+    if (savedIds.length === 15) {
+      this.usingSavedCreatorSelections = true;
+      this.savedCreatorSelectionIds = savedIds;
+      this.loadCreatorSelectionsByIds(savedIds, undefined, true);
+      return;
+    }
+
+    // Default behavior: rank by how often movies appear across your collections,
+    // then pad to 15. We still fetch full details from the API so posters are correct.
+    this.usingSavedCreatorSelections = false;
+    this.savedCreatorSelectionIds = null;
+
+    const fallback = this.buildCreatorSelections();
+    this.loadCreatorSelectionsByIds(fallback.map((m) => m.id), fallback, false);
+  }
+
+  private getSavedCreatorSelectionIds(): number[] {
+    if (!isPlatformBrowser(this.platformId)) return [];
+    const raw = localStorage.getItem(this.creatorSelectionsStorageKey);
+    if (!raw) return [];
+
+    try {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
+    } catch {
+      return [];
+    }
+  }
+
+  private saveCreatorSelectionIds(ids: number[]): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    localStorage.setItem(this.creatorSelectionsStorageKey, JSON.stringify(ids));
+  }
+
+  private loadCreatorSelectionsByIds(
+    ids: number[],
+    fallbackMovies?: MovieWithFavoriteCount[],
+    alsoSetAsDefaultMovies: boolean = false,
+  ): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
+
+    const fallbackMap = new Map<number, MovieWithFavoriteCount>();
+    if (fallbackMovies) {
+      for (const m of fallbackMovies) fallbackMap.set(m.id, m);
+    }
+
+    forkJoin(
+      ids.map((id) =>
+        this.tmdbService.getMovieDetails(id).pipe(
+          catchError(() => of<MovieDetails | null>(null)),
+        ),
+      ),
+    )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (detailsArr) => {
+          this.creatorSelections = detailsArr.map((details, idx) => {
+            const id = ids[idx];
+            if (details) return details as MovieWithFavoriteCount;
+
+            return (
+              fallbackMap.get(id) ?? {
+                id,
+                title: `Movie ${id}`,
+                poster_path: '',
+                vote_average: 0,
+                overview: '',
+                release_date: '',
+              }
+            );
+          });
+
+          if (alsoSetAsDefaultMovies) {
+            // For the default view (movies-grid), we only need the base Movie fields;
+            // `MovieWithFavoriteCount` is structurally compatible with `Movie`.
+            this.movies = this.creatorSelections;
+            this.totalResults = this.creatorSelections.length;
+            this.currentPage = 1;
+          }
+
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.creatorSelections = (fallbackMovies?.slice(0, 15) ?? ids.map((id) => ({
+            id,
+            title: `Movie ${id}`,
+            poster_path: '',
+            vote_average: 0,
+            overview: '',
+            release_date: '',
+          })) as MovieWithFavoriteCount[]).slice(0, 15);
+
+          if (alsoSetAsDefaultMovies) {
+            this.movies = this.creatorSelections;
+            this.totalResults = this.creatorSelections.length;
+            this.currentPage = 1;
+          }
+
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
       });
   }
 
@@ -250,10 +390,33 @@ export class SearchComponent implements OnDestroy, OnInit {
     });
 
     ref.afterClosed().subscribe(() => {
-      // Update creator selection favorite counts after adding movies to collections.
-      this.creatorSelections = this.buildCreatorSelections();
-      this.cdr.markForCheck();
+      if (this.usingSavedCreatorSelections && this.savedCreatorSelectionIds?.length === 15) {
+        this.loadCreatorSelectionsByIds(this.savedCreatorSelectionIds, undefined, true);
+        return;
+      }
+
+      // If not using saved selections, we keep the original behavior:
+      // rank by collection frequency and re-fill to 15.
+      const fallback = this.buildCreatorSelections();
+      this.loadCreatorSelectionsByIds(fallback.map((m) => m.id), fallback, false);
     });
+  }
+
+  saveCreatorSelections(): void {
+    if (!this.canSaveCreatorSelections) return;
+
+    const ids = Array.from(new Set(this.selectedMovies.map((m) => m.id)));
+    if (ids.length !== 15) return;
+
+    this.usingSavedCreatorSelections = true;
+    this.savedCreatorSelectionIds = ids;
+    this.saveCreatorSelectionIds(ids);
+
+    // Clear the "Add to Collection" selection so you can immediately see
+    // the updated Creator's Selections list.
+    this.selectedMovies = [];
+    this.loadCreatorSelectionsByIds(ids, undefined, true);
+    this.cdr.markForCheck();
   }
 
   getErrorMessage(): string | null {
