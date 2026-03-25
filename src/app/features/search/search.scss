@@ -126,7 +126,9 @@
   cursor: pointer;
   border-radius: 4px;
   color: var(--color-text-secondary);
-  transition: color 0.15s ease, background 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
 
   &:hover {
     color: var(--color-text-primary);
@@ -159,26 +161,55 @@
   margin-bottom: 2rem;
 }
 
-.movie-card {
-  border-radius: 12px !important;
+.movies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.movie-card--list .poster-hit {
+  width: 180px;
+}
+
+.movie-card--list .poster-hit img {
+  height: 230px;
+}
+
+.movie-card--list .movie-overview {
+  margin-top: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.movie-card.mat-mdc-card {
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-  border: 1px solid var(--color-border) !important;
-  background-color: var(--color-surface) !important;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
   display: flex;
   flex-direction: column;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55) !important;
-    border-color: var(--color-text-secondary) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    border-color: var(--color-text-secondary);
   }
 
   &.selected {
     outline: 2px solid var(--color-accent);
     outline-offset: -2px;
-    border-color: var(--color-accent) !important;
+    border-color: var(--color-accent);
   }
+}
+
+.movie-card--list.mat-mdc-card {
+  flex-direction: row;
+  background-color: #d5dee6;
 }
 
 .poster-hit {
@@ -199,20 +230,28 @@
     object-fit: cover;
     display: block;
     width: 100%;
-    vertical-align: bottom;
     pointer-events: none;
     user-select: none;
   }
 }
 
-.movie-card-footer {
-  display: flex !important;
+.movie-card-footer.mat-mdc-card-content {
+  display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.875rem 1rem !important;
+  padding: 0.875rem 1rem;
   margin-top: auto;
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
+}
+
+.movie-card--list .movie-card-footer--list.mat-mdc-card-content {
+  margin-top: 0;
+  padding: 1rem;
+  border-top: none;
+  background: #d5dee6;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .card-meta {
@@ -322,5 +361,160 @@
     font-size: 0.9375rem;
     font-weight: 500;
     color: var(--color-text-primary);
+  }
+}
+
+.creator-selections {
+  margin-bottom: 2rem;
+}
+
+.creator-header {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.creator-title {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.creator-dot {
+  position: absolute;
+  top: 0.1rem;
+  right: -1.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e50914; /* Netflix red vibe */
+  opacity: 0.75;
+}
+
+.creator-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #e50914;
+  opacity: 0.75;
+  animation: creatorPing 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.creator-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.creator-view-toggle {
+  border: 0;
+  background: transparent;
+  padding: 0.35rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  &:hover {
+    background: var(--color-accent-dim);
+  }
+  &.is-active {
+    outline: 2px solid var(--color-accent);
+    background: transparent;
+  }
+}
+.creator-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.95;
+}
+.creator-icon--primary {
+  color: #e50914;
+}
+.creator-icon--secondary {
+  color: var(--color-text-secondary);
+}
+
+@keyframes creatorPing {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.poster-placeholder {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+
+.poster-placeholder img {
+  height: 300px;
+  object-fit: cover;
+  width: 100%;
+  display: block;
+}
+
+.poster-placeholder-title {
+  position: absolute;
+  inset: 0;
+  top: 0.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 800;
+  color: #111111;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.card-number {
+  position: absolute;
+  left: -0.9rem;
+  top: 0.35rem;
+  bottom: auto;
+  z-index: 2;
+  display: block;
+  font-size: 5rem;
+  line-height: 1;
+  font-weight: 800;
+  pointer-events: none;
+
+  /* White outline with black fill behind */
+  color: transparent;
+  -webkit-text-stroke: 0.25rem #ffffff;
+  text-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
+}
+
+.card-number::before {
+  content: attr(data-number);
+  position: absolute;
+  inset: 0;
+  color: #000000;
+  -webkit-text-stroke: 0;
+  z-index: -1;
+}
+
+@media (min-width: 640px) {
+  .card-number {
+    top: 0.3rem;
+    left: -1.25rem;
+    font-size: 6rem;
   }
 }

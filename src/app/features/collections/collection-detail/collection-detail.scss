@@ -26,17 +26,20 @@
   gap: 1.5rem;
 }
 
-.movie-card {
-  border-radius: 12px !important;
+.movie-card.mat-mdc-card {
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--color-border) !important;
-  background-color: var(--color-surface) !important;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55) !important;
-    border-color: var(--color-text-secondary) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    border-color: var(--color-text-secondary);
   }
 
   img {
@@ -48,7 +51,7 @@
   }
 
   mat-card-content {
-    padding: 0.75rem 0.875rem !important;
+    padding: 0.75rem 0.875rem;
 
     h3 {
       font-size: 0.875rem;

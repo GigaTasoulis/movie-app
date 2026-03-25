@@ -17,6 +17,7 @@
   --color-accent-dim: rgba(26, 26, 26, 0.08);
   --color-accent-text: #ffffff;
   --color-white: #ffffff;
+  --search-input-gradient: linear-gradient(90deg, #e50914 -0.08%, #c94ff5 81.14%, #5b79f1 99.92%);
 
   /* Shared layout: header + page content use the same horizontal bounds */
   --app-content-max-width: 1200px;
@@ -24,7 +25,7 @@
 }
 
 .bg-search-input {
-  background: linear-gradient(90deg, #e50914 -0.08%, #c94ff5 81.14%, #5b79f1 99.92%);
+  background: var(--search-input-gradient);
 }
 
 body {
@@ -45,100 +46,101 @@ h5 {
 }
 
 /* Angular Material surface / form overrides */
-.mat-mdc-card {
-  background-color: var(--color-surface) !important;
-  border: 1px solid var(--color-border) !important;
-  color: var(--color-text-primary) !important;
+mat-card.mat-mdc-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
 }
 
-.mat-mdc-dialog-container {
-  background-color: var(--color-surface) !important;
-  color: var(--color-text-primary) !important;
+mat-dialog-container.mat-mdc-dialog-container {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
   --mdc-dialog-subhead-color: var(--color-text-primary);
   --mdc-dialog-supporting-text-color: var(--color-text-secondary);
 }
 
-.mat-toolbar {
-  background-color: #0d0d0d !important;
-  border-bottom: 1px solid #1f1f1f !important;
+mat-toolbar.mat-toolbar {
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #1f1f1f;
 }
 
 .app-toolbar.mat-toolbar {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  background-color: #2d2d2d;
+  padding-left: 0;
+  padding-right: 0;
 }
 
-.mat-mdc-form-field {
+mat-form-field.mat-mdc-form-field {
   .mdc-text-field {
-    background-color: var(--color-surface-2) !important;
-    border-radius: 10px !important;
+    background-color: var(--color-surface-2);
+    border-radius: 10px;
   }
 
   .mdc-text-field--outlined {
-    padding-left: 1.25rem !important;
-    padding-right: 1.25rem !important;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .mdc-notched-outline__leading,
   .mdc-notched-outline__notch,
   .mdc-notched-outline__trailing {
-    border-color: var(--color-border) !important;
+    border-color: var(--color-border);
   }
 
   .mdc-notched-outline__leading {
-    border-radius: 10px 0 0 10px !important;
+    border-radius: 10px 0 0 10px;
   }
 
   .mdc-notched-outline__trailing {
-    border-radius: 0 10px 10px 0 !important;
+    border-radius: 0 10px 10px 0;
   }
 
   &.mat-focused {
     .mdc-notched-outline__leading,
     .mdc-notched-outline__notch,
     .mdc-notched-outline__trailing {
-      border-color: var(--color-text-secondary) !important;
-      border-width: 1.5px !important;
+      border-color: var(--color-text-secondary);
+      border-width: 1.5px;
     }
   }
 
   .mdc-floating-label {
-    color: var(--color-text-secondary) !important;
+    color: var(--color-text-secondary);
   }
 
   input {
-    color: var(--color-text-primary) !important;
-    caret-color: var(--color-text-primary) !important;
-    font-size: 1rem !important;
+    color: var(--color-text-primary);
+    caret-color: var(--color-text-primary);
+    font-size: 1rem;
   }
 }
 
-.mat-mdc-dialog-container .mdc-dialog__surface {
-  border-radius: 16px !important;
-  overflow: auto !important;
-  padding: 0 !important;
+mat-dialog-container.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px;
+  overflow: auto;
+  padding: 0;
 }
 
 /* Remove internal constraints Angular Material adds to dialog content */
-.mat-mdc-dialog-content {
-  max-height: none !important;
-  overflow: visible !important;
-  padding: 0 !important;
+mat-dialog-content.mat-mdc-dialog-content {
+  max-height: none;
+  overflow: visible;
+  padding: 0;
 }
 
-.mat-mdc-dialog-title {
-  padding: 0 !important;
-  margin: 0 !important;
+h2.mat-mdc-dialog-title {
+  padding: 0;
+  margin: 0;
 }
 
 /* Rounded, padded buttons globally */
-.mat-mdc-button,
-.mat-mdc-raised-button,
-.mat-mdc-outlined-button {
-  border-radius: 20px !important;
-  padding: 0 1.5rem !important;
-  min-height: 38px !important;
-  letter-spacing: 0.01em !important;
+button.mat-mdc-button,
+button.mat-mdc-raised-button,
+button.mat-mdc-outlined-button {
+  border-radius: 20px;
+  padding: 0 1.5rem;
+  min-height: 38px;
+  letter-spacing: 0.01em;
 }
 
 /* Slider accent color */
@@ -154,14 +156,14 @@ h5 {
   --mdc-slider-handle-height: 18px;
 }
 
-.mat-mdc-raised-button.mat-primary,
-.mat-mdc-raised-button.mat-accent {
-  background-color: var(--color-accent) !important;
-  color: var(--color-accent-text) !important;
+button.mat-mdc-raised-button.mat-primary,
+button.mat-mdc-raised-button.mat-accent {
+  background-color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
-.mat-mdc-button {
-  color: var(--color-accent) !important;
+button.mat-mdc-button {
+  color: var(--color-accent);
 }
 
 a {
