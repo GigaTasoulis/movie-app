@@ -161,6 +161,27 @@
   margin-bottom: 2rem;
 }
 
+.movies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.movie-card--list .poster-hit {
+  width: 180px;
+}
+
+.movie-card--list .poster-hit img {
+  height: 230px;
+}
+
+.movie-card--list .movie-overview {
+  margin-top: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
 .movie-card.mat-mdc-card {
   border-radius: 12px;
   overflow: hidden;
@@ -184,6 +205,11 @@
     outline-offset: -2px;
     border-color: var(--color-accent);
   }
+}
+
+.movie-card--list.mat-mdc-card {
+  flex-direction: row;
+  background-color: #d5dee6;
 }
 
 .poster-hit {
@@ -217,6 +243,15 @@
   margin-top: auto;
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
+}
+
+.movie-card--list .movie-card-footer--list.mat-mdc-card-content {
+  margin-top: 0;
+  padding: 1rem;
+  border-top: none;
+  background: #d5dee6;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .card-meta {
@@ -333,11 +368,22 @@
   margin-bottom: 2rem;
 }
 
+.creator-header {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
 .creator-title {
   position: relative;
   display: inline-block;
   width: fit-content;
-  margin: 0 0 1.25rem;
+  margin: 0;
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -363,6 +409,41 @@
   background: #e50914;
   opacity: 0.75;
   animation: creatorPing 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.creator-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.creator-view-toggle {
+  border: 0;
+  background: transparent;
+  padding: 0.35rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  &:hover {
+    background: var(--color-accent-dim);
+  }
+  &.is-active {
+    outline: 2px solid var(--color-accent);
+    background: transparent;
+  }
+}
+.creator-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.95;
+}
+.creator-icon--primary {
+  color: #e50914;
+}
+.creator-icon--secondary {
+  color: var(--color-text-secondary);
 }
 
 @keyframes creatorPing {

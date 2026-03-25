@@ -17,6 +17,7 @@
   --color-accent-dim: rgba(26, 26, 26, 0.08);
   --color-accent-text: #ffffff;
   --color-white: #ffffff;
+  --search-input-gradient: linear-gradient(90deg, #e50914 -0.08%, #c94ff5 81.14%, #5b79f1 99.92%);
 
   /* Shared layout: header + page content use the same horizontal bounds */
   --app-content-max-width: 1200px;
@@ -24,7 +25,7 @@
 }
 
 .bg-search-input {
-  background: linear-gradient(90deg, #e50914 -0.08%, #c94ff5 81.14%, #5b79f1 99.92%);
+  background: var(--search-input-gradient);
 }
 
 body {

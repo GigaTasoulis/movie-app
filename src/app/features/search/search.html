@@ -85,12 +85,232 @@
   </div>
 
   <div class="creator-selections" *ngIf="showCreatorSelections">
-    <h2 class="creator-title">
-      Creator's Selections
-      <span class="creator-dot" aria-hidden="true"></span>
-    </h2>
+    <div class="creator-header">
+      <h2 class="creator-title">
+        Creator's Selections
+        <span class="creator-dot" aria-hidden="true"></span>
+      </h2>
 
-    <div class="movies-grid">
+      <div class="creator-header-icons">
+        <button
+          type="button"
+          class="creator-view-toggle"
+          [class.is-active]="creatorViewMode === 'grid'"
+          aria-label="Creator view: grid"
+          (click)="setCreatorViewMode('grid')"
+          (keydown.enter)="setCreatorViewMode('grid')"
+          (keydown.space)="setCreatorViewMode('grid'); $event.preventDefault()"
+        >
+          @if (creatorViewMode === 'grid') {
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            class="creator-icon"
+          >
+            <defs>
+              <linearGradient id="creatorSelectionGradGrid" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#e50914" />
+                <stop offset="81.14%" stop-color="#c94ff5" />
+                <stop offset="99.92%" stop-color="#5b79f1" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 6C19.5523 6 20 5.55228 20 5C20 4.44772 19.5523 4 19 4C18.4477 4 18 4.44772 18 5C18 5.55228 18.4477 6 19 6Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 20C19.5523 20 20 19.5523 20 19C20 18.4477 19.5523 18 19 18C18.4477 18 18 18.4477 18 19C18 19.5523 18.4477 20 19 20Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5 6C5.55228 6 6 5.55228 6 5C6 4.44772 5.55228 4 5 4C4.44772 4 4 4.44772 4 5C4 5.55228 4.44772 6 5 6Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5 20C5.55228 20 6 19.5523 6 19C6 18.4477 5.55228 18 5 18C4.44772 18 4 18.4477 4 19C4 19.5523 4.44772 20 5 20Z"
+              stroke="url(#creatorSelectionGradGrid)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @else {
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            class="creator-icon creator-icon--secondary"
+          >
+            <path
+              d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 6C19.5523 6 20 5.55228 20 5C20 4.44772 19.5523 4 19 4C18.4477 4 18 4.44772 18 5C18 5.55228 18.4477 6 19 6Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 20C19.5523 20 20 19.5523 20 19C20 18.4477 19.5523 18 19 18C18.4477 18 18 18.4477 18 19C18 19.5523 18.4477 20 19 20Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5 6C5.55228 6 6 5.55228 6 5C6 4.44772 5.55228 4 5 4C4.44772 4 4 4.44772 4 5C4 5.55228 4.44772 6 5 6Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5 20C5.55228 20 6 19.5523 6 19C6 18.4477 5.55228 18 5 18C4.44772 18 4 18.4477 4 19C4 19.5523 4.44772 20 5 20Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          }
+        </button>
+
+        <button
+          type="button"
+          class="creator-view-toggle"
+          [class.is-active]="creatorViewMode === 'list'"
+          aria-label="Creator view: list"
+          (click)="setCreatorViewMode('list')"
+          (keydown.enter)="setCreatorViewMode('list')"
+          (keydown.space)="setCreatorViewMode('list'); $event.preventDefault()"
+        >
+          @if (creatorViewMode === 'list') {
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="creator-icon"
+          >
+            <defs>
+              <linearGradient id="creatorSelectionGradList" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#e50914" />
+                <stop offset="81.14%" stop-color="#c94ff5" />
+                <stop offset="99.92%" stop-color="#5b79f1" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M21 12L9 12M21 6L9 6M21 18L9 18M5 12C5 12.5523 4.55228 13 4 13C3.44772 13 3 12.5523 3 12C3 11.4477 3.44772 11 4 11C4.55228 11 5 11.4477 5 12ZM5 6C5 6.55228 4.55228 7 4 7C3.44772 7 3 6.55228 3 6C3 5.44772 3.44772 5 4 5C4.55228 5 5 5.44772 5 6ZM5 18C5 18.5523 4.55228 19 4 19C3.44772 19 3 18.5523 3 18C3 17.4477 3.44772 17 4 17C4.55228 17 5 17.4477 5 18Z"
+              stroke="url(#creatorSelectionGradList)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          } @else {
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="creator-icon creator-icon--secondary"
+          >
+            <path
+              d="M21 12L9 12M21 6L9 6M21 18L9 18M5 12C5 12.5523 4.55228 13 4 13C3.44772 13 3 12.5523 3 12C3 11.4477 3.44772 11 4 11C4.55228 11 5 11.4477 5 12ZM5 6C5 6.55228 4.55228 7 4 7C3.44772 7 3 6.55228 3 6C3 5.44772 3.44772 5 4 5C4.55228 5 5 5.44772 5 6ZM5 18C5 18.5523 4.55228 19 4 19C3.44772 19 3 18.5523 3 18C3 17.4477 3.44772 17 4 17C4.55228 17 5 17.4477 5 18Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          }
+        </button>
+      </div>
+    </div>
+
+    <div class="movies-grid" *ngIf="creatorViewMode === 'grid'">
       <mat-card
         class="movie-card"
         *ngFor="let movie of creatorSelections; let i = index"
@@ -129,6 +349,71 @@
           <div class="card-meta">
             <h3>{{ movie.title }}</h3>
             <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+          </div>
+
+          <button
+            type="button"
+            class="select-pill"
+            [class.is-selected]="isSelected(movie.id)"
+            (click)="toggleMovieSelection($event, movie)"
+            [attr.aria-pressed]="isSelected(movie.id)"
+            [attr.aria-label]="
+              isSelected(movie.id)
+                ? 'Remove ' + movie.title + ' from collection selection'
+                : 'Select ' + movie.title + ' for a collection'
+            "
+          >
+            <mat-icon aria-hidden="true"
+              >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
+            >
+            <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="movies-list" *ngIf="creatorViewMode === 'list'">
+      <mat-card
+        class="movie-card movie-card--list"
+        *ngFor="let movie of creatorSelections; let i = index"
+        [class.selected]="isSelected(movie.id)"
+      >
+        <div
+          class="poster-hit"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'View details for ' + movie.title"
+          (click)="onMovieClick(movie.id)"
+          (keydown)="onPosterKeydown($event, movie.id)"
+        >
+          @if (movie.poster_path) {
+          <img
+            mat-card-image
+            [src]="imageBaseUrl + movie.poster_path"
+            [alt]="movie.title + ' poster'"
+          />
+          } @else {
+          <div class="poster-placeholder">
+            <img
+              mat-card-image
+              [src]="getPosterSrc(movie)"
+              [alt]="'Movie image default placeholder for ' + movie.title"
+              (error)="onPosterImgError($event)"
+            />
+            <span class="poster-placeholder-title">{{ movie.title }}</span>
+          </div>
+          }
+
+          <span class="card-number" [attr.data-number]="i + 1">{{ i + 1 }}</span>
+        </div>
+
+        <mat-card-content class="movie-card-footer movie-card-footer--list">
+          <div class="card-meta">
+            <h3>{{ movie.title }}</h3>
+            <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+            @if (movie.overview) {
+            <p class="movie-overview">{{ movie.overview }}</p>
+            }
           </div>
 
           <button

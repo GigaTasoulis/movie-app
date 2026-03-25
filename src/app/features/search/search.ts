@@ -48,6 +48,8 @@ export class SearchComponent implements OnDestroy, OnInit {
   private readonly creatorSelectionsStorageKey = 'creator_selections_movie_ids';
   private usingSavedCreatorSelections = false;
   private savedCreatorSelectionIds: number[] | null = null;
+  creatorViewMode: 'grid' | 'list' = 'grid';
+  private readonly creatorViewModeStorageKey = 'creator_view_mode';
   selectedMovies: Movie[] = [];
 
   searchControl = new FormControl('', { updateOn: 'change' });
@@ -74,12 +76,9 @@ export class SearchComponent implements OnDestroy, OnInit {
   `)}`;
 
   get showCreatorSelections(): boolean {
-    // When user has saved their own 15, we show those as the default movie grid.
-    // In that mode we no longer show the "Creator's Selections" section.
     return (
       !this.isLoading &&
-      !(this.searchControl.value ?? '').trim() &&
-      !this.usingSavedCreatorSelections
+      !(this.searchControl.value ?? '').trim()
     );
   }
 
@@ -109,6 +108,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    this.creatorViewMode = this.getCreatorViewMode();
     this.initCreatorSelections();
 
     this.searchControl.valueChanges
@@ -436,5 +436,17 @@ export class SearchComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  setCreatorViewMode(mode: 'grid' | 'list'): void {
+    this.creatorViewMode = mode;
+    if (!isPlatformBrowser(this.platformId)) return;
+    localStorage.setItem(this.creatorViewModeStorageKey, mode);
+  }
+
+  private getCreatorViewMode(): 'grid' | 'list' {
+    if (!isPlatformBrowser(this.platformId)) return 'grid';
+    const raw = localStorage.getItem(this.creatorViewModeStorageKey);
+    return raw === 'list' ? 'list' : 'grid';
   }
 }
