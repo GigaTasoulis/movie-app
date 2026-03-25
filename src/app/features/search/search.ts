@@ -57,6 +57,8 @@ export class SearchComponent implements OnDestroy, OnInit {
   private savedCreatorSelectionIds: number[] | null = null;
   creatorViewMode: 'grid' | 'list' = 'grid';
   private readonly creatorViewModeStorageKey = 'creator_view_mode';
+  resultsViewMode: 'grid' | 'list' = 'grid';
+  private readonly resultsViewModeStorageKey = 'results_view_mode';
   selectedMovies: Movie[] = [];
 
   searchControl = new FormControl('', { updateOn: 'change' });
@@ -113,6 +115,7 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.creatorViewMode = this.getCreatorViewMode();
+    this.resultsViewMode = this.getResultsViewMode();
     this.initCreatorSelections();
 
     this.searchControl.valueChanges
@@ -446,6 +449,15 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.searchControl.markAsUntouched();
   }
 
+  clearAllResults(): void {
+    this.clearSearch();
+    this.movies = [];
+    this.totalResults = 0;
+    this.currentPage = 1;
+    this.currentQuery = '';
+    this.cdr.markForCheck();
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -457,9 +469,21 @@ export class SearchComponent implements OnDestroy, OnInit {
     localStorage.setItem(this.creatorViewModeStorageKey, mode);
   }
 
+  setResultsViewMode(mode: 'grid' | 'list'): void {
+    this.resultsViewMode = mode;
+    if (!isPlatformBrowser(this.platformId)) return;
+    localStorage.setItem(this.resultsViewModeStorageKey, mode);
+  }
+
   private getCreatorViewMode(): 'grid' | 'list' {
     if (!isPlatformBrowser(this.platformId)) return 'grid';
     const raw = localStorage.getItem(this.creatorViewModeStorageKey);
+    return raw === 'list' ? 'list' : 'grid';
+  }
+
+  private getResultsViewMode(): 'grid' | 'list' {
+    if (!isPlatformBrowser(this.platformId)) return 'grid';
+    const raw = localStorage.getItem(this.resultsViewModeStorageKey);
     return raw === 'list' ? 'list' : 'grid';
   }
 }
