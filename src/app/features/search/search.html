@@ -11,7 +11,13 @@
       <div class="search-field-outer bg-search-input">
         <div class="search-field-inner">
           <span class="search-sliders" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="24" height="24">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 256 256"
+              fill="currentColor"
+              width="24"
+              height="24"
+            >
               <path
                 d="M40,86H74.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12H133.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12Zm64-24A18,18,0,1,1,86,80,18,18,0,0,1,104,62ZM216,170H197.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12h98.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12Zm-48,24a18,18,0,1,1,18-18A18,18,0,0,1,168,194Z"
               />
@@ -29,26 +35,39 @@
               (blur)="searchControl.markAsTouched()"
             />
             @if (!searchControl.value) {
-              <mat-icon class="search-trailing search-trailing--mag" aria-hidden="true">search</mat-icon>
+            <mat-icon class="search-trailing search-trailing--mag" aria-hidden="true"
+              >search</mat-icon
+            >
             } @else {
-              <button
-                type="button"
-                class="search-trailing search-trailing--clear"
-                aria-label="Clear input"
-                (click)="clearSearch()"
+            <button
+              type="button"
+              class="search-trailing search-trailing--clear"
+              aria-label="Clear input"
+              (click)="clearSearch()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="16"
+                height="16"
+                aria-hidden="true"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </button>
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
             }
           </div>
         </div>
       </div>
     </div>
     @if (getErrorMessage()) {
-      <p class="search-field-error" role="alert">{{ getErrorMessage() }}</p>
+    <p class="search-field-error" role="alert">{{ getErrorMessage() }}</p>
     }
   </div>
 
@@ -77,17 +96,21 @@
           (keydown)="onPosterKeydown($event, movie.id)"
         >
           @if (movie.poster_path) {
-            <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+          <img
+            mat-card-image
+            [src]="imageBaseUrl + movie.poster_path"
+            [alt]="movie.title + ' poster'"
+          />
           } @else {
-            <div class="poster-placeholder">
-              <img
-                mat-card-image
-                [src]="getPosterSrc(movie)"
-                [alt]="'Movie image default placeholder for ' + movie.title"
-                (error)="onPosterImgError($event)"
-              />
-              <span class="poster-placeholder-title">{{ movie.title }}</span>
-            </div>
+          <div class="poster-placeholder">
+            <img
+              mat-card-image
+              [src]="getPosterSrc(movie)"
+              [alt]="'Movie image default placeholder for ' + movie.title"
+              (error)="onPosterImgError($event)"
+            />
+            <span class="poster-placeholder-title">{{ movie.title }}</span>
+          </div>
           }
 
           <span class="card-number" [attr.data-number]="i + 1">{{ i + 1 }}</span>
@@ -111,7 +134,9 @@
                 : 'Select ' + movie.title + ' for a collection'
             "
           >
-            <mat-icon aria-hidden="true">{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+            <mat-icon aria-hidden="true"
+              >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
+            >
             <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
           </button>
         </mat-card-content>
@@ -120,7 +145,11 @@
   </div>
 
   <div class="movies-grid" *ngIf="!isLoading && !showCreatorSelections && movies.length > 0">
-    <mat-card class="movie-card" *ngFor="let movie of movies" [class.selected]="isSelected(movie.id)">
+    <mat-card
+      class="movie-card"
+      *ngFor="let movie of movies"
+      [class.selected]="isSelected(movie.id)"
+    >
       <div
         class="poster-hit"
         role="button"
@@ -130,17 +159,21 @@
         (keydown)="onPosterKeydown($event, movie.id)"
       >
         @if (movie.poster_path) {
-          <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+        <img
+          mat-card-image
+          [src]="imageBaseUrl + movie.poster_path"
+          [alt]="movie.title + ' poster'"
+        />
         } @else {
-          <div class="poster-placeholder">
-            <img
-              mat-card-image
-              [src]="getPosterSrc(movie)"
-              [alt]="'Movie image default placeholder for ' + movie.title"
-              (error)="onPosterImgError($event)"
-            />
-            <span class="poster-placeholder-title">{{ movie.title }}</span>
-          </div>
+        <div class="poster-placeholder">
+          <img
+            mat-card-image
+            [src]="getPosterSrc(movie)"
+            [alt]="'Movie image default placeholder for ' + movie.title"
+            (error)="onPosterImgError($event)"
+          />
+          <span class="poster-placeholder-title">{{ movie.title }}</span>
+        </div>
         }
       </div>
       <mat-card-content class="movie-card-footer">
@@ -158,7 +191,9 @@
             isSelected(movie.id) ? 'Remove ' + movie.title + ' from collection selection' : 'Select ' + movie.title + ' for a collection'
           "
         >
-          <mat-icon aria-hidden="true">{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+          <mat-icon aria-hidden="true"
+            >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
+          >
           <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
         </button>
       </mat-card-content>

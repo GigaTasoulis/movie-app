@@ -31,7 +31,10 @@
   overflow: hidden;
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
 
   &:hover {
     transform: translateY(-5px);
