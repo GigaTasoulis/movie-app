@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, forkJoin, of, Subject, takeUntil } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -76,10 +83,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   `)}`;
 
   get showCreatorSelections(): boolean {
-    return (
-      !this.isLoading &&
-      !(this.searchControl.value ?? '').trim()
-    );
+    return !this.isLoading && !(this.searchControl.value ?? '').trim();
   }
 
   get canSaveCreatorSelections(): boolean {
@@ -153,7 +157,11 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.savedCreatorSelectionIds = null;
 
     const fallback = this.buildCreatorSelections();
-    this.loadCreatorSelectionsByIds(fallback.map((m) => m.id), fallback, false);
+    this.loadCreatorSelectionsByIds(
+      fallback.map((m) => m.id),
+      fallback,
+      false
+    );
   }
 
   private getSavedCreatorSelectionIds(): number[] {
@@ -178,7 +186,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   private loadCreatorSelectionsByIds(
     ids: number[],
     fallbackMovies?: MovieWithFavoriteCount[],
-    alsoSetAsDefaultMovies: boolean = false,
+    alsoSetAsDefaultMovies: boolean = false
   ): void {
     this.isLoading = true;
     this.cdr.markForCheck();
@@ -190,10 +198,8 @@ export class SearchComponent implements OnDestroy, OnInit {
 
     forkJoin(
       ids.map((id) =>
-        this.tmdbService.getMovieDetails(id).pipe(
-          catchError(() => of<MovieDetails | null>(null)),
-        ),
-      ),
+        this.tmdbService.getMovieDetails(id).pipe(catchError(() => of<MovieDetails | null>(null)))
+      )
     )
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -226,14 +232,17 @@ export class SearchComponent implements OnDestroy, OnInit {
           this.cdr.markForCheck();
         },
         error: () => {
-          this.creatorSelections = (fallbackMovies?.slice(0, 15) ?? ids.map((id) => ({
-            id,
-            title: `Movie ${id}`,
-            poster_path: '',
-            vote_average: 0,
-            overview: '',
-            release_date: '',
-          })) as MovieWithFavoriteCount[]).slice(0, 15);
+          this.creatorSelections = (
+            fallbackMovies?.slice(0, 15) ??
+            (ids.map((id) => ({
+              id,
+              title: `Movie ${id}`,
+              poster_path: '',
+              vote_average: 0,
+              overview: '',
+              release_date: '',
+            })) as MovieWithFavoriteCount[])
+          ).slice(0, 15);
 
           if (alsoSetAsDefaultMovies) {
             this.movies = this.creatorSelections;
@@ -398,7 +407,11 @@ export class SearchComponent implements OnDestroy, OnInit {
       // If not using saved selections, we keep the original behavior:
       // rank by collection frequency and re-fill to 15.
       const fallback = this.buildCreatorSelections();
-      this.loadCreatorSelectionsByIds(fallback.map((m) => m.id), fallback, false);
+      this.loadCreatorSelectionsByIds(
+        fallback.map((m) => m.id),
+        fallback,
+        false
+      );
     });
   }
 
