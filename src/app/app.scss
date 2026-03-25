@@ -74,7 +74,7 @@
   }
 
   &:has(button:hover) button:not(:hover) {
-    filter: blur(5px);
+    filter: blur(2px);
     opacity: 0.45;
   }
 }
