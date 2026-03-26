@@ -1,5 +1,20 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
 .app-toolbar {
   position: relative;
+  width: 100%;
+  background-color: #10141e;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 }
 
 .app-toolbar-inner {
@@ -77,5 +92,130 @@
   &:has(button:hover) button:not(:hover) {
     filter: blur(2px);
     opacity: 0.45;
+  }
+}
+
+/* footer-bg bg-blue-navy mt-auto w-full shadow-2xl backdrop-blur */
+.app-footer {
+  width: 100%;
+  margin-top: auto;
+  background-color: #10141e;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+.app-footer-inner {
+  width: 100%;
+  max-width: var(--app-content-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.25rem var(--app-content-padding-x) 1.5rem;
+  box-sizing: border-box;
+}
+
+.app-footer-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  margin: 0 0 1rem;
+}
+
+.app-footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.app-footer-copy {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.app-footer-name {
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 700;
+}
+
+.app-footer-name-link {
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  padding-bottom: 2px;
+
+  &:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.app-footer-tmdb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.app-footer-tmdb-logo-link {
+  display: inline-flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  line-height: 0;
+  text-decoration: none;
+  opacity: 0.95;
+  transition: opacity 0.18s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.app-footer-tmdb-logo {
+  width: 5rem;
+  height: 2.25rem;
+  display: block;
+  object-fit: contain;
+}
+
+.app-footer-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+.app-footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.06);
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+
+  &:hover {
+    transform: scale(1.08);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.12);
   }
 }
