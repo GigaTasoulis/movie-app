@@ -194,9 +194,6 @@
   display: flex;
   flex-direction: column;
 
-  &.movie-card--creator-ranked {
-    overflow: visible;
-  }
 
   &:hover {
     transform: translateY(-5px);

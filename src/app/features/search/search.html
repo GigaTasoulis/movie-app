@@ -311,81 +311,111 @@
     </div>
 
     <div class="movies-grid" *ngIf="creatorViewMode === 'grid'">
-      <mat-card
-        class="movie-card movie-card--creator-ranked"
-        *ngFor="let movie of creatorSelections; let i = index"
-        [class.selected]="isSelected(movie.id)"
-      >
-        <div class="movie-card-poster-stack">
-          <div
-            class="poster-hit"
-            role="button"
-            tabindex="0"
-            [attr.aria-label]="'View details for ' + movie.title + ' (' + (i + 1) + ' of 15)'"
-            (click)="onMovieClick(movie.id)"
-            (keydown)="onPosterKeydown($event, movie.id)"
-          >
-            @if (movie.poster_path) {
-            <img
-              mat-card-image
-              [src]="imageBaseUrl + movie.poster_path"
-              [alt]="movie.title + ' poster'"
-            />
-            } @else {
-            <div class="poster-placeholder">
+      <div class="movie-card-wrapper" *ngFor="let movie of creatorSelections; let i = index">
+        <span class="card-number">{{ i + 1 }}</span>
+        <mat-card
+          class="movie-card movie-card--creator-ranked"
+          [class.selected]="isSelected(movie.id)"
+        >
+          <div class="movie-card-poster-stack">
+            <div
+              class="poster-hit"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'View details for ' + movie.title + ' (' + (i + 1) + ' of 15)'"
+              (click)="onMovieClick(movie.id)"
+              (keydown)="onPosterKeydown($event, movie.id)"
+            >
+              @if (movie.poster_path) {
               <img
                 mat-card-image
-                [src]="getPosterSrc(movie)"
-                [alt]="'Movie image default placeholder for ' + movie.title"
-                (error)="onPosterImgError($event)"
+                [src]="imageBaseUrl + movie.poster_path"
+                [alt]="movie.title + ' poster'"
               />
-              <span class="poster-placeholder-title">{{ movie.title }}</span>
-            </div>
-            }
+              } @else {
+              <div class="poster-placeholder">
+                <img
+                  mat-card-image
+                  [src]="getPosterSrc(movie)"
+                  [alt]="'Movie image default placeholder for ' + movie.title"
+                  (error)="onPosterImgError($event)"
+                />
+                <span class="poster-placeholder-title">{{ movie.title }}</span>
+              </div>
+              }
 
+            </div>
           </div>
-        </div>
-        <span class="card-number">{{ i + 1 }}</span>
-      </mat-card>
+        </mat-card>
+      </div>
     </div>
 
     <div class="movies-list" *ngIf="creatorViewMode === 'list'">
-      <mat-card
-        class="movie-card movie-card--list movie-card--creator-ranked"
-        *ngFor="let movie of creatorSelections; let i = index"
-        [class.selected]="isSelected(movie.id)"
-      >
-        <div class="movie-card-poster-stack">
-          <div
-            class="poster-hit"
-            role="button"
-            tabindex="0"
-            [attr.aria-label]="'View details for ' + movie.title + ' (' + (i + 1) + ' of 15)'"
-            (click)="onMovieClick(movie.id)"
-            (keydown)="onPosterKeydown($event, movie.id)"
-          >
-            @if (movie.poster_path) {
-            <img
-              mat-card-image
-              [src]="imageBaseUrl + movie.poster_path"
-              [alt]="movie.title + ' poster'"
-            />
-            } @else {
-            <div class="poster-placeholder">
+      <div class="movie-card-wrapper movie-card-wrapper--list" *ngFor="let movie of creatorSelections; let i = index">
+        <span class="card-number">{{ i + 1 }}</span>
+        <mat-card
+          class="movie-card movie-card--list movie-card--creator-ranked"
+          [class.selected]="isSelected(movie.id)"
+        >
+          <div class="movie-card-poster-stack">
+            <div
+              class="poster-hit"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'View details for ' + movie.title + ' (' + (i + 1) + ' of 15)'"
+              (click)="onMovieClick(movie.id)"
+              (keydown)="onPosterKeydown($event, movie.id)"
+            >
+              @if (movie.poster_path) {
               <img
                 mat-card-image
-                [src]="getPosterSrc(movie)"
-                [alt]="'Movie image default placeholder for ' + movie.title"
-                (error)="onPosterImgError($event)"
+                [src]="imageBaseUrl + movie.poster_path"
+                [alt]="movie.title + ' poster'"
               />
-              <span class="poster-placeholder-title">{{ movie.title }}</span>
-            </div>
-            }
+              } @else {
+              <div class="poster-placeholder">
+                <img
+                  mat-card-image
+                  [src]="getPosterSrc(movie)"
+                  [alt]="'Movie image default placeholder for ' + movie.title"
+                  (error)="onPosterImgError($event)"
+                />
+                <span class="poster-placeholder-title">{{ movie.title }}</span>
+              </div>
+              }
 
+            </div>
           </div>
-        </div>
-        <span class="card-number">{{ i + 1 }}</span>
-      </mat-card>
+
+          <mat-card-content class="movie-card-footer movie-card-footer--list">
+          <div class="card-meta">
+            <h3>{{ movie.title }}</h3>
+            <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+            @if (movie.overview) {
+            <p class="movie-overview">{{ movie.overview }}</p>
+            }
+          </div>
+
+          <button
+            type="button"
+            class="select-pill"
+            [class.is-selected]="isSelected(movie.id)"
+            (click)="toggleMovieSelection($event, movie)"
+            [attr.aria-pressed]="isSelected(movie.id)"
+            [attr.aria-label]="
+              isSelected(movie.id)
+                ? 'Remove ' + movie.title + ' from collection selection'
+                : 'Select ' + movie.title + ' for a collection'
+            "
+          >
+            <mat-icon aria-hidden="true"
+              >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
+            >
+            <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
+          </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   </div>
 

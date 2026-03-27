@@ -193,8 +193,7 @@ a {
 }
 
 .movie-card--creator-ranked.mat-mdc-card {
-  position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .movie-card--list .movie-card-poster-stack {
@@ -202,7 +201,15 @@ a {
   flex-shrink: 0;
 }
 
-.movie-card--creator-ranked .card-number {
+.movie-card-wrapper {
+  position: relative;
+}
+
+.movie-card-wrapper--list {
+  padding-left: 1.25rem;
+}
+
+.movie-card-wrapper .card-number {
   position: absolute;
   bottom: -0.75rem;
   left: -0.2rem;
@@ -218,21 +225,21 @@ a {
   text-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
 }
 
-.movie-card--creator-ranked.movie-card--list .card-number {
+.movie-card-wrapper--list .card-number {
   bottom: -0.35rem;
   left: -0.15rem;
   font-size: 3rem;
 }
 
 @media (min-width: 640px) {
-  .movie-card--creator-ranked .card-number {
+  .movie-card-wrapper .card-number {
     bottom: 0;
     left: -1.25rem;
     font-size: 6rem;
   }
 
-  .movie-card--creator-ranked.movie-card--list .card-number {
+  .movie-card-wrapper--list .card-number {
     font-size: 4rem;
-    left: -0.5rem;
+    left: 0;
   }
 }
