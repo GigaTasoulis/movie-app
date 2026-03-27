@@ -194,7 +194,6 @@
   display: flex;
   flex-direction: column;
 
-
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
@@ -210,7 +209,7 @@
 
 .movie-card--list.mat-mdc-card {
   flex-direction: row;
-  background-color: #d5dee6;
+  background-color: var(--color-surface);
 }
 
 .poster-hit {
@@ -250,7 +249,7 @@
   margin-top: 0;
   padding: 1rem;
   border-top: none;
-  background: #d5dee6;
+  background: color-mix(in oklab, var(--color-black-primary) 10%, transparent);
   align-items: flex-start;
   gap: 1rem;
 }
@@ -386,7 +385,8 @@
   width: fit-content;
   margin: 0;
   font-size: 1.5rem;
-  font-weight: 800;
+  font-family: Manrope, sans-serif;
+  font-weight: normal;
   letter-spacing: -0.02em;
   color: var(--color-text-primary);
 }
@@ -483,4 +483,3 @@
   color: #111111;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
-

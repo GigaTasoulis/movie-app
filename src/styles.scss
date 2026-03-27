@@ -206,7 +206,7 @@ a {
 }
 
 .movie-card-wrapper--list {
-  padding-left: 1.25rem;
+  padding-left: 0;
 }
 
 .movie-card-wrapper .card-number {
@@ -232,8 +232,9 @@ a {
 
 .movie-card-wrapper--list .card-number {
   bottom: -0.35rem;
-  left: -0.15rem;
-  font-size: 3rem;
+  left: auto;
+  right: -0.15rem;
+  font-size: 5rem;
 }
 
 @media (min-width: 640px) {
@@ -244,7 +245,8 @@ a {
   }
 
   .movie-card-wrapper--list .card-number {
-    font-size: 4rem;
-    left: 0;
+    font-size: 6rem;
+    left: auto;
+    right: -1rem;
   }
 }
