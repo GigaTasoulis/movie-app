@@ -223,6 +223,11 @@ a {
   color: #fff;
   -webkit-text-stroke: 0.1rem #10141e;
   text-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
+  transition: transform 0.22s ease;
+}
+
+.movie-card-wrapper:hover .card-number {
+  transform: translateY(-5px);
 }
 
 .movie-card-wrapper--list .card-number {
