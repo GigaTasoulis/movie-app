@@ -1,13 +1,21 @@
 <div class="collections-container">
-  <div class="header">
-    <h1>My Collections</h1>
-    <button mat-raised-button color="primary" (click)="goToCreate()">
+  <div class="collections-header">
+    <div class="collections-header__title-group">
+      <h1 class="collections-title">My Collections</h1>
+      <span class="collections-count" *ngIf="collections.length > 0">{{ collections.length }}</span>
+    </div>
+    <button class="new-collection-btn" mat-stroked-button (click)="goToCreate()">
       <mat-icon>add</mat-icon> New Collection
     </button>
   </div>
 
   <div class="empty-state" *ngIf="collections.length === 0">
-    <p>No collections yet. Create your first one!</p>
+    <mat-icon class="empty-state__icon">video_library</mat-icon>
+    <p class="empty-state__title">No collections yet</p>
+    <p class="empty-state__sub">Create your first one to start organising your favourite movies.</p>
+    <button class="new-collection-btn" mat-stroked-button (click)="goToCreate()">
+      <mat-icon>add</mat-icon> New Collection
+    </button>
   </div>
 
   <div class="collections-grid" *ngIf="collections.length > 0">
@@ -16,18 +24,26 @@
       *ngFor="let collection of collections"
       (click)="goToCollection(collection.id)"
     >
-      <mat-card-header>
-        <mat-card-title>{{ collection.title }}</mat-card-title>
-        <mat-card-subtitle>{{ collection.movies.length }} movies</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>{{ collection.description }}</p>
-      </mat-card-content>
-      <mat-card-actions align="end">
-        <button mat-icon-button color="warn" (click)="deleteCollection($event, collection.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-card-actions>
+      <div class="collection-card__body">
+        <div class="collection-card__info">
+          <span class="collection-card__title">{{ collection.title }}</span>
+          <span class="collection-card__desc" *ngIf="collection.description">{{ collection.description }}</span>
+        </div>
+        <div class="collection-card__meta">
+          <span class="collection-card__count">
+            <mat-icon>movie</mat-icon>
+            {{ collection.movies.length }} {{ collection.movies.length === 1 ? 'movie' : 'movies' }}
+          </span>
+          <button
+            class="collection-card__delete"
+            mat-icon-button
+            (click)="deleteCollection($event, collection.id)"
+            aria-label="Delete collection"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
     </mat-card>
   </div>
 </div>
