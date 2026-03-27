@@ -209,7 +209,7 @@
 
 .movie-card--list.mat-mdc-card {
   flex-direction: row;
-  background-color: #d5dee6;
+  background-color: var(--color-surface);
 }
 
 .poster-hit {
@@ -249,7 +249,7 @@
   margin-top: 0;
   padding: 1rem;
   border-top: none;
-  background: #d5dee6;
+  background: color-mix(in oklab, var(--color-black-primary) 10%, transparent);
   align-items: flex-start;
   gap: 1rem;
 }
@@ -385,7 +385,8 @@
   width: fit-content;
   margin: 0;
   font-size: 1.5rem;
-  font-weight: 800;
+  font-family: Manrope, sans-serif;
+  font-weight: normal;
   letter-spacing: -0.02em;
   color: var(--color-text-primary);
 }
@@ -481,39 +482,4 @@
   font-weight: 800;
   color: #111111;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
-}
-
-.card-number {
-  position: absolute;
-  left: -0.9rem;
-  top: 0.35rem;
-  bottom: auto;
-  z-index: 2;
-  display: block;
-  font-size: 5rem;
-  line-height: 1;
-  font-weight: 800;
-  pointer-events: none;
-
-  /* White outline with black fill behind */
-  color: transparent;
-  -webkit-text-stroke: 0.25rem #ffffff;
-  text-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
-}
-
-.card-number::before {
-  content: attr(data-number);
-  position: absolute;
-  inset: 0;
-  color: #000000;
-  -webkit-text-stroke: 0;
-  z-index: -1;
-}
-
-@media (min-width: 640px) {
-  .card-number {
-    top: 0.3rem;
-    left: -1.25rem;
-    font-size: 6rem;
-  }
 }
