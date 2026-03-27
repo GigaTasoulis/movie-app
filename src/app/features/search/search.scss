@@ -173,7 +173,8 @@
 }
 
 .movie-card--list .poster-hit img {
-  height: 230px;
+  aspect-ratio: 2 / 3;
+  height: auto;
 }
 
 .movie-card--list .movie-overview {
@@ -226,7 +227,7 @@
   }
 
   img {
-    height: 300px;
+    aspect-ratio: 2 / 3;
     object-fit: cover;
     display: block;
     width: 100%;
@@ -432,6 +433,10 @@
   }
   &.is-active {
     background: transparent;
+
+    .creator-icon path {
+      stroke: #111111;
+    }
   }
 }
 .creator-icon {

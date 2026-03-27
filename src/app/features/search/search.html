@@ -343,7 +343,6 @@
                 <span class="poster-placeholder-title">{{ movie.title }}</span>
               </div>
               }
-
             </div>
           </div>
         </mat-card>
@@ -351,7 +350,10 @@
     </div>
 
     <div class="movies-list" *ngIf="creatorViewMode === 'list'">
-      <div class="movie-card-wrapper movie-card-wrapper--list" *ngFor="let movie of creatorSelections; let i = index">
+      <div
+        class="movie-card-wrapper movie-card-wrapper--list"
+        *ngFor="let movie of creatorSelections; let i = index"
+      >
         <span class="card-number">{{ i + 1 }}</span>
         <mat-card
           class="movie-card movie-card--list movie-card--creator-ranked"
@@ -383,36 +385,35 @@
                 <span class="poster-placeholder-title">{{ movie.title }}</span>
               </div>
               }
-
             </div>
           </div>
 
           <mat-card-content class="movie-card-footer movie-card-footer--list">
-          <div class="card-meta">
-            <h3>{{ movie.title }}</h3>
-            <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
-            @if (movie.overview) {
-            <p class="movie-overview">{{ movie.overview }}</p>
-            }
-          </div>
+            <div class="card-meta">
+              <h3>{{ movie.title }}</h3>
+              <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+              @if (movie.overview) {
+              <p class="movie-overview">{{ movie.overview }}</p>
+              }
+            </div>
 
-          <button
-            type="button"
-            class="select-pill"
-            [class.is-selected]="isSelected(movie.id)"
-            (click)="toggleMovieSelection($event, movie)"
-            [attr.aria-pressed]="isSelected(movie.id)"
-            [attr.aria-label]="
+            <button
+              type="button"
+              class="select-pill"
+              [class.is-selected]="isSelected(movie.id)"
+              (click)="toggleMovieSelection($event, movie)"
+              [attr.aria-pressed]="isSelected(movie.id)"
+              [attr.aria-label]="
               isSelected(movie.id)
                 ? 'Remove ' + movie.title + ' from collection selection'
                 : 'Select ' + movie.title + ' for a collection'
             "
-          >
-            <mat-icon aria-hidden="true"
-              >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
             >
-            <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
-          </button>
+              <mat-icon aria-hidden="true"
+                >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
+              >
+              <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
+            </button>
           </mat-card-content>
         </mat-card>
       </div>
@@ -424,7 +425,7 @@
     *ngIf="!isLoading && !showCreatorSelections && currentQuery"
     style="background: transparent; border: 0; box-shadow: none; padding: 0"
   >
-    <span style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap">
+    <span style="display: inline-flex; align-items: center; gap: 0.2rem; flex-wrap: wrap">
       Found <b>{{ totalResults }}</b> results for:
       <button
         type="button"
