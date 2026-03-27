@@ -35,9 +35,34 @@
       </button>
       <button mat-button routerLink="/collections" routerLinkActive="active">Collections</button>
     </nav>
-    <div class="toolbar-section toolbar-end" aria-hidden="true"></div>
+
+    <div class="toolbar-section toolbar-end">
+      <button
+        class="burger-btn"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="burger-bar" [class.open]="menuOpen()"></span>
+      </button>
+    </div>
   </div>
 </mat-toolbar>
+
+<div class="mobile-menu" [class.mobile-menu--open]="menuOpen()">
+  <button
+    mat-button
+    routerLink="/"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{exact: true}"
+    (click)="closeMenu()"
+  >
+    Search
+  </button>
+  <button mat-button routerLink="/collections" routerLinkActive="active" (click)="closeMenu()">
+    Collections
+  </button>
+</div>
 
 <main>
   <router-outlet />
