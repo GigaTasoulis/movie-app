@@ -1,14 +1,31 @@
 <div class="create-container">
-  <h1>Create Collection</h1>
+
+  <div class="create-header">
+    <button class="back-btn" mat-icon-button type="button" (click)="cancel()" aria-label="Go back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1 class="create-title">New Collection</h1>
+      <p class="create-subtitle">Give your collection a name and description.</p>
+    </div>
+  </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
+
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="My favourite movies" />
+      <input
+        matInput
+        formControlName="title"
+        placeholder="e.g. My favourite thrillers"
+        [maxlength]="titleMax"
+      />
+      <mat-hint align="end">{{ form.get('title')?.value?.length || 0 }} / {{ titleMax }}</mat-hint>
       @if (form.get('title')?.hasError('required')) {
-      <mat-error>Title is required</mat-error>
-      } @if (form.get('title')?.hasError('minlength')) {
-      <mat-error>Minimum 3 characters</mat-error>
+        <mat-error>Title is required</mat-error>
+      }
+      @if (form.get('title')?.hasError('minlength')) {
+        <mat-error>Minimum 3 characters</mat-error>
       }
     </mat-form-field>
 
@@ -18,18 +35,22 @@
         matInput
         formControlName="description"
         rows="4"
-        placeholder="Describe your collection..."
+        placeholder="What's this collection about?"
+        [maxlength]="descMax"
+        class="desc-textarea"
       ></textarea>
+      <mat-hint align="end">{{ form.get('description')?.value?.length || 0 }} / {{ descMax }}</mat-hint>
       @if (form.get('description')?.hasError('required')) {
-      <mat-error>Description is required</mat-error>
+        <mat-error>Description is required</mat-error>
       }
     </mat-form-field>
 
     <div class="actions">
-      <button mat-button type="button" (click)="cancel()">Cancel</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-        Create
+      <button class="cancel-btn" mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+      <button class="submit-btn" mat-stroked-button type="submit" [disabled]="form.invalid">
+        <mat-icon>add</mat-icon> Create
       </button>
     </div>
+
   </form>
 </div>
