@@ -10,11 +10,11 @@
   .poster {
     width: 200px;
     min-width: 200px;
-    height: 300px;
-    object-fit: cover;
     border-radius: 12px;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
     align-self: flex-start;
+    /* let image size itself naturally — no forced height */
+    display: block;
   }
 
   .details {
@@ -25,6 +25,7 @@
   }
 }
 
+/* ── Title ── */
 .dialog-title-row {
   padding-bottom: 0.875rem;
   margin-bottom: 1rem;
@@ -33,26 +34,30 @@
   h2.mat-mdc-dialog-title {
     margin: 0;
     padding: 0;
-    font-size: 1.5rem;
+    font-family: Manrope, sans-serif;
+    font-size: 1.35rem;
     font-weight: 700;
-    letter-spacing: -0.4px;
+    letter-spacing: -0.3px;
     color: var(--color-text-primary);
     line-height: 1.3;
   }
 }
 
+/* ── Overview ── */
 .overview {
   margin-bottom: 1.25rem;
   line-height: 1.75;
   color: var(--color-text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 400;
 }
 
+/* ── Info grid ── */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.625rem;
+  /* auto-fit: as many ≥120px columns as will fit; values wrap instead of overflow */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
   margin-bottom: 1.25rem;
 }
 
@@ -61,72 +66,164 @@
   flex-direction: column;
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.625rem 0.75rem;
   min-width: 0;
+  gap: 0.2rem;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+
+  &:hover {
+    border-color: var(--color-text-secondary);
+    background-color: var(--color-surface);
+  }
 
   .label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.08em;
     color: var(--color-text-secondary);
-    margin-bottom: 0.3rem;
     white-space: nowrap;
   }
 
   span:not(.label) {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--color-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* wrap long values (e.g. $463,517,383.00) instead of clipping */
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 }
 
+/* ── Rating ── */
 .rating-section {
-  padding: 1rem 1.125rem;
+  padding: 0.875rem 1rem;
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   margin-bottom: 1.25rem;
+}
 
-  .rating-label {
-    margin: 0 0 0.6rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-text-secondary);
+.rating-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+
+.rating-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.rating-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.rating-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: Manrope, sans-serif;
+  background: linear-gradient(90deg, #e50914 0%, #c94ff5 60%, #5b79f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+.rating-denom {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Native range input */
+.rating-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 99px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  /* Gradient fill up to --fill, then muted track after */
+  background: linear-gradient(
+    to right,
+    #e50914 0%,
+    #c94ff5 calc(var(--fill) * 0.6),
+    #5b79f1 var(--fill),
+    var(--color-border) var(--fill)
+  );
+  transition: background 0.05s linear;
+
+  /* Chrome / Safari thumb */
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2.5px #c94ff5, 0 2px 10px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  &:hover::-webkit-slider-thumb {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 3px #c94ff5, 0 3px 14px rgba(0, 0, 0, 0.3);
+  }
 
-    mat-slider {
-      flex: 1;
-    }
+  &:active::-webkit-slider-thumb {
+    transform: scale(1.1);
+  }
 
-    .rating-value {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--color-text-primary);
-      white-space: nowrap;
-      min-width: 4rem;
-      text-align: right;
-    }
+  /* Firefox thumb */
+  &::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2.5px #c94ff5, 0 2px 10px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  &:hover::-moz-range-thumb {
+    transform: scale(1.25);
+  }
+}
+
+.slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  padding: 0 1px;
+
+  span {
+    font-size: 0.65rem;
+    color: var(--color-text-secondary);
+    font-family: Manrope, sans-serif;
   }
 }
 
 .success-message {
-  margin-top: 0.75rem;
+  margin-top: 0.625rem;
   color: #5cb85c;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
+/* ── Actions ── */
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
@@ -135,4 +232,67 @@
   padding-top: 1rem;
   margin-top: auto;
   border-top: 1px solid var(--color-border);
+
+  /* Close button */
+  button.mat-mdc-button {
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease !important;
+
+    &:hover {
+      background-color: var(--color-accent-dim) !important;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Submit Rating button */
+  button.mat-mdc-raised-button {
+    transition: filter 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+
+    &:not(:disabled):hover {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22) !important;
+    }
+
+    &:not(:disabled):active {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* ── Scrollbar inside the dialog surface ── */
+:host-context(mat-dialog-container) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* ── Mobile ── */
+@media (max-width: 599px) {
+  :host {
+    padding: 1.25rem;
+  }
+
+  .dialog-container {
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .poster {
+      width: 100%;
+      min-width: unset;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
 }

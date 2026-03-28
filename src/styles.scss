@@ -114,6 +114,22 @@ mat-dialog-container.mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 16px;
   overflow: auto;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 99px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-secondary);
+  }
 }
 
 /* Remove internal constraints Angular Material adds to dialog content */

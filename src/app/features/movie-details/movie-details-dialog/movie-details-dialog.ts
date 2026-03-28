@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import { TmdbApiService } from '../../../core/services/tmdb-api.service';
 import { MovieDetails } from '../../../core/models/movie.model';
@@ -16,7 +15,6 @@ import { environment } from '../../../../environments/environment';
     MatDialogModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatSliderModule,
     FormsModule,
   ],
   templateUrl: './movie-details-dialog.html',
@@ -31,6 +29,18 @@ export class MovieDetailsDialogComponent implements OnInit {
   imageBaseUrl = environment.tmdbImageBaseUrl;
   rating = 5;
   isRating = false;
+
+  get ratingPercent(): string {
+    return ((this.rating - 0.5) / 9.5 * 100).toFixed(1) + '%';
+  }
+
+  formatMoney(value: number): string {
+    if (!value) return 'N/A';
+    if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1).replace(/\.0$/, '')}B`;
+    if (value >= 1_000_000) return `$${Math.round(value / 1_000_000)}M`;
+    if (value >= 1_000) return `$${Math.round(value / 1_000)}K`;
+    return `$${value}`;
+  }
   ratingSuccess = false;
   guestSessionId: string | null = null;
 

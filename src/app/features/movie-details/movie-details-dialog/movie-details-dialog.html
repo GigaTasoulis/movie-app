@@ -17,11 +17,11 @@
       </div>
       <div class="info-item">
         <span class="label">Budget</span>
-        <span>{{ data.movie.budget | currency }}</span>
+        <span>{{ formatMoney(data.movie.budget) }}</span>
       </div>
       <div class="info-item">
         <span class="label">Revenue</span>
-        <span>{{ data.movie.revenue | currency }}</span>
+        <span>{{ formatMoney(data.movie.revenue) }}</span>
       </div>
       <div class="info-item">
         <span class="label">Vote Average</span>
@@ -38,15 +38,29 @@
     </div>
 
     <div class="rating-section">
-      <p class="rating-label">Rate this movie</p>
-      <div class="slider-row">
-        <mat-slider min="0.5" max="10" step="0.5">
-          <input matSliderThumb [(ngModel)]="rating" />
-        </mat-slider>
-        <span class="rating-value">{{ rating }} / 10</span>
+      <div class="rating-header">
+        <p class="rating-label">Rate this movie</p>
+        <div class="rating-display">
+          <span class="rating-number">{{ rating }}</span>
+          <span class="rating-denom">&thinsp;/ 10</span>
+        </div>
+      </div>
+      <input
+        type="range"
+        class="rating-slider"
+        min="0.5"
+        max="10"
+        step="0.5"
+        [(ngModel)]="rating"
+        [style.--fill]="ratingPercent"
+      />
+      <div class="slider-ticks">
+        <span>0.5</span>
+        <span>5</span>
+        <span>10</span>
       </div>
       @if (ratingSuccess) {
-      <div class="success-message">✅ Rating submitted successfully!</div>
+        <div class="success-message">Rating submitted!</div>
       }
     </div>
 
