@@ -195,6 +195,14 @@
   flex-direction: row !important;
   align-items: stretch;
   overflow: visible !important;
+  position: relative;
+}
+
+/* Show select btn on full list card hover */
+.movie-card--list:hover .card-select-btn {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
 }
 
 .list-image-side {
@@ -228,70 +236,6 @@
   z-index: 2;
 }
 
-/* Hover overlay */
-.list-poster-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.4) 0%,
-    transparent 35%
-  );
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 0.4rem;
-  border-radius: 12px 0 0 12px;
-  pointer-events: none;
-
-  .list-poster-select-btn {
-    pointer-events: all;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: none;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #fff;
-    transition: background 0.18s ease, transform 0.18s ease;
-    flex-shrink: 0;
-
-    mat-icon {
-      font-size: 16px;
-      width: 16px;
-      height: 16px;
-      line-height: 16px;
-    }
-
-    &:hover {
-      background: #e50914;
-      transform: scale(1.12);
-    }
-
-    &.is-selected {
-      background: #e50914;
-    }
-  }
-}
-
-/* Always show list overlay btn on touch */
-@media (hover: none) {
-  .list-poster-overlay {
-    opacity: 1 !important;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 30%) !important;
-  }
-}
-
-.list-image-side .poster-hit:hover .list-poster-overlay {
-  opacity: 1;
-}
 
 /* Text side */
 .list-text-side {
@@ -478,7 +422,8 @@
 
 /* Always visible on touch devices */
 @media (hover: none) {
-  .poster-hit .card-select-btn {
+  .poster-hit .card-select-btn,
+  .movie-card--list .card-select-btn {
     opacity: 0.75;
     transform: scale(1);
     pointer-events: all;

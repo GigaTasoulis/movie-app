@@ -387,18 +387,6 @@
                 <span class="poster-placeholder-title">{{ movie.title }}</span>
               </div>
               }
-              <!-- Hover overlay with select button -->
-              <div class="list-poster-overlay">
-                <button
-                  type="button"
-                  class="list-poster-select-btn"
-                  [class.is-selected]="isSelected(movie.id)"
-                  (click)="toggleMovieSelection($event, movie)"
-                  [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
-                >
-                  <mat-icon>{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
-                </button>
-              </div>
             </div>
           </div>
 
@@ -411,6 +399,18 @@
             }
             <span class="card-number card-number--list" aria-hidden="true">{{ i + 1 }}</span>
           </div>
+
+          <!-- Select button — top-right of full card -->
+          <button
+            type="button"
+            class="card-select-btn"
+            [class.is-selected]="isSelected(movie.id)"
+            (click)="toggleMovieSelection($event, movie)"
+            [attr.aria-pressed]="isSelected(movie.id)"
+            [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
+          >
+            <mat-icon>{{ isSelected(movie.id) ? 'check' : 'add' }}</mat-icon>
+          </button>
         </mat-card>
       </div>
     </div>
@@ -745,17 +745,6 @@
             <span class="poster-placeholder-title">{{ movie.title }}</span>
           </div>
           }
-          <div class="list-poster-overlay">
-            <button
-              type="button"
-              class="list-poster-select-btn"
-              [class.is-selected]="isSelected(movie.id)"
-              (click)="toggleMovieSelection($event, movie)"
-              [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
-            >
-              <mat-icon>{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -767,6 +756,18 @@
         <p class="movie-overview">{{ movie.overview }}</p>
         }
       </div>
+
+      <!-- Select button — top-right of full card -->
+      <button
+        type="button"
+        class="card-select-btn"
+        [class.is-selected]="isSelected(movie.id)"
+        (click)="toggleMovieSelection($event, movie)"
+        [attr.aria-pressed]="isSelected(movie.id)"
+        [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
+      >
+        <mat-icon>{{ isSelected(movie.id) ? 'check' : 'add' }}</mat-icon>
+      </button>
     </mat-card>
   </div>
 

@@ -122,7 +122,10 @@ mat-form-field.mat-mdc-form-field {
 
 .add-to-collection-dialog-panel .mat-mdc-dialog-container,
 .add-to-collection-dialog-panel .mdc-dialog__surface,
-.add-to-collection-dialog-panel .mat-mdc-dialog-surface {
+.add-to-collection-dialog-panel .mat-mdc-dialog-surface,
+.filters-dialog-panel .mat-mdc-dialog-container,
+.filters-dialog-panel .mdc-dialog__surface,
+.filters-dialog-panel .mat-mdc-dialog-surface {
   background: #10141e !important;
   border-radius: 16px !important;
   overflow: hidden !important;
