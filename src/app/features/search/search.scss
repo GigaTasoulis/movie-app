@@ -198,13 +198,6 @@
   position: relative;
 }
 
-/* Show select btn on full list card hover */
-.movie-card--list:hover .card-select-btn {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: all;
-}
-
 .list-image-side {
   position: relative;
   flex-shrink: 0;
@@ -370,54 +363,56 @@
     user-select: none;
   }
 
-  /* Hover-reveal "+" select button */
-  .card-select-btn {
-    position: absolute;
-    top: 0.45rem;
-    right: 0.45rem;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-    opacity: 0;
-    transform: scale(0.75);
-    transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
-    pointer-events: none;
+}
 
-    mat-icon {
-      font-size: 16px;
-      width: 16px;
-      height: 16px;
-      line-height: 16px;
-    }
+/* Hover-reveal "+" select button — shared by grid and list */
+.card-select-btn {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+  pointer-events: none;
 
-    &.is-selected {
-      background: #e50914;
-      opacity: 1 !important;
-      transform: scale(1) !important;
-      pointer-events: all;
-    }
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
   }
 
-  &:hover .card-select-btn {
-    opacity: 1;
-    transform: scale(1);
+  &.is-selected {
+    background: #e50914;
+    opacity: 1 !important;
+    transform: scale(1) !important;
     pointer-events: all;
   }
 
-  .card-select-btn:hover {
+  &:hover {
     background: #e50914;
     transform: scale(1.12) !important;
   }
+}
+
+.poster-hit:hover .card-select-btn,
+.movie-card--list:hover .card-select-btn {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
 }
 
 /* Always visible on touch devices */
