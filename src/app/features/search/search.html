@@ -1,19 +1,4 @@
 <div class="search-container">
-  <div class="selection-bar" *ngIf="selectedMovies.length > 0">
-    <span>{{ selectedMovies.length }} movie(s) selected</span>
-    <button mat-raised-button color="accent" (click)="openAddToCollection()">
-      Add to Collection
-    </button>
-    <button
-      *ngIf="!hasSavedCreatorSelections"
-      mat-stroked-button
-      color="primary"
-      (click)="saveCreatorSelections()"
-      [disabled]="!canSaveCreatorSelections"
-    >
-      Save as Creator's Selections
-    </button>
-  </div>
 
   <div class="search-block">
     <div class="search-field-layout">
@@ -352,6 +337,16 @@
                 <span class="poster-placeholder-title">{{ movie.title }}</span>
               </div>
               }
+              <button
+                type="button"
+                class="card-select-btn"
+                [class.is-selected]="isSelected(movie.id)"
+                (click)="toggleMovieSelection($event, movie)"
+                [attr.aria-pressed]="isSelected(movie.id)"
+                [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
+              >
+                <mat-icon>{{ isSelected(movie.id) ? 'check' : 'add' }}</mat-icon>
+              </button>
             </div>
           </div>
         </mat-card>
@@ -692,43 +687,29 @@
         (keydown)="onPosterKeydown($event, movie.id)"
       >
         @if (movie.poster_path) {
-        <img
-          mat-card-image
-          [src]="imageBaseUrl + movie.poster_path"
-          [alt]="movie.title + ' poster'"
-        />
+        <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
         } @else {
         <div class="poster-placeholder">
-          <img
-            mat-card-image
-            [src]="getPosterSrc(movie)"
-            [alt]="'Movie image default placeholder for ' + movie.title"
-            (error)="onPosterImgError($event)"
-          />
+          <img mat-card-image [src]="getPosterSrc(movie)" [alt]="'Movie image default placeholder for ' + movie.title" (error)="onPosterImgError($event)" />
           <span class="poster-placeholder-title">{{ movie.title }}</span>
         </div>
         }
+        <button
+          type="button"
+          class="card-select-btn"
+          [class.is-selected]="isSelected(movie.id)"
+          (click)="toggleMovieSelection($event, movie)"
+          [attr.aria-pressed]="isSelected(movie.id)"
+          [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
+        >
+          <mat-icon>{{ isSelected(movie.id) ? 'check' : 'add' }}</mat-icon>
+        </button>
       </div>
       <mat-card-content class="movie-card-footer">
         <div class="card-meta">
           <h3>{{ movie.title }}</h3>
           <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
         </div>
-        <button
-          type="button"
-          class="select-pill"
-          [class.is-selected]="isSelected(movie.id)"
-          (click)="toggleMovieSelection($event, movie)"
-          [attr.aria-pressed]="isSelected(movie.id)"
-          [attr.aria-label]="
-            isSelected(movie.id) ? 'Remove ' + movie.title + ' from collection selection' : 'Select ' + movie.title + ' for a collection'
-          "
-        >
-          <mat-icon aria-hidden="true"
-            >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
-          >
-          <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
-        </button>
       </mat-card-content>
     </mat-card>
   </div>
@@ -801,3 +782,13 @@
     (page)="onPageChange($event)"
   ></mat-paginator>
 </div>
+
+@if (selectedMovies.length > 0) {
+  <app-selection-tray
+    [movies]="selectedMovies"
+    [imageBaseUrl]="imageBaseUrl"
+    (addToCollection)="openAddToCollection()"
+    (clearAll)="selectedMovies = []"
+    (removeMovie)="removeFromSelection($event)"
+  ></app-selection-tray>
+}
