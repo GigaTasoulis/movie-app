@@ -43,16 +43,22 @@ export class CollectionsService {
     return newCollection;
   }
 
-  addMoviesToCollection(collectionId: string, movies: Movie[]): void {
+  addMoviesToCollection(collectionId: string, movies: Movie[]): { added: number; skipped: number } {
     const collections = this.getStorage();
     const collection = collections.find((c) => c.id === collectionId);
-    if (!collection) return;
+    if (!collection) return { added: 0, skipped: 0 };
+    let added = 0;
+    let skipped = 0;
     movies.forEach((movie) => {
       if (!collection.movies.find((m) => m.id === movie.id)) {
         collection.movies.push(movie);
+        added++;
+      } else {
+        skipped++;
       }
     });
     this.saveStorage(collections);
+    return { added, skipped };
   }
 
   removeMovieFromCollection(collectionId: string, movieId: number): void {

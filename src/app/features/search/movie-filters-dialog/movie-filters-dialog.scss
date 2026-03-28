@@ -114,9 +114,23 @@ $accent:     #e50914;
   }
 }
 
-.loading-genres {
-  color: $text-muted;
-  font-size: 0.85rem;
+/* ── Skeleton pills (genre loading state) ── */
+@keyframes skel-shimmer-dark {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skel-pill {
+  height: 32px;
+  border-radius: 999px;
+  width: 72px;
+  background: linear-gradient(90deg, #1e2435 25%, #252d44 50%, #1e2435 75%);
+  background-size: 1200px 100%;
+  animation: skel-shimmer-dark 1.5s ease-in-out infinite;
+
+  &:nth-child(3n+1) { width: 60px; }
+  &:nth-child(3n+2) { width: 88px; }
+  &:nth-child(3n)   { width: 74px; }
 }
 
 /* ── Year range ── */

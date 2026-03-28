@@ -57,6 +57,27 @@ src/app/
 
 ---
 
+## Creator's Selections Logic
+
+The **Creator's Selections** section shows 15 movies on the search page when no query or filters are active. What you see depends on your state:
+
+**Priority 1 — Saved selections (manual curation)**
+If you have manually picked exactly 15 movies and saved them, those IDs are persisted in `localStorage`. On every load, those exact 15 movies are fetched from TMDB and displayed.
+
+**Priority 2 — Collection frequency ranking (automatic)**
+If no saved selections exist, the app scans all your collections and counts how many collections each movie appears in. Movies are ranked by that frequency (most-collected first) and fill the top slots.
+
+**Priority 3 — Hardcoded fallback padding**
+If you have fewer than 15 unique movies across your collections (or no collections at all), the remaining slots are filled with a curated list of well-known films (Inception, The Dark Knight, The Matrix, etc.), deduplicated against what is already in the list.
+
+| State | What you see |
+|---|---|
+| No collections, no saved selections | All 15 hardcoded films |
+| Some collections, no saved selections | Your most-collected movies first, padded by hardcoded films |
+| 15 movies manually saved | Exactly those 15, always |
+
+---
+
 ## Getting Started
 
 ```bash

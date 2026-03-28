@@ -74,9 +74,35 @@
     }
   </div>
 
-  <div class="spinner-container" *ngIf="isLoading">
-    <mat-spinner diameter="50"></mat-spinner>
-  </div>
+  @if (isLoading || imagesLoading) {
+    @if (activeViewMode === 'list') {
+      <div class="movies-list">
+        @for (item of skeletonItems; track item) {
+          <div class="skel-list-card">
+            <div class="skel skel-list-image"></div>
+            <div class="skel-list-body">
+              <div class="skel skel-line skel-line--title"></div>
+              <div class="skel skel-line skel-line--sub"></div>
+              <div class="skel skel-line"></div>
+              <div class="skel skel-line skel-line--short"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="movies-grid">
+        @for (item of skeletonItems; track item) {
+          <div class="skel-card">
+            <div class="skel skel-poster"></div>
+            <div class="skel-card-body">
+              <div class="skel skel-line skel-line--title"></div>
+              <div class="skel skel-line skel-line--sub"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
 
   <div class="creator-selections" *ngIf="showCreatorSelections">
     <div class="creator-header">
@@ -304,7 +330,7 @@
       </div>
     </div>
 
-    <div class="movies-grid" *ngIf="creatorViewMode === 'grid'">
+    <div class="movies-grid" *ngIf="creatorViewMode === 'grid'" [hidden]="imagesLoading">
       <div class="movie-card-wrapper" *ngFor="let movie of creatorSelections; let i = index">
         <span class="card-number">{{ i + 1 }}</span>
         <mat-card
@@ -322,9 +348,12 @@
             >
               @if (movie.poster_path) {
               <img
+                #posterImg
                 mat-card-image
                 [src]="imageBaseUrl + movie.poster_path"
                 [alt]="movie.title + ' poster'"
+                (load)="posterImg.style.opacity='1'; onMovieImageLoad()"
+                (error)="posterImg.style.opacity='1'; onMovieImageLoad()"
               />
               } @else {
               <div class="poster-placeholder">
@@ -332,6 +361,7 @@
                   mat-card-image
                   [src]="getPosterSrc(movie)"
                   [alt]="'Movie image default placeholder for ' + movie.title"
+                  (load)="onMovieImageLoad()"
                   (error)="onPosterImgError($event)"
                 />
                 <span class="poster-placeholder-title">{{ movie.title }}</span>
@@ -353,7 +383,7 @@
       </div>
     </div>
 
-    <div class="movies-list" *ngIf="creatorViewMode === 'list'">
+    <div class="movies-list" *ngIf="creatorViewMode === 'list'" [hidden]="imagesLoading">
       <div
         class="movie-card-wrapper movie-card-wrapper--list"
         *ngFor="let movie of creatorSelections; let i = index"
@@ -374,14 +404,18 @@
             >
               @if (movie.poster_path) {
               <img
+                #posterImg
                 [src]="imageBaseUrl + movie.poster_path"
                 [alt]="movie.title + ' poster'"
+                (load)="posterImg.style.opacity='1'; onMovieImageLoad()"
+                (error)="posterImg.style.opacity='1'; onMovieImageLoad()"
               />
               } @else {
               <div class="poster-placeholder">
                 <img
                   [src]="getPosterSrc(movie)"
                   [alt]="'Movie image default placeholder for ' + movie.title"
+                  (load)="onMovieImageLoad()"
                   (error)="onPosterImgError($event)"
                 />
                 <span class="poster-placeholder-title">{{ movie.title }}</span>
@@ -672,6 +706,7 @@
   <div
     class="movies-grid"
     *ngIf="!isLoading && !showCreatorSelections && movies.length > 0 && resultsViewMode === 'grid'"
+    [hidden]="imagesLoading"
   >
     <mat-card
       class="movie-card"
@@ -687,10 +722,10 @@
         (keydown)="onPosterKeydown($event, movie.id)"
       >
         @if (movie.poster_path) {
-        <img mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+        <img #posterImg mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" (load)="posterImg.style.opacity='1'; onMovieImageLoad()" (error)="posterImg.style.opacity='1'; onMovieImageLoad()" />
         } @else {
         <div class="poster-placeholder">
-          <img mat-card-image [src]="getPosterSrc(movie)" [alt]="'Movie image default placeholder for ' + movie.title" (error)="onPosterImgError($event)" />
+          <img mat-card-image [src]="getPosterSrc(movie)" [alt]="'Movie image default placeholder for ' + movie.title" (load)="onMovieImageLoad()" (error)="onPosterImgError($event)" />
           <span class="poster-placeholder-title">{{ movie.title }}</span>
         </div>
         }
@@ -717,6 +752,7 @@
   <div
     class="movies-list"
     *ngIf="!isLoading && !showCreatorSelections && movies.length > 0 && resultsViewMode === 'list'"
+    [hidden]="imagesLoading"
   >
     <mat-card
       class="movie-card movie-card--list"
@@ -734,12 +770,13 @@
           (keydown)="onPosterKeydown($event, movie.id)"
         >
           @if (movie.poster_path) {
-          <img [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+          <img #posterImg [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" (load)="posterImg.style.opacity='1'; onMovieImageLoad()" (error)="posterImg.style.opacity='1'; onMovieImageLoad()" />
           } @else {
           <div class="poster-placeholder">
             <img
               [src]="getPosterSrc(movie)"
               [alt]="'Movie image default placeholder for ' + movie.title"
+              (load)="onMovieImageLoad()"
               (error)="onPosterImgError($event)"
             />
             <span class="poster-placeholder-title">{{ movie.title }}</span>

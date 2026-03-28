@@ -83,7 +83,20 @@ export class SearchComponent implements OnDestroy, OnInit {
   currentPage = 1;
   pageSize = 20;
   isLoading = false;
+  imagesLoading = false;
+  private pendingImages = 0;
   currentQuery = '';
+
+  get skeletonItems(): number[] {
+    const count = this.showCreatorSelections
+      ? (this.creatorSelections.length || 15)
+      : (this.movies.length || 8);
+    return Array.from({ length: count }, (_, i) => i);
+  }
+
+  get activeViewMode(): 'grid' | 'list' {
+    return this.currentQuery || this.hasActiveFilters ? this.resultsViewMode : this.creatorViewMode;
+  }
   imageBaseUrl = environment.tmdbImageBaseUrl;
   private readonly noImageFallbackSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750">
@@ -271,6 +284,7 @@ export class SearchComponent implements OnDestroy, OnInit {
           }
 
           this.isLoading = false;
+          this.startImageTracking(this.creatorSelections.length);
           this.cdr.markForCheck();
         },
         error: () => {
@@ -293,6 +307,7 @@ export class SearchComponent implements OnDestroy, OnInit {
           }
 
           this.isLoading = false;
+          this.startImageTracking(this.creatorSelections.length);
           this.cdr.markForCheck();
         },
       });
@@ -318,54 +333,31 @@ export class SearchComponent implements OnDestroy, OnInit {
       .sort((a, b) => (b.favoriteCount ?? 0) - (a.favoriteCount ?? 0));
 
     const fallback: MovieWithFavoriteCount[] = [
-      {
-        id: 27205, // Inception
-        title: 'Inception',
-        poster_path: '',
-        vote_average: 8.3,
-        overview: 'A thief steals corporate secrets through use of dream-sharing technology.',
-        release_date: '2010-07-16',
-        favoriteCount: 12,
-      },
-      {
-        id: 155, // The Dark Knight
-        title: 'The Dark Knight',
-        poster_path: '',
-        vote_average: 8.5,
-        overview: 'Batman raises the stakes in his war on crime.',
-        release_date: '2008-07-18',
-        favoriteCount: 10,
-      },
-      {
-        id: 603, // The Matrix
-        title: 'The Matrix',
-        poster_path: '',
-        vote_average: 8.7,
-        overview: 'A computer hacker learns about the true nature of his reality.',
-        release_date: '1999-03-31',
-        favoriteCount: 8,
-      },
-      {
-        id: 680, // Pulp Fiction
-        title: 'Pulp Fiction',
-        poster_path: '',
-        vote_average: 8.9,
-        overview: 'The lives of two mob hitmen intertwine in four tales of violence.',
-        release_date: '1994-10-14',
-        favoriteCount: 7,
-      },
+      { id: 27205, title: 'Inception',                         poster_path: '', vote_average: 8.3, overview: '', release_date: '2010-07-16', favoriteCount: 12 },
+      { id: 155,   title: 'The Dark Knight',                   poster_path: '', vote_average: 8.5, overview: '', release_date: '2008-07-18', favoriteCount: 10 },
+      { id: 603,   title: 'The Matrix',                        poster_path: '', vote_average: 8.7, overview: '', release_date: '1999-03-31', favoriteCount: 8  },
+      { id: 680,   title: 'Pulp Fiction',                      poster_path: '', vote_average: 8.9, overview: '', release_date: '1994-10-14', favoriteCount: 7  },
+      { id: 278,   title: 'The Shawshank Redemption',          poster_path: '', vote_average: 8.7, overview: '', release_date: '1994-09-23', favoriteCount: 6  },
+      { id: 238,   title: 'The Godfather',                     poster_path: '', vote_average: 8.7, overview: '', release_date: '1972-03-14', favoriteCount: 6  },
+      { id: 550,   title: 'Fight Club',                        poster_path: '', vote_average: 8.4, overview: '', release_date: '1999-10-15', favoriteCount: 5  },
+      { id: 13,    title: 'Forrest Gump',                      poster_path: '', vote_average: 8.5, overview: '', release_date: '1994-07-06', favoriteCount: 5  },
+      { id: 120,   title: 'The Lord of the Rings: Fellowship',  poster_path: '', vote_average: 8.4, overview: '', release_date: '2001-12-19', favoriteCount: 4  },
+      { id: 122,   title: 'The Lord of the Rings: Return',      poster_path: '', vote_average: 8.5, overview: '', release_date: '2003-12-17', favoriteCount: 4  },
+      { id: 11,    title: 'Star Wars',                         poster_path: '', vote_average: 8.2, overview: '', release_date: '1977-05-25', favoriteCount: 4  },
+      { id: 637,   title: 'Life is Beautiful',                 poster_path: '', vote_average: 8.5, overview: '', release_date: '1997-12-20', favoriteCount: 3  },
+      { id: 129,   title: 'Spirited Away',                     poster_path: '', vote_average: 8.5, overview: '', release_date: '2001-07-20', favoriteCount: 3  },
+      { id: 429,   title: 'The Good, the Bad and the Ugly',    poster_path: '', vote_average: 8.5, overview: '', release_date: '1966-12-23', favoriteCount: 3  },
+      { id: 240,   title: 'The Godfather Part II',             poster_path: '', vote_average: 8.6, overview: '', release_date: '1974-12-20', favoriteCount: 2  },
     ];
 
-    // "Always 15" behavior:
-    // - use saved movies ranked by how many collections contain them
-    // - then pad with fallback movies (cycled) to reach exactly 15 cards
-    const base = fromStorage.length > 0 ? fromStorage.slice(0, 15) : [];
+    // Pad from storage movies up to 15 using unique fallback entries (no cycling)
+    const usedIds = new Set(fromStorage.map((m) => m.id));
+    const base = fromStorage.slice(0, 15);
     const result: MovieWithFavoriteCount[] = [...base];
 
-    let i = 0;
-    while (result.length < 15) {
-      result.push({ ...fallback[i % fallback.length] });
-      i += 1;
+    for (const fb of fallback) {
+      if (result.length >= 15) break;
+      if (!usedIds.has(fb.id)) result.push({ ...fb });
     }
 
     return result.slice(0, 15);
@@ -396,6 +388,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         this.movies = results;
         this.totalResults = response.total_results;
         this.isLoading = false;
+        this.startImageTracking(this.movies.length);
         this.cdr.markForCheck();
       },
       error: () => {
@@ -540,6 +533,8 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.totalResults = 0;
     this.currentPage = 1;
     this.currentQuery = '';
+    this.imagesLoading = false;
+    this.pendingImages = 0;
     this.cdr.markForCheck();
   }
 
@@ -555,21 +550,43 @@ export class SearchComponent implements OnDestroy, OnInit {
     return parts.join(', ');
   }
 
+  private startImageTracking(count: number): void {
+    if (count === 0) {
+      this.imagesLoading = false;
+      this.cdr.markForCheck();
+      return;
+    }
+    this.pendingImages = count;
+    this.imagesLoading = true;
+    this.cdr.markForCheck();
+  }
+
+  onMovieImageLoad(): void {
+    if (!this.imagesLoading) return;
+    this.pendingImages = Math.max(0, this.pendingImages - 1);
+    if (this.pendingImages === 0) {
+      this.imagesLoading = false;
+      this.cdr.markForCheck();
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   setCreatorViewMode(mode: 'grid' | 'list'): void {
+    if (this.creatorViewMode === mode) return;
     this.creatorViewMode = mode;
-    if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(this.creatorViewModeStorageKey, mode);
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.creatorViewModeStorageKey, mode);
+    this.startImageTracking(this.creatorSelections.length);
   }
 
   setResultsViewMode(mode: 'grid' | 'list'): void {
+    if (this.resultsViewMode === mode) return;
     this.resultsViewMode = mode;
-    if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(this.resultsViewModeStorageKey, mode);
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.resultsViewModeStorageKey, mode);
+    this.startImageTracking(this.movies.length);
   }
 
   private getCreatorViewMode(): 'grid' | 'list' {
