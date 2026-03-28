@@ -74,9 +74,35 @@
     }
   </div>
 
-  <div class="spinner-container" *ngIf="isLoading">
-    <mat-spinner diameter="50"></mat-spinner>
-  </div>
+  @if (isLoading) {
+    @if (activeViewMode === 'list') {
+      <div class="movies-list">
+        @for (item of skeletonItems; track item) {
+          <div class="skel-list-card">
+            <div class="skel skel-list-image"></div>
+            <div class="skel-list-body">
+              <div class="skel skel-line skel-line--title"></div>
+              <div class="skel skel-line skel-line--sub"></div>
+              <div class="skel skel-line"></div>
+              <div class="skel skel-line skel-line--short"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="movies-grid">
+        @for (item of skeletonItems; track item) {
+          <div class="skel-card">
+            <div class="skel skel-poster"></div>
+            <div class="skel-card-body">
+              <div class="skel skel-line skel-line--title"></div>
+              <div class="skel skel-line skel-line--sub"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
 
   <div class="creator-selections" *ngIf="showCreatorSelections">
     <div class="creator-header">
