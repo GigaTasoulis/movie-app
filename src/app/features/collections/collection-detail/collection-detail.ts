@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { CollectionsService } from '../../../core/services/collections';
+import { ToastService } from '../../../core/services/toast.service';
 import { MovieDetailsDialogComponent } from '../../movie-details/movie-details-dialog/movie-details-dialog';
 import { Collection } from '../../../core/models/movie.model';
 import { environment } from '../../../../environments/environment';
@@ -25,10 +26,12 @@ export class CollectionDetail implements OnInit {
   private dialog = inject(MatDialog);
   private collectionsService = inject(CollectionsService);
   private tmdbService = inject(TmdbApiService);
+  private toastService = inject(ToastService);
 
   collection: Collection | undefined;
   imageBaseUrl = environment.tmdbImageBaseUrl;
-  isLoading = true;
+  imagesLoading = false;
+  private pendingImages = 0;
 
   get skeletonItems(): number[] {
     return Array.from({ length: this.collection?.movies?.length || 6 }, (_, i) => i);
@@ -38,12 +41,29 @@ export class CollectionDetail implements OnInit {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.collection = this.collectionsService.getCollectionById(id);
     if (!this.collection) { this.router.navigate(['/collections']); return; }
-    setTimeout(() => { this.isLoading = false; });
+    const count = this.collection.movies?.length ?? 0;
+    if (count > 0) {
+      this.pendingImages = count;
+      this.imagesLoading = true;
+    }
+  }
+
+  onMovieImageLoad(): void {
+    if (!this.imagesLoading) return;
+    this.pendingImages = Math.max(0, this.pendingImages - 1);
+    if (this.pendingImages === 0) {
+      this.imagesLoading = false;
+    }
   }
 
   removeMovie(movieId: number): void {
+    const movie = this.collection!.movies.find((m) => m.id === movieId);
     this.collectionsService.removeMovieFromCollection(this.collection!.id, movieId);
     this.collection = this.collectionsService.getCollectionById(this.collection!.id);
+    this.toastService.show(
+      `"${movie?.title ?? 'Movie'}" removed from collection`,
+      'info'
+    );
   }
 
   openMovieDetails(movieId: number): void {

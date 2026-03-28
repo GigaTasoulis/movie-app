@@ -83,8 +83,16 @@ export class SearchComponent implements OnDestroy, OnInit {
   currentPage = 1;
   pageSize = 20;
   isLoading = false;
+  imagesLoading = false;
+  private pendingImages = 0;
   currentQuery = '';
-  readonly skeletonItems = Array.from({ length: 8 }, (_, i) => i);
+
+  get skeletonItems(): number[] {
+    const count = this.showCreatorSelections
+      ? (this.creatorSelections.length || 15)
+      : (this.movies.length || 8);
+    return Array.from({ length: count }, (_, i) => i);
+  }
 
   get activeViewMode(): 'grid' | 'list' {
     return this.currentQuery || this.hasActiveFilters ? this.resultsViewMode : this.creatorViewMode;
@@ -276,6 +284,7 @@ export class SearchComponent implements OnDestroy, OnInit {
           }
 
           this.isLoading = false;
+          this.startImageTracking(this.creatorSelections.length);
           this.cdr.markForCheck();
         },
         error: () => {
@@ -298,6 +307,7 @@ export class SearchComponent implements OnDestroy, OnInit {
           }
 
           this.isLoading = false;
+          this.startImageTracking(this.creatorSelections.length);
           this.cdr.markForCheck();
         },
       });
@@ -378,6 +388,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         this.movies = results;
         this.totalResults = response.total_results;
         this.isLoading = false;
+        this.startImageTracking(this.movies.length);
         this.cdr.markForCheck();
       },
       error: () => {
@@ -522,6 +533,8 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.totalResults = 0;
     this.currentPage = 1;
     this.currentQuery = '';
+    this.imagesLoading = false;
+    this.pendingImages = 0;
     this.cdr.markForCheck();
   }
 
@@ -537,6 +550,26 @@ export class SearchComponent implements OnDestroy, OnInit {
     return parts.join(', ');
   }
 
+  private startImageTracking(count: number): void {
+    if (count === 0) {
+      this.imagesLoading = false;
+      this.cdr.markForCheck();
+      return;
+    }
+    this.pendingImages = count;
+    this.imagesLoading = true;
+    this.cdr.markForCheck();
+  }
+
+  onMovieImageLoad(): void {
+    if (!this.imagesLoading) return;
+    this.pendingImages = Math.max(0, this.pendingImages - 1);
+    if (this.pendingImages === 0) {
+      this.imagesLoading = false;
+      this.cdr.markForCheck();
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -546,18 +579,14 @@ export class SearchComponent implements OnDestroy, OnInit {
     if (this.creatorViewMode === mode) return;
     this.creatorViewMode = mode;
     if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.creatorViewModeStorageKey, mode);
-    this.isLoading = true;
-    this.cdr.markForCheck();
-    setTimeout(() => { this.isLoading = false; this.cdr.markForCheck(); });
+    this.startImageTracking(this.creatorSelections.length);
   }
 
   setResultsViewMode(mode: 'grid' | 'list'): void {
     if (this.resultsViewMode === mode) return;
     this.resultsViewMode = mode;
     if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.resultsViewModeStorageKey, mode);
-    this.isLoading = true;
-    this.cdr.markForCheck();
-    setTimeout(() => { this.isLoading = false; this.cdr.markForCheck(); });
+    this.startImageTracking(this.movies.length);
   }
 
   private getCreatorViewMode(): 'grid' | 'list' {

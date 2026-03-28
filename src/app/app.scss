@@ -46,24 +46,27 @@ main {
 }
 
 .app-logo {
-  font-size: 1.3rem;
-  font-family: Manrope, sans-serif;
-  font-weight: 700;
   cursor: pointer;
-  letter-spacing: -0.5px;
-  color: #F8F9FC;
   display: inline-flex;
   align-items: center;
-  white-space: nowrap;
+  gap: 0.5rem;
+  text-decoration: none;
 }
 
 .app-logo-icon {
-  width: 1.2em;
-  height: 1.2em;
-  margin-right: 0.45rem;
+  height: 2.5rem;
+  width: auto;
   display: block;
   flex-shrink: 0;
-  color: #e50914;
+}
+
+.app-logo-text {
+  font-family: Manrope, sans-serif;
+  font-size: 20.8px;
+  font-weight: 500;
+  color: #f8f9fc;
+  letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .nav-collections-label {
