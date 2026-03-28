@@ -19,7 +19,13 @@
     <div class="search-field-layout">
       <div class="search-field-outer bg-search-input">
         <div class="search-field-inner">
-          <span class="search-sliders" aria-hidden="true">
+          <button
+            type="button"
+            class="search-sliders"
+            [class.search-sliders--active]="hasActiveFilters"
+            aria-label="Open filters"
+            (click)="openFiltersDialog()"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 256 256"
@@ -31,7 +37,10 @@
                 d="M40,86H74.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12H133.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12Zm64-24A18,18,0,1,1,86,80,18,18,0,0,1,104,62ZM216,170H197.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12h98.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12Zm-48,24a18,18,0,1,1,18-18A18,18,0,0,1,168,194Z"
               />
             </svg>
-          </span>
+            @if (hasActiveFilters) {
+              <span class="filter-active-dot" aria-hidden="true"></span>
+            }
+          </button>
           <div class="search-input-wrapper">
             <input
               type="search"
@@ -414,35 +423,39 @@
 
   <div
     class="selection-bar"
-    *ngIf="!isLoading && !showCreatorSelections && currentQuery"
+    *ngIf="!isLoading && !showCreatorSelections && (currentQuery || hasActiveFilters)"
     style="background: transparent; border: 0; box-shadow: none; padding: 0"
   >
-    <span style="display: inline-flex; align-items: center; gap: 0.2rem; flex-wrap: wrap">
+    <span style="display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap">
       Found <b>{{ totalResults }}</b> results for:
-      <button
-        type="button"
-        class="select-pill"
-        (click)="clearAllResults()"
-        style="background: #111; border-color: #111; color: #fff"
-        aria-label="Clear search query"
-      >
-        {{ currentQuery }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          width="14"
-          height="14"
-          aria-hidden="true"
+      @if (currentQuery) {
+        <button
+          type="button"
+          class="select-pill"
+          (click)="clearAllResults()"
+          style="background: #111; border-color: #111; color: #fff"
+          aria-label="Clear search query"
         >
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
-      </button>
+          {{ currentQuery }}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+          </svg>
+        </button>
+      }
+      @if (hasActiveFilters) {
+        <button
+          type="button"
+          class="select-pill filter-summary-pill"
+          (click)="openFiltersDialog()"
+          aria-label="Edit active filters"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="13" height="13" aria-hidden="true">
+            <path d="M40,86H74.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12H133.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12Zm64-24A18,18,0,1,1,86,80,18,18,0,0,1,104,62ZM216,170H197.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12h98.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12Zm-48,24a18,18,0,1,1,18-18A18,18,0,0,1,168,194Z"/>
+          </svg>
+          {{ filterSummary }}
+        </button>
+      }
     </span>
 
     <div class="creator-header-icons">
@@ -729,60 +742,50 @@
       *ngFor="let movie of movies"
       [class.selected]="isSelected(movie.id)"
     >
-      <div
-        class="poster-hit"
-        role="button"
-        tabindex="0"
-        [attr.aria-label]="'View details for ' + movie.title"
-        (click)="onMovieClick(movie.id)"
-        (keydown)="onPosterKeydown($event, movie.id)"
-      >
-        @if (movie.poster_path) {
-        <img
-          mat-card-image
-          [src]="imageBaseUrl + movie.poster_path"
-          [alt]="movie.title + ' poster'"
-        />
-        } @else {
-        <div class="poster-placeholder">
-          <img
-            mat-card-image
-            [src]="getPosterSrc(movie)"
-            [alt]="'Movie image default placeholder for ' + movie.title"
-            (error)="onPosterImgError($event)"
-          />
-          <span class="poster-placeholder-title">{{ movie.title }}</span>
+      <!-- Image side -->
+      <div class="list-image-side">
+        <div
+          class="poster-hit"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'View details for ' + movie.title"
+          (click)="onMovieClick(movie.id)"
+          (keydown)="onPosterKeydown($event, movie.id)"
+        >
+          @if (movie.poster_path) {
+          <img [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" />
+          } @else {
+          <div class="poster-placeholder">
+            <img
+              [src]="getPosterSrc(movie)"
+              [alt]="'Movie image default placeholder for ' + movie.title"
+              (error)="onPosterImgError($event)"
+            />
+            <span class="poster-placeholder-title">{{ movie.title }}</span>
+          </div>
+          }
+          <div class="list-poster-overlay">
+            <button
+              type="button"
+              class="list-poster-select-btn"
+              [class.is-selected]="isSelected(movie.id)"
+              (click)="toggleMovieSelection($event, movie)"
+              [attr.aria-label]="isSelected(movie.id) ? 'Remove ' + movie.title + ' from selection' : 'Select ' + movie.title"
+            >
+              <mat-icon>{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+            </button>
+          </div>
         </div>
-        }
       </div>
 
-      <mat-card-content class="movie-card-footer movie-card-footer--list">
-        <div class="card-meta">
-          <h3>{{ movie.title }}</h3>
-          <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
-          @if (movie.overview) {
-          <p class="movie-overview">{{ movie.overview }}</p>
-          }
-        </div>
-
-        <button
-          type="button"
-          class="select-pill"
-          [class.is-selected]="isSelected(movie.id)"
-          (click)="toggleMovieSelection($event, movie)"
-          [attr.aria-pressed]="isSelected(movie.id)"
-          [attr.aria-label]="
-            isSelected(movie.id)
-              ? 'Remove ' + movie.title + ' from collection selection'
-              : 'Select ' + movie.title + ' for a collection'
-          "
-        >
-          <mat-icon aria-hidden="true"
-            >{{ isSelected(movie.id) ? 'check_circle' : 'add_circle_outline' }}</mat-icon
-          >
-          <span>{{ isSelected(movie.id) ? 'Selected' : 'Select' }}</span>
-        </button>
-      </mat-card-content>
+      <!-- Text side -->
+      <div class="list-text-side" role="button" tabindex="-1" (click)="onMovieClick(movie.id)">
+        <h3 class="list-card-title">{{ movie.title }}</h3>
+        <p class="list-card-rating">⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+        @if (movie.overview) {
+        <p class="movie-overview">{{ movie.overview }}</p>
+        }
+      </div>
     </mat-card>
   </div>
 

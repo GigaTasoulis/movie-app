@@ -22,9 +22,11 @@ import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
 import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
+import { MovieFiltersDialog } from './movie-filters-dialog/movie-filters-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CollectionsService } from '../../core/services/collections';
+import { MovieFilters } from '../../core/models/movie.model';
 
 type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
 
@@ -61,6 +63,17 @@ export class SearchComponent implements OnDestroy, OnInit {
   private readonly resultsViewModeStorageKey = 'results_view_mode';
   selectedMovies: Movie[] = [];
 
+  activeFilters: MovieFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
+
+  get hasActiveFilters(): boolean {
+    return (
+      this.activeFilters.genreIds.length > 0 ||
+      this.activeFilters.yearMin !== null ||
+      this.activeFilters.yearMax !== null ||
+      !!this.activeFilters.language
+    );
+  }
+
   searchControl = new FormControl('', { updateOn: 'change' });
   movies: Movie[] = [];
   creatorSelections: MovieWithFavoriteCount[] = [];
@@ -85,7 +98,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   `)}`;
 
   get showCreatorSelections(): boolean {
-    return !this.isLoading && !(this.searchControl.value ?? '').trim();
+    return !this.isLoading && !(this.searchControl.value ?? '').trim() && !this.hasActiveFilters;
   }
 
   get canSaveCreatorSelections(): boolean {
@@ -335,21 +348,57 @@ export class SearchComponent implements OnDestroy, OnInit {
   search(): void {
     this.isLoading = true;
     this.cdr.markForCheck();
-    this.tmdbService
-      .searchMovies(this.currentQuery, this.currentPage)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.movies = response.results;
-          this.totalResults = response.total_results;
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-        error: () => {
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-      });
+
+    const hasGenres = this.activeFilters.genreIds.length > 0;
+    const source$ =
+      !this.currentQuery && this.hasActiveFilters
+        ? this.tmdbService.discoverMovies(this.currentPage, this.activeFilters)
+        : this.tmdbService.searchMovies(this.currentQuery, this.currentPage, this.activeFilters);
+
+    source$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        // Client-side genre filter when using search API with genre selection
+        const results =
+          hasGenres && this.currentQuery
+            ? response.results.filter(
+                (m) =>
+                  !m.genre_ids?.length ||
+                  m.genre_ids.some((id) => this.activeFilters.genreIds.includes(id))
+              )
+            : response.results;
+
+        this.movies = results;
+        this.totalResults = response.total_results;
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  openFiltersDialog(): void {
+    const ref = this.dialog.open(MovieFiltersDialog, {
+      width: '520px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      autoFocus: false,
+      panelClass: 'filters-dialog-panel',
+      data: { filters: { ...this.activeFilters, genreIds: [...this.activeFilters.genreIds] } },
+    });
+
+    ref.afterClosed().subscribe((filters: MovieFilters | undefined) => {
+      if (!filters) return;
+      this.activeFilters = filters;
+      this.currentPage = 1;
+
+      if (this.currentQuery || this.hasActiveFilters) {
+        this.search();
+      }
+      this.cdr.markForCheck();
+    });
   }
 
   onPageChange(event: PageEvent): void {
@@ -452,11 +501,24 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   clearAllResults(): void {
     this.clearSearch();
+    this.activeFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
     this.movies = [];
     this.totalResults = 0;
     this.currentPage = 1;
     this.currentQuery = '';
     this.cdr.markForCheck();
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+    if (this.activeFilters.genreIds.length) parts.push(`${this.activeFilters.genreIds.length} genre(s)`);
+    if (this.activeFilters.yearMin || this.activeFilters.yearMax) {
+      const min = this.activeFilters.yearMin ?? '…';
+      const max = this.activeFilters.yearMax ?? '…';
+      parts.push(`${min}–${max}`);
+    }
+    if (this.activeFilters.language) parts.push(this.activeFilters.language.toUpperCase());
+    return parts.join(', ');
   }
 
   ngOnDestroy(): void {

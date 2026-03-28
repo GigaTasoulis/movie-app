@@ -1,3 +1,15 @@
+export interface Genre {
+  id: number;
+  name: string;
+}
+
+export interface MovieFilters {
+  genreIds: number[];
+  yearMin: number | null;
+  yearMax: number | null;
+  language: string;
+}
+
 export interface Movie {
   id: number;
   title: string;
@@ -5,6 +17,7 @@ export interface Movie {
   vote_average: number;
   overview: string;
   release_date: string;
+  genre_ids?: number[];
 }
 
 export interface MovieDetails extends Movie {
