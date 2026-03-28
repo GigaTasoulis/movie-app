@@ -479,7 +479,9 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   openAddToCollection(): void {
     const ref = this.dialog.open(AddToCollectionDialog, {
-      width: '500px',
+      width: '420px',
+      maxWidth: '96vw',
+      panelClass: 'add-to-collection-dialog-panel',
       data: { movies: this.selectedMovies },
     });
 

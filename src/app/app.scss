@@ -66,6 +66,33 @@ main {
   color: #e50914;
 }
 
+.nav-collections-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.collections-badge {
+  position: absolute;
+  top: -0.6rem;
+  right: -1.1rem;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  background: #e50914;
+  border: 2px solid #10141e;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: Manrope, sans-serif;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
 .nav-links {
   flex: 0 0 auto;
   display: flex;

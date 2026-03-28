@@ -33,7 +33,14 @@
       >
         Search
       </button>
-      <button mat-button routerLink="/collections" routerLinkActive="active">Collections</button>
+      <button mat-button routerLink="/collections" routerLinkActive="active">
+        <span class="nav-collections-label">
+          Collections
+          @if (collectionsCount > 0) {
+            <span class="collections-badge">{{ collectionsCount }}</span>
+          }
+        </span>
+      </button>
     </nav>
 
     <div class="toolbar-section toolbar-end">
@@ -60,7 +67,12 @@
     Search
   </button>
   <button mat-button routerLink="/collections" routerLinkActive="active" (click)="closeMenu()">
-    Collections
+    <span class="nav-collections-label">
+      Collections
+      @if (collectionsCount > 0) {
+        <span class="collections-badge">{{ collectionsCount }}</span>
+      }
+    </span>
   </button>
 </div>
 

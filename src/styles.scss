@@ -110,12 +110,23 @@ mat-form-field.mat-mdc-form-field {
   }
 }
 
-.filters-dialog-panel .mat-mdc-dialog-container {
+.filters-dialog-panel .mat-mdc-dialog-container,
+.add-to-collection-dialog-panel .mat-mdc-dialog-container {
   --mdc-dialog-container-color: #10141e;
 }
 
-.filters-dialog-panel .mdc-dialog__surface {
+.filters-dialog-panel .mdc-dialog__surface,
+.add-to-collection-dialog-panel .mdc-dialog__surface {
   background-color: #10141e !important;
+}
+
+.add-to-collection-dialog-panel .mat-mdc-dialog-container,
+.add-to-collection-dialog-panel .mdc-dialog__surface,
+.add-to-collection-dialog-panel .mat-mdc-dialog-surface {
+  background: #10141e !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
 }
 
 mat-dialog-container.mat-mdc-dialog-container .mdc-dialog__surface {

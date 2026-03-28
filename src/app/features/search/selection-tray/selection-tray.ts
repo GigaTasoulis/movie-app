@@ -53,8 +53,21 @@ export class SelectionTrayComponent {
 
   onPointerMove(e: PointerEvent): void {
     if (!this.isDragging) return;
-    this.offsetX = e.clientX - this.originX;
-    this.offsetY = e.clientY - this.originY;
+    const rawX = e.clientX - this.originX;
+    const rawY = e.clientY - this.originY;
+
+    const tray = this.el.nativeElement.querySelector('.tray') as HTMLElement;
+    const trayW = tray?.offsetWidth ?? 220;
+    const trayH = tray?.offsetHeight ?? 150;
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const gap = 2 * rem;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Natural position: bottom-right corner at (vw - gap, vh - gap)
+    // Clamp so the tray never leaves the viewport
+    this.offsetX = Math.min(gap, Math.max(trayW + gap - vw, rawX));
+    this.offsetY = Math.min(gap, Math.max(trayH + gap - vh, rawY));
   }
 
   onPointerUp(): void {
