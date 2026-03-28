@@ -543,15 +543,21 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
 
   setCreatorViewMode(mode: 'grid' | 'list'): void {
+    if (this.creatorViewMode === mode) return;
     this.creatorViewMode = mode;
-    if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(this.creatorViewModeStorageKey, mode);
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.creatorViewModeStorageKey, mode);
+    this.isLoading = true;
+    this.cdr.markForCheck();
+    setTimeout(() => { this.isLoading = false; this.cdr.markForCheck(); });
   }
 
   setResultsViewMode(mode: 'grid' | 'list'): void {
+    if (this.resultsViewMode === mode) return;
     this.resultsViewMode = mode;
-    if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(this.resultsViewModeStorageKey, mode);
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.resultsViewModeStorageKey, mode);
+    this.isLoading = true;
+    this.cdr.markForCheck();
+    setTimeout(() => { this.isLoading = false; this.cdr.markForCheck(); });
   }
 
   private getCreatorViewMode(): 'grid' | 'list' {

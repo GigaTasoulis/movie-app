@@ -165,19 +165,6 @@
   margin: 0.5rem 0 0;
 }
 
-/* ── Skeleton shimmer ── */
-@keyframes skel-shimmer {
-  0%   { background-position: -800px 0; }
-  100% { background-position:  800px 0; }
-}
-
-.skel {
-  background: linear-gradient(90deg, #ebebeb 25%, #f5f5f5 50%, #ebebeb 75%);
-  background-size: 1600px 100%;
-  animation: skel-shimmer 1.5s ease-in-out infinite;
-  border-radius: 6px;
-}
-
 /* Grid skeleton */
 .skel-card {
   border-radius: 12px;

@@ -28,11 +28,17 @@ export class CollectionDetail implements OnInit {
 
   collection: Collection | undefined;
   imageBaseUrl = environment.tmdbImageBaseUrl;
+  isLoading = true;
+
+  get skeletonItems(): number[] {
+    return Array.from({ length: this.collection?.movies?.length || 6 }, (_, i) => i);
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.collection = this.collectionsService.getCollectionById(id);
-    if (!this.collection) this.router.navigate(['/collections']);
+    if (!this.collection) { this.router.navigate(['/collections']); return; }
+    setTimeout(() => { this.isLoading = false; });
   }
 
   removeMovie(movieId: number): void {

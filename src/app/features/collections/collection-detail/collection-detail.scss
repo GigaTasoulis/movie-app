@@ -71,6 +71,40 @@
   }
 }
 
+.skel-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.skel-poster {
+  aspect-ratio: 2 / 3;
+  width: 100%;
+  border-radius: 0;
+}
+
+.skel-card-body {
+  padding: 0.75rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skel-line {
+  height: 14px;
+  width: 100%;
+}
+
+.skel-line--title {
+  height: 16px;
+  width: 75%;
+}
+
+.skel-line--sub {
+  width: 40%;
+}
+
 .empty-state {
   text-align: center;
   color: var(--color-text-secondary);
