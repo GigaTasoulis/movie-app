@@ -84,16 +84,40 @@ export class SearchComponent implements OnDestroy, OnInit {
   currentQuery = '';
   imageBaseUrl = environment.tmdbImageBaseUrl;
   private readonly noImageFallbackSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+    <svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750">
       <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#eeeeee"/>
-          <stop offset="1" stop-color="#dcdcdc"/>
+        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a1e2e"/>
+          <stop offset="100%" stop-color="#0d1117"/>
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width="800" height="600" fill="url(#g)"/>
-      <rect x="48" y="48" width="704" height="504" rx="28" ry="28" fill="none" stroke="#bdbdbd" stroke-width="10"/>
-      <text x="400" y="325" font-size="44" font-family="Arial, sans-serif" text-anchor="middle" fill="#9e9e9e">No Image</text>
+      <rect width="500" height="750" fill="url(#bg)"/>
+      <!-- film strip holes top -->
+      <rect x="20" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="76" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="132" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="188" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="244" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="300" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="356" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="412" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <!-- film strip holes bottom -->
+      <rect x="20" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="76" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="132" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="188" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="244" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="300" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="356" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="412" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <!-- camera icon -->
+      <rect x="155" y="290" width="190" height="130" rx="14" fill="none" stroke="#3a4058" stroke-width="8"/>
+      <circle cx="250" cy="355" r="38" fill="none" stroke="#3a4058" stroke-width="8"/>
+      <circle cx="250" cy="355" r="20" fill="#3a4058"/>
+      <rect x="215" y="275" width="40" height="20" rx="6" fill="#3a4058"/>
+      <!-- label -->
+      <text x="250" y="490" font-size="22" font-family="Arial, sans-serif" font-weight="600"
+        text-anchor="middle" fill="#4a5068" letter-spacing="2">NO IMAGE</text>
     </svg>
   `)}`;
 
