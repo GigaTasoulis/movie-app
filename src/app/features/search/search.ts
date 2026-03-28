@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
 import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
 import { MovieFiltersDialog } from './movie-filters-dialog/movie-filters-dialog';
+import { SelectionTrayComponent } from './selection-tray/selection-tray';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CollectionsService } from '../../core/services/collections';
@@ -41,6 +42,7 @@ type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
+    SelectionTrayComponent,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -459,19 +461,27 @@ export class SearchComponent implements OnDestroy, OnInit {
     event.stopPropagation();
     const index = this.selectedMovies.findIndex((m) => m.id === movie.id);
     if (index === -1) {
-      this.selectedMovies.push(movie);
+      this.selectedMovies = [...this.selectedMovies, movie];
     } else {
-      this.selectedMovies.splice(index, 1);
+      this.selectedMovies = this.selectedMovies.filter((m) => m.id !== movie.id);
     }
+    this.cdr.markForCheck();
   }
 
   isSelected(movieId: number): boolean {
     return this.selectedMovies.some((m) => m.id === movieId);
   }
 
+  removeFromSelection(movie: Movie): void {
+    this.selectedMovies = this.selectedMovies.filter((m) => m.id !== movie.id);
+    this.cdr.markForCheck();
+  }
+
   openAddToCollection(): void {
     const ref = this.dialog.open(AddToCollectionDialog, {
-      width: '500px',
+      width: '420px',
+      maxWidth: '96vw',
+      panelClass: 'add-to-collection-dialog-panel',
       data: { movies: this.selectedMovies },
     });
 

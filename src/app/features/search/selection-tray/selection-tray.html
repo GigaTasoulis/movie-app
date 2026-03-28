@@ -1,0 +1,63 @@
+<div
+  class="tray"
+  [class.tray--dragging]="isDragging"
+  [style.transform]="'translate(' + offsetX + 'px, ' + offsetY + 'px)'"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp()"
+  (pointercancel)="onPointerUp()"
+  role="region"
+  aria-label="Movie selection tray"
+>
+  <!-- Drag handle + clear -->
+  <div class="tray-top">
+    <span class="tray-drag-handle" aria-hidden="true">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor">
+        <rect width="16" height="2" rx="1"/>
+        <rect y="4" width="16" height="2" rx="1"/>
+        <rect y="8" width="16" height="2" rx="1"/>
+      </svg>
+    </span>
+    <button class="tray-clear-btn" type="button" (click)="clearAll.emit()" aria-label="Clear selection">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Count + posters -->
+  <div class="tray-body">
+    <span class="tray-count">{{ movies.length }}</span>
+    <div class="tray-posters">
+      @for (movie of previewMovies; track movie.id) {
+        <button
+          class="tray-poster"
+          type="button"
+          (click)="removeMovie.emit(movie)"
+          [title]="'Remove ' + movie.title"
+          aria-label="Remove {{ movie.title }}"
+        >
+          @if (movie.poster_path) {
+            <img [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title" />
+          } @else {
+            <span class="tray-poster-letter">{{ movie.title[0] }}</span>
+          }
+          <span class="tray-poster-x" aria-hidden="true">×</span>
+        </button>
+      }
+      @if (extraCount > 0) {
+        <div class="tray-poster tray-poster--extra" aria-hidden="true">+{{ extraCount }}</div>
+      }
+    </div>
+  </div>
+
+  <!-- Action -->
+  <button class="tray-add-btn" type="button" (click)="addToCollection.emit()">
+    Add to Collection
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+    </svg>
+  </button>
+</div>

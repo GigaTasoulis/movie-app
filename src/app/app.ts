@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { CollectionsService } from './core/services/collections';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,13 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './app.scss',
 })
 export class App {
+  private collectionsService = inject(CollectionsService);
+
   menuOpen = signal(false);
+
+  get collectionsCount(): number {
+    return this.collectionsService.getCollections().length;
+  }
 
   toggleMenu() {
     this.menuOpen.update(v => !v);

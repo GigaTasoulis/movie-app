@@ -2,14 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { CollectionsService } from '../../../core/services/collections';
 import { Collection, Movie } from '../../../core/models/movie.model';
 
 @Component({
   selector: 'app-add-to-collection-dialog',
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatListModule, MatIconModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './add-to-collection-dialog.html',
   styleUrl: './add-to-collection-dialog.scss',
 })
