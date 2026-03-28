@@ -1,0 +1,327 @@
+$bg:         #10141e;
+$bg-raised:  #181d2c;
+$border:     rgba(255, 255, 255, 0.10);
+$text:       #f8f9fc;
+$text-muted: rgba(248, 249, 252, 0.55);
+$accent:     #e50914;
+
+.filters-dialog {
+  display: flex;
+  flex-direction: column;
+  background: $bg;
+  color: $text;
+  font-family: Manrope, sans-serif;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.filters-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: $text;
+}
+
+.filters-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  background: $bg-raised;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $text;
+    color: $bg;
+  }
+}
+
+/* ── Body ── */
+.filters-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+
+  scrollbar-width: thin;
+  scrollbar-color: $border transparent;
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 4px; }
+}
+
+/* ── Section ── */
+.filter-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
+
+  svg { color: $text-muted; flex-shrink: 0; }
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text;
+  }
+}
+
+/* ── Genre pills ── */
+.genre-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.genre-pill {
+  padding: 0.35rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid $border;
+  background: $bg-raised;
+  color: $text-muted;
+  font-family: Manrope, sans-serif;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: $text;
+  }
+
+  &.is-active {
+    background: $accent;
+    border-color: $accent;
+    color: #fff;
+  }
+}
+
+.loading-genres {
+  color: $text-muted;
+  font-size: 0.85rem;
+}
+
+/* ── Year range ── */
+.year-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.year-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  input {
+    width: 100%;
+    background: $bg-raised;
+    border: 1px solid $border;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    color: $text;
+    font-family: Manrope, sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+    outline: none;
+
+    &:focus { border-color: $accent; }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button { -webkit-appearance: none; }
+    -moz-appearance: textfield;
+  }
+}
+
+.year-range-sep {
+  color: $text-muted;
+  padding-top: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* Dual range slider */
+.range-slider-wrap {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.range-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: $border;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.range-progress {
+  position: absolute;
+  height: 100%;
+  background: $accent;
+  border-radius: 4px;
+}
+
+.range-input {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: $accent;
+    border: 2px solid $bg;
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    transition: transform 0.15s ease;
+
+    &:hover { transform: scale(1.2); }
+  }
+
+  &::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: $accent;
+    border: 2px solid $bg;
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ── Language select ── */
+.lang-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lang-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: $bg-raised;
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
+  color: $text;
+  font-family: Manrope, sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &:focus { border-color: $accent; }
+
+  option {
+    background: $bg;
+    color: $text;
+  }
+}
+
+.lang-chevron {
+  position: absolute;
+  right: 0.875rem;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+/* ── Footer ── */
+.filters-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.btn-clear {
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid $border;
+  background: transparent;
+  color: $text-muted;
+  font-family: Manrope, sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: $bg-raised;
+    color: $text;
+  }
+}
+
+.btn-save {
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background: $accent;
+  color: #fff;
+  font-family: Manrope, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 599px) {
+  .filters-header,
+  .filters-body,
+  .filters-footer {
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+  }
+
+  .year-inputs {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+}

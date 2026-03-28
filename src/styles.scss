@@ -110,6 +110,14 @@ mat-form-field.mat-mdc-form-field {
   }
 }
 
+.filters-dialog-panel .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: #10141e;
+}
+
+.filters-dialog-panel .mdc-dialog__surface {
+  background-color: #10141e !important;
+}
+
 mat-dialog-container.mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 16px;
   overflow: auto;

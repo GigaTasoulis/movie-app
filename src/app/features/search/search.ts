@@ -22,9 +22,11 @@ import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
 import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
+import { MovieFiltersDialog } from './movie-filters-dialog/movie-filters-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CollectionsService } from '../../core/services/collections';
+import { MovieFilters } from '../../core/models/movie.model';
 
 type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
 
@@ -61,6 +63,17 @@ export class SearchComponent implements OnDestroy, OnInit {
   private readonly resultsViewModeStorageKey = 'results_view_mode';
   selectedMovies: Movie[] = [];
 
+  activeFilters: MovieFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
+
+  get hasActiveFilters(): boolean {
+    return (
+      this.activeFilters.genreIds.length > 0 ||
+      this.activeFilters.yearMin !== null ||
+      this.activeFilters.yearMax !== null ||
+      !!this.activeFilters.language
+    );
+  }
+
   searchControl = new FormControl('', { updateOn: 'change' });
   movies: Movie[] = [];
   creatorSelections: MovieWithFavoriteCount[] = [];
@@ -71,21 +84,45 @@ export class SearchComponent implements OnDestroy, OnInit {
   currentQuery = '';
   imageBaseUrl = environment.tmdbImageBaseUrl;
   private readonly noImageFallbackSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+    <svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750">
       <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#eeeeee"/>
-          <stop offset="1" stop-color="#dcdcdc"/>
+        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a1e2e"/>
+          <stop offset="100%" stop-color="#0d1117"/>
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width="800" height="600" fill="url(#g)"/>
-      <rect x="48" y="48" width="704" height="504" rx="28" ry="28" fill="none" stroke="#bdbdbd" stroke-width="10"/>
-      <text x="400" y="325" font-size="44" font-family="Arial, sans-serif" text-anchor="middle" fill="#9e9e9e">No Image</text>
+      <rect width="500" height="750" fill="url(#bg)"/>
+      <!-- film strip holes top -->
+      <rect x="20" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="76" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="132" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="188" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="244" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="300" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="356" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="412" y="18" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <!-- film strip holes bottom -->
+      <rect x="20" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="76" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="132" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="188" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="244" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="300" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="356" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <rect x="412" y="706" width="36" height="26" rx="5" fill="#2a2f42"/>
+      <!-- camera icon -->
+      <rect x="155" y="290" width="190" height="130" rx="14" fill="none" stroke="#3a4058" stroke-width="8"/>
+      <circle cx="250" cy="355" r="38" fill="none" stroke="#3a4058" stroke-width="8"/>
+      <circle cx="250" cy="355" r="20" fill="#3a4058"/>
+      <rect x="215" y="275" width="40" height="20" rx="6" fill="#3a4058"/>
+      <!-- label -->
+      <text x="250" y="490" font-size="22" font-family="Arial, sans-serif" font-weight="600"
+        text-anchor="middle" fill="#4a5068" letter-spacing="2">NO IMAGE</text>
     </svg>
   `)}`;
 
   get showCreatorSelections(): boolean {
-    return !this.isLoading && !(this.searchControl.value ?? '').trim();
+    return !this.isLoading && !(this.searchControl.value ?? '').trim() && !this.hasActiveFilters;
   }
 
   get canSaveCreatorSelections(): boolean {
@@ -335,21 +372,57 @@ export class SearchComponent implements OnDestroy, OnInit {
   search(): void {
     this.isLoading = true;
     this.cdr.markForCheck();
-    this.tmdbService
-      .searchMovies(this.currentQuery, this.currentPage)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.movies = response.results;
-          this.totalResults = response.total_results;
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-        error: () => {
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-      });
+
+    const hasGenres = this.activeFilters.genreIds.length > 0;
+    const source$ =
+      !this.currentQuery && this.hasActiveFilters
+        ? this.tmdbService.discoverMovies(this.currentPage, this.activeFilters)
+        : this.tmdbService.searchMovies(this.currentQuery, this.currentPage, this.activeFilters);
+
+    source$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        // Client-side genre filter when using search API with genre selection
+        const results =
+          hasGenres && this.currentQuery
+            ? response.results.filter(
+                (m) =>
+                  !m.genre_ids?.length ||
+                  m.genre_ids.some((id) => this.activeFilters.genreIds.includes(id))
+              )
+            : response.results;
+
+        this.movies = results;
+        this.totalResults = response.total_results;
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  openFiltersDialog(): void {
+    const ref = this.dialog.open(MovieFiltersDialog, {
+      width: '520px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      autoFocus: false,
+      panelClass: 'filters-dialog-panel',
+      data: { filters: { ...this.activeFilters, genreIds: [...this.activeFilters.genreIds] } },
+    });
+
+    ref.afterClosed().subscribe((filters: MovieFilters | undefined) => {
+      if (!filters) return;
+      this.activeFilters = filters;
+      this.currentPage = 1;
+
+      if (this.currentQuery || this.hasActiveFilters) {
+        this.search();
+      }
+      this.cdr.markForCheck();
+    });
   }
 
   onPageChange(event: PageEvent): void {
@@ -452,11 +525,24 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   clearAllResults(): void {
     this.clearSearch();
+    this.activeFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
     this.movies = [];
     this.totalResults = 0;
     this.currentPage = 1;
     this.currentQuery = '';
     this.cdr.markForCheck();
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+    if (this.activeFilters.genreIds.length) parts.push(`${this.activeFilters.genreIds.length} genre(s)`);
+    if (this.activeFilters.yearMin || this.activeFilters.yearMax) {
+      const min = this.activeFilters.yearMin ?? '…';
+      const max = this.activeFilters.yearMax ?? '…';
+      parts.push(`${min}–${max}`);
+    }
+    if (this.activeFilters.language) parts.push(this.activeFilters.language.toUpperCase());
+    return parts.join(', ');
   }
 
   ngOnDestroy(): void {
