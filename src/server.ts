@@ -5,12 +5,26 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import helmet from 'helmet';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+
+/**
+ * Security headers via helmet.
+ * CSP is intentionally disabled here — it is set via <meta> in index.html.
+ * For production, migrate CSP to this helmet config and remove the meta tag,
+ * since HTTP headers are stronger (support frame-ancestors, etc.).
+ */
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false, // would block TMDB images if enabled
+  })
+);
 
 /**
  * Example Express Rest API endpoints can be defined here.
