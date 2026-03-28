@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -maxdepth 2 -name .env* -o -name *.env)",
+      "Bash(xargs wc:*)"
+    ]
+  }
+}
