@@ -254,6 +254,14 @@ a {
   font-size: 5rem;
 }
 
+@media (max-width: 599px) {
+  .movie-card-wrapper:not(.movie-card-wrapper--list) .card-number {
+    font-size: 3.5rem;
+    bottom: -0.5rem;
+    left: -0.1rem;
+  }
+}
+
 @media (min-width: 640px) {
   .movie-card-wrapper .card-number {
     bottom: 0;
