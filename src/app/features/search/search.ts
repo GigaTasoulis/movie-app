@@ -372,6 +372,7 @@ export class SearchComponent implements OnDestroy, OnInit {
       const dialogRef = this.dialog.open(MovieDetailsDialogComponent, {
         width: '1020px',
         maxHeight: '95vh',
+        autoFocus: false,
         data: { movie },
       });
 
