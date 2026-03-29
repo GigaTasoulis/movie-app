@@ -478,7 +478,9 @@ export class SearchComponent implements OnDestroy, OnInit {
       data: { movies: this.selectedMovies },
     });
 
-    ref.afterClosed().subscribe(() => {
+    ref.afterClosed().subscribe((added: boolean | undefined) => {
+      if (!added) return;
+
       if (this.usingSavedCreatorSelections && this.savedCreatorSelectionIds?.length === 15) {
         this.loadCreatorSelectionsByIds(this.savedCreatorSelectionIds, undefined, true);
         return;
