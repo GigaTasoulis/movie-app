@@ -28,6 +28,12 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
+  "overrides": {
+    "brace-expansion": "^5.0.5",
+    "path-to-regexp": "^8.4.0",
+    "picomatch": "^4.0.4",
+    "undici": "^7.23.1"
+  },
   "devDependencies": {
     "@angular/build": "^21.2.3",
     "@angular/cli": "^21.2.3",
