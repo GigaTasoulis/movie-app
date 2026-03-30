@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   Genre,
@@ -18,6 +18,11 @@ export class TmdbApiService {
   private http = inject(HttpClient);
   private apiKey = environment.tmdbApiKey;
   private baseUrl = environment.tmdbBaseUrl;
+  private genres$ = this.http
+    .get<{ genres: Genre[] }>(`${this.baseUrl}/genre/movie/list`, {
+      params: new HttpParams().set('api_key', this.apiKey),
+    })
+    .pipe(shareReplay(1));
 
   searchMovies(query: string, page: number = 1, filters?: MovieFilters): Observable<MovieSearchResponse> {
     let params = new HttpParams()
@@ -47,8 +52,7 @@ export class TmdbApiService {
   }
 
   getGenres(): Observable<{ genres: Genre[] }> {
-    const params = new HttpParams().set('api_key', this.apiKey);
-    return this.http.get<{ genres: Genre[] }>(`${this.baseUrl}/genre/movie/list`, { params });
+    return this.genres$;
   }
 
   getMovieDetails(movieId: number): Observable<MovieDetails> {
