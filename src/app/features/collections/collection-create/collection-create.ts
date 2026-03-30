@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +12,7 @@ import { CollectionsService } from '../../../core/services/collections';
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
   templateUrl: './collection-create.html',
   styleUrl: './collection-create.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionCreate {
   private collectionsService = inject(CollectionsService);

@@ -17,7 +17,7 @@
           </defs>
           <path d="M2,2 H54 V40 H30 V63 H2 Z" fill="url(#cv-logo-grad)" />
           <polygon points="2,2 54,40 2,40" fill="rgba(0,0,0,0.22)" />
-          <rect x="6"  y="2" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
+          <rect x="6" y="2" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
           <rect x="19" y="2" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
           <rect x="32" y="2" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
           <rect x="45" y="2" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
@@ -27,7 +27,7 @@
           <rect x="2" y="53" width="6" height="9" rx="1.5" fill="white" opacity="0.9" />
           <rect x="48" y="11" width="6" height="9" rx="1.5" fill="white" opacity="0.9" />
           <rect x="48" y="25" width="6" height="9" rx="1.5" fill="white" opacity="0.9" />
-          <rect x="6"  y="57" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
+          <rect x="6" y="57" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
           <rect x="19" y="57" width="9" height="6" rx="1.5" fill="white" opacity="0.9" />
           <rect x="24" y="44" width="6" height="9" rx="1.5" fill="white" opacity="0.9" />
         </svg>
@@ -45,8 +45,8 @@
       </button>
       <button mat-button routerLink="/collections" routerLinkActive="active">
         <span class="nav-collections-label">
-          Collections @if (collectionsCount > 0) {
-          <span class="collections-badge">{{ collectionsCount }}</span>
+          Collections @if (collectionsCount() > 0) {
+          <span class="collections-badge">{{ collectionsCount() }}</span>
           }
         </span>
       </button>
@@ -77,8 +77,8 @@
   </button>
   <button mat-button routerLink="/collections" routerLinkActive="active" (click)="closeMenu()">
     <span class="nav-collections-label">
-      Collections @if (collectionsCount > 0) {
-      <span class="collections-badge">{{ collectionsCount }}</span>
+      Collections @if (collectionsCount() > 0) {
+      <span class="collections-badge">{{ collectionsCount() }}</span>
       }
     </span>
   </button>
@@ -89,6 +89,16 @@
 </main>
 
 <app-toast />
+
+@if (selectionService.movies().length > 0) {
+  <app-selection-tray
+    [movies]="selectionService.movies()"
+    [imageBaseUrl]="imageBaseUrl"
+    (addToCollection)="openAddToCollection()"
+    (clearAll)="selectionService.clear()"
+    (removeMovie)="removeFromSelection($event)"
+  ></app-selection-tray>
+}
 
 <footer class="app-footer">
   <div class="app-footer-inner">

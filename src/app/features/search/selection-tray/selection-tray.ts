@@ -3,9 +3,9 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  inject,
   Input,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +26,7 @@ export class SelectionTrayComponent {
   @Output() clearAll = new EventEmitter<void>();
   @Output() removeMovie = new EventEmitter<Movie>();
 
-  private el = inject(ElementRef<HTMLElement>);
+  @ViewChild('tray') private trayRef!: ElementRef<HTMLElement>;
 
   isDragging = false;
   offsetX = 0;
@@ -56,7 +56,7 @@ export class SelectionTrayComponent {
     const rawX = e.clientX - this.originX;
     const rawY = e.clientY - this.originY;
 
-    const tray = this.el.nativeElement.querySelector('.tray') as HTMLElement;
+    const tray = this.trayRef?.nativeElement;
     const trayW = tray?.offsetWidth ?? 220;
     const trayH = tray?.offsetHeight ?? 150;
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);

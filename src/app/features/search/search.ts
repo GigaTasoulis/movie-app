@@ -1,13 +1,15 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   inject,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, forkJoin, of, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TmdbApiService } from '../../core/services/tmdb-api.service';
 import { Movie, MovieDetails } from '../../core/models/movie.model';
@@ -21,12 +23,11 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
-import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
 import { MovieFiltersDialog } from './movie-filters-dialog/movie-filters-dialog';
-import { SelectionTrayComponent } from './selection-tray/selection-tray';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CollectionsService } from '../../core/services/collections';
+import { SelectionService } from '../../core/services/selection.service';
 import { MovieFilters } from '../../core/models/movie.model';
 
 type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
@@ -42,19 +43,20 @@ type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
-    SelectionTrayComponent,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnDestroy, OnInit {
+export class SearchComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
   private cdr = inject(ChangeDetectorRef);
-  private destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private location = inject(Location);
   private collectionsService = inject(CollectionsService);
+  private selectionService = inject(SelectionService);
   private platformId = inject(PLATFORM_ID);
   private readonly creatorSelectionsStorageKey = 'creator_selections_movie_ids';
   private usingSavedCreatorSelections = false;
@@ -63,7 +65,10 @@ export class SearchComponent implements OnDestroy, OnInit {
   private readonly creatorViewModeStorageKey = 'creator_view_mode';
   resultsViewMode: 'grid' | 'list' = 'grid';
   private readonly resultsViewModeStorageKey = 'results_view_mode';
-  selectedMovies: Movie[] = [];
+
+  get selectedMovies(): Movie[] {
+    return this.selectionService.movies();
+  }
 
   activeFilters: MovieFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
 
@@ -151,8 +156,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
 
   private getFallbackPosterSrc(): string {
-    // This is what the UI requests; if it doesn't exist in the project, the (error) handler will swap it.
-    return '/assets/no-image-placeholder-DA-yB8fJ.png';
+    return this.noImageFallbackSrc;
   }
 
   getPosterSrc(movie: Movie): string {
@@ -171,7 +175,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.initCreatorSelections();
 
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         const trimmed = value?.trim() ?? '';
         if (trimmed.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(trimmed)) {
@@ -256,7 +260,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         this.tmdbService.getMovieDetails(id).pipe(catchError(() => of<MovieDetails | null>(null)))
       )
     )
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (detailsArr) => {
           this.creatorSelections = detailsArr.map((details, idx) => {
@@ -373,7 +377,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         ? this.tmdbService.discoverMovies(this.currentPage, this.activeFilters)
         : this.tmdbService.searchMovies(this.currentQuery, this.currentPage, this.activeFilters);
 
-    source$.pipe(takeUntil(this.destroy$)).subscribe({
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         // Client-side genre filter when using search API with genre selection
         const results =
@@ -452,49 +456,12 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   toggleMovieSelection(event: Event, movie: Movie): void {
     event.stopPropagation();
-    const index = this.selectedMovies.findIndex((m) => m.id === movie.id);
-    if (index === -1) {
-      this.selectedMovies = [...this.selectedMovies, movie];
-    } else {
-      this.selectedMovies = this.selectedMovies.filter((m) => m.id !== movie.id);
-    }
+    this.selectionService.toggle(movie);
     this.cdr.markForCheck();
   }
 
   isSelected(movieId: number): boolean {
-    return this.selectedMovies.some((m) => m.id === movieId);
-  }
-
-  removeFromSelection(movie: Movie): void {
-    this.selectedMovies = this.selectedMovies.filter((m) => m.id !== movie.id);
-    this.cdr.markForCheck();
-  }
-
-  openAddToCollection(): void {
-    const ref = this.dialog.open(AddToCollectionDialog, {
-      width: '420px',
-      maxWidth: '96vw',
-      panelClass: 'add-to-collection-dialog-panel',
-      data: { movies: this.selectedMovies },
-    });
-
-    ref.afterClosed().subscribe((added: boolean | undefined) => {
-      if (!added) return;
-
-      if (this.usingSavedCreatorSelections && this.savedCreatorSelectionIds?.length === 15) {
-        this.loadCreatorSelectionsByIds(this.savedCreatorSelectionIds, undefined, true);
-        return;
-      }
-
-      // If not using saved selections, we keep the original behavior:
-      // rank by collection frequency and re-fill to 15.
-      const fallback = this.buildCreatorSelections();
-      this.loadCreatorSelectionsByIds(
-        fallback.map((m) => m.id),
-        fallback,
-        false
-      );
-    });
+    return this.selectionService.movies().some((m) => m.id === movieId);
   }
 
   saveCreatorSelections(): void {
@@ -509,7 +476,7 @@ export class SearchComponent implements OnDestroy, OnInit {
 
     // Clear the "Add to Collection" selection so you can immediately see
     // the updated Creator's Selections list.
-    this.selectedMovies = [];
+    this.selectionService.clear();
     this.loadCreatorSelectionsByIds(ids, undefined, true);
     this.cdr.markForCheck();
   }
@@ -572,12 +539,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  setCreatorViewMode(mode: 'grid' | 'list'): void {
+setCreatorViewMode(mode: 'grid' | 'list'): void {
     if (this.creatorViewMode === mode) return;
     this.creatorViewMode = mode;
     if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.creatorViewModeStorageKey, mode);

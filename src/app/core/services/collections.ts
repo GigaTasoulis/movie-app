@@ -1,4 +1,4 @@
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Collection } from '../models/movie.model';
 import { Movie } from '../models/movie.model';
@@ -10,6 +10,13 @@ export class CollectionsService {
   private platformId = inject(PLATFORM_ID);
   private storageKey = 'movie_collections';
 
+  private readonly _count = signal(0);
+  readonly count = this._count.asReadonly();
+
+  constructor() {
+    this._count.set(this.getStorage().length);
+  }
+
   private getStorage(): Collection[] {
     if (!isPlatformBrowser(this.platformId)) return [];
     const data = localStorage.getItem(this.storageKey);
@@ -19,6 +26,7 @@ export class CollectionsService {
   private saveStorage(collections: Collection[]): void {
     if (!isPlatformBrowser(this.platformId)) return;
     localStorage.setItem(this.storageKey, JSON.stringify(collections));
+    this._count.set(collections.length);
   }
 
   getCollections(): Collection[] {

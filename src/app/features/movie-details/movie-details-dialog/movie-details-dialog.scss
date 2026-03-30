@@ -70,7 +70,9 @@
   padding: 0.625rem 0.75rem;
   min-width: 0;
   gap: 0.2rem;
-  transition: border-color 0.18s ease, background-color 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
 
   &:hover {
     border-color: var(--color-text-secondary);
@@ -172,14 +174,20 @@
     height: 18px;
     border-radius: 50%;
     background: #fff;
-    box-shadow: 0 0 0 2.5px #c94ff5, 0 2px 10px rgba(0, 0, 0, 0.25);
+    box-shadow:
+      0 0 0 2.5px #c94ff5,
+      0 2px 10px rgba(0, 0, 0, 0.25);
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
   }
 
   &:hover::-webkit-slider-thumb {
     transform: scale(1.25);
-    box-shadow: 0 0 0 3px #c94ff5, 0 3px 14px rgba(0, 0, 0, 0.3);
+    box-shadow:
+      0 0 0 3px #c94ff5,
+      0 3px 14px rgba(0, 0, 0, 0.3);
   }
 
   &:active::-webkit-slider-thumb {
@@ -193,7 +201,9 @@
     border: none;
     border-radius: 50%;
     background: #fff;
-    box-shadow: 0 0 0 2.5px #c94ff5, 0 2px 10px rgba(0, 0, 0, 0.25);
+    box-shadow:
+      0 0 0 2.5px #c94ff5,
+      0 2px 10px rgba(0, 0, 0, 0.25);
     cursor: pointer;
     transition: transform 0.15s ease;
   }
@@ -235,7 +245,10 @@
 
   /* Close button */
   button.mat-mdc-button {
-    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease !important;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease,
+      transform 0.18s ease !important;
 
     &:hover {
       background-color: var(--color-accent-dim) !important;
@@ -243,9 +256,19 @@
     }
   }
 
+  /* Submit Rating button — rated/success state */
+  button.mat-mdc-raised-button.is-rated {
+    --mdc-filled-button-disabled-container-color: #10b981 !important;
+    --mdc-filled-button-disabled-label-text-color: #fff !important;
+    opacity: 1 !important;
+  }
+
   /* Submit Rating button */
   button.mat-mdc-raised-button {
-    transition: filter 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+    transition:
+      filter 0.18s ease,
+      transform 0.18s ease,
+      box-shadow 0.18s ease !important;
 
     &:not(:disabled):hover {
       filter: brightness(1.15);
@@ -265,6 +288,70 @@
   scrollbar-color: var(--color-border) transparent;
 }
 
+/* ── Skeletons ── */
+@keyframes skel-shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skel {
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-2) 25%,
+    color-mix(in oklab, var(--color-text-secondary) 12%, var(--color-surface-2)) 50%,
+    var(--color-surface-2) 75%
+  );
+  background-size: 600px 100%;
+  animation: skel-shimmer 1.4s ease-in-out infinite;
+}
+
+.dialog-skeleton {
+  pointer-events: none;
+}
+
+.skel-poster {
+  width: 200px;
+  min-width: 200px;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  align-self: flex-start;
+}
+
+.skel-title {
+  height: 1.6rem;
+  width: 70%;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+.skel-line {
+  height: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.skel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.skel-box {
+  height: 3.5rem;
+  border-radius: 10px;
+}
+
+.skel-rating {
+  height: 6rem;
+  border-radius: 10px;
+}
+
 /* ── Mobile ── */
 @media (max-width: 599px) {
   :host {
@@ -282,6 +369,12 @@
       object-fit: cover;
       border-radius: 10px;
     }
+  }
+
+  .skel-poster {
+    width: 100%;
+    min-width: unset;
+    aspect-ratio: 3 / 4;
   }
 
   .info-grid {
