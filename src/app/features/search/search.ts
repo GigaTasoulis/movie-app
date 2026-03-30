@@ -371,7 +371,8 @@ export class SearchComponent implements OnInit {
 
     source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
-        // Client-side genre filter when using search API with genre selection
+        // Client-side genre filter when using search API with genre selection.
+        // totalResults must reflect the filtered count so the paginator is accurate.
         const results =
           hasGenres && this.currentQuery
             ? response.results.filter(
@@ -382,7 +383,9 @@ export class SearchComponent implements OnInit {
             : response.results;
 
         this.movies = results;
-        this.totalResults = response.total_results;
+        this.totalResults = hasGenres && this.currentQuery
+          ? results.length
+          : response.total_results;
         this.isLoading = false;
         this.startImageTracking(this.movies.length);
         this.cdr.markForCheck();
