@@ -96,8 +96,9 @@
           color="primary"
           (click)="submitRating()"
           [disabled]="isRating || ratingSuccess"
+          [class.is-rated]="ratingSuccess"
         >
-          {{ isRating ? 'Submitting...' : 'Submit Rating' }}
+          {{ isRating ? 'Submitting...' : ratingSuccess ? 'Rated ✓' : 'Submit Rating' }}
         </button>
       </div>
     </div>

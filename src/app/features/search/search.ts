@@ -151,8 +151,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
 
   private getFallbackPosterSrc(): string {
-    // This is what the UI requests; if it doesn't exist in the project, the (error) handler will swap it.
-    return '/assets/no-image-placeholder-DA-yB8fJ.png';
+    return this.noImageFallbackSrc;
   }
 
   getPosterSrc(movie: Movie): string {

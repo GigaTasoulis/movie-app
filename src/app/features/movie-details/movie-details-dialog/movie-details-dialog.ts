@@ -1,6 +1,6 @@
-import { Component, inject, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +18,7 @@ export class MovieDetailsDialogComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
   private dialogRef = inject(MatDialogRef<MovieDetailsDialogComponent>);
   private cdr = inject(ChangeDetectorRef);
-  private zone = inject(NgZone);
+  private platformId = inject(PLATFORM_ID);
   data = inject(MAT_DIALOG_DATA) as { movie: MovieDetails };
 
   imageBaseUrl = environment.tmdbImageBaseUrl;
@@ -27,11 +27,14 @@ export class MovieDetailsDialogComponent implements OnInit {
   imageLoaded = false;
 
   ngOnInit(): void {
-    if (!this.data.movie.poster_path) {
+    if (!this.data.movie.poster_path || !isPlatformBrowser(this.platformId)) {
       this.imageLoaded = true;
     } else {
       const img = new Image();
-      const done = () => this.zone.run(() => { this.imageLoaded = true; });
+      const done = () => {
+        this.imageLoaded = true;
+        this.cdr.detectChanges();
+      };
       img.onload = done;
       img.onerror = done;
       img.src = this.imageBaseUrl + this.data.movie.poster_path;

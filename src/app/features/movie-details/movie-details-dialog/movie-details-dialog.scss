@@ -256,6 +256,13 @@
     }
   }
 
+  /* Submit Rating button — rated/success state */
+  button.mat-mdc-raised-button.is-rated {
+    --mdc-filled-button-disabled-container-color: #10b981 !important;
+    --mdc-filled-button-disabled-label-text-color: #fff !important;
+    opacity: 1 !important;
+  }
+
   /* Submit Rating button */
   button.mat-mdc-raised-button {
     transition:
