@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,7 @@ import { TmdbApiService } from '../../../core/services/tmdb-api.service';
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './collection-detail.html',
   styleUrl: './collection-detail.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionDetail implements OnInit {
   private route = inject(ActivatedRoute);
@@ -27,6 +28,7 @@ export class CollectionDetail implements OnInit {
   private collectionsService = inject(CollectionsService);
   private tmdbService = inject(TmdbApiService);
   private toastService = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef);
 
   collection: Collection | undefined;
   imageBaseUrl = environment.tmdbImageBaseUrl;
@@ -53,6 +55,7 @@ export class CollectionDetail implements OnInit {
     this.pendingImages = Math.max(0, this.pendingImages - 1);
     if (this.pendingImages === 0) {
       this.imagesLoading = false;
+      this.cdr.markForCheck();
     }
   }
 

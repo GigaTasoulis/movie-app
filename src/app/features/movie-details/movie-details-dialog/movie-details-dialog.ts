@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { environment } from '../../../../environments/environment';
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatProgressSpinnerModule, FormsModule],
   templateUrl: './movie-details-dialog.html',
   styleUrl: './movie-details-dialog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieDetailsDialogComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
@@ -40,8 +41,13 @@ export class MovieDetailsDialogComponent implements OnInit {
       img.src = this.imageBaseUrl + this.data.movie.poster_path;
     }
 
-    this.tmdbService.createGuestSession().subscribe((session) => {
-      this.guestSessionId = session.guest_session_id;
+    this.tmdbService.createGuestSession().subscribe({
+      next: (session) => {
+        this.guestSessionId = session.guest_session_id;
+      },
+      error: () => {
+        this.guestSessionId = null;
+      },
     });
   }
 
@@ -71,6 +77,7 @@ export class MovieDetailsDialogComponent implements OnInit {
       },
       error: () => {
         this.isRating = false;
+        this.cdr.detectChanges();
       },
     });
   }

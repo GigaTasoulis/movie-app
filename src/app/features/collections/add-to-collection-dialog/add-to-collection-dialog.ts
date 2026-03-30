@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,7 @@ import { ToastService } from '../../../core/services/toast.service';
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './add-to-collection-dialog.html',
   styleUrl: './add-to-collection-dialog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddToCollectionDialog implements OnInit {
   private collectionsService = inject(CollectionsService);

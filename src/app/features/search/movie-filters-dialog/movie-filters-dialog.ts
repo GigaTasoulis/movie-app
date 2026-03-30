@@ -48,9 +48,15 @@ export class MovieFiltersDialog implements OnInit {
       this.selectedLanguage = this.data.filters.language ?? '';
     }
 
-    this.tmdbService.getGenres().subscribe((res) => {
-      this.genres = res.genres;
-      this.cdr.markForCheck();
+    this.tmdbService.getGenres().subscribe({
+      next: (res) => {
+        this.genres = res.genres;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.genres = [];
+        this.cdr.markForCheck();
+      },
     });
   }
 

@@ -1,13 +1,15 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   inject,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, forkJoin, of, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TmdbApiService } from '../../core/services/tmdb-api.service';
 import { Movie, MovieDetails } from '../../core/models/movie.model';
@@ -46,11 +48,12 @@ type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnDestroy, OnInit {
+export class SearchComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
   private cdr = inject(ChangeDetectorRef);
-  private destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private location = inject(Location);
@@ -170,7 +173,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.initCreatorSelections();
 
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         const trimmed = value?.trim() ?? '';
         if (trimmed.length >= 3 && /^[a-zA-Z0-9 ]*$/.test(trimmed)) {
@@ -255,7 +258,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         this.tmdbService.getMovieDetails(id).pipe(catchError(() => of<MovieDetails | null>(null)))
       )
     )
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (detailsArr) => {
           this.creatorSelections = detailsArr.map((details, idx) => {
@@ -372,7 +375,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         ? this.tmdbService.discoverMovies(this.currentPage, this.activeFilters)
         : this.tmdbService.searchMovies(this.currentQuery, this.currentPage, this.activeFilters);
 
-    source$.pipe(takeUntil(this.destroy$)).subscribe({
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         // Client-side genre filter when using search API with genre selection
         const results =
@@ -571,12 +574,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  setCreatorViewMode(mode: 'grid' | 'list'): void {
+setCreatorViewMode(mode: 'grid' | 'list'): void {
     if (this.creatorViewMode === mode) return;
     this.creatorViewMode = mode;
     if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.creatorViewModeStorageKey, mode);
