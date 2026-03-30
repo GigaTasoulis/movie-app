@@ -82,7 +82,7 @@ If you have fewer than 15 unique movies across your collections (or no collectio
 
 ```bash
 npm install
-ng serve
+npm start
 ```
 
 App runs at `http://localhost:4200`.
