@@ -12,23 +12,18 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TmdbApiService } from '../../core/services/tmdb-api.service';
-import { Movie, MovieDetails } from '../../core/models/movie.model';
+import { Movie, MovieDetails, MovieFilters } from '../../core/models/movie.model';
 import { SearchInputDirective } from '../../core/directives/search-input';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, Location } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
 import { MovieFiltersDialog } from './movie-filters-dialog/movie-filters-dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { CollectionsService } from '../../core/services/collections';
 import { SelectionService } from '../../core/services/selection.service';
-import { MovieFilters } from '../../core/models/movie.model';
 
 type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
 
@@ -40,9 +35,7 @@ type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
     SearchInputDirective,
     MatCardModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
     MatIconModule,
-    MatButtonModule,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -52,7 +45,6 @@ export class SearchComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
-  private router = inject(Router);
   private dialog = inject(MatDialog);
   private location = inject(Location);
   private collectionsService = inject(CollectionsService);
