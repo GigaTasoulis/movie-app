@@ -164,6 +164,51 @@ cp src/environments/environment.example.ts src/environments/environment.developm
 
 ---
 
+---
+
+## API Caching
+
+All TMDB HTTP calls are cached in memory for the duration of the app session using RxJS `shareReplay(1)`. This means each unique request is made **at most once** — subsequent calls with the same parameters are served instantly from the cache.
+
+### What is cached
+
+| Method | Cache type | Key |
+|---|---|---|
+| `getGenres()` | Permanent (static data) | Single entry — genres never change |
+| `getMovieDetails(id)` | Per movie ID | `id` |
+| `searchMovies(query, page, filters)` | Per unique combination | `search:{query}:{page}:{filters}` |
+| `discoverMovies(page, filters)` | Per unique combination | `discover:{page}:{filters}` |
+
+### What is not cached
+
+| Method | Reason |
+|---|---|
+| `createGuestSession()` | Creates a new server-side resource on every call |
+| `rateMovie()` | POST/write operation — must never be cached |
+
+### How it works
+
+Each method checks an in-memory `Map` before making an HTTP request:
+
+```ts
+if (!this.cache.has(key)) {
+  this.cache.set(key, this.http.get(...).pipe(shareReplay(1)));
+}
+return this.cache.get(key)!;
+```
+
+`shareReplay(1)` stores the last emitted value inside the Observable itself. Any new subscriber (even after the HTTP request has already completed) receives the cached response immediately without a new network round trip.
+
+### Practical impact
+
+- Typing "inc" → "inci" → erasing back to "inc" fires **2 requests**, not 3 — the "inc" result is replayed from cache.
+- Navigating page 1 → 2 → back to 1 is **instant** on the return.
+- Opening a movie's detail dialog a second time (or loading creator selections for a movie you've opened before) skips the network entirely.
+
+> **Note:** This is a session cache with no eviction policy. It lives for the app's lifetime and has no maximum size. For a production app with high search volume, a TTL or LRU eviction strategy would be appropriate.
+
+---
+
 ### 4. Dependency Vulnerabilities (npm audit)
 
 Package overrides are declared in `package.json` to force patched versions of sub-dependencies that cannot be updated via normal `npm audit fix` without a full Angular build toolchain upgrade:
