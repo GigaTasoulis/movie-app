@@ -3,7 +3,7 @@
     <div class="collections-header__title-group">
       <h1 class="collections-title">My Collections</h1>
       @if (collections.length > 0) {
-        <span class="collections-count">{{ collections.length }}</span>
+      <span class="collections-count">{{ collections.length }}</span>
       }
     </div>
     <button class="new-collection-btn" mat-stroked-button (click)="goToCreate()">
@@ -12,45 +12,42 @@
   </div>
 
   @if (collections.length === 0) {
-    <div class="empty-state">
-      <mat-icon class="empty-state__icon">video_library</mat-icon>
-      <p class="empty-state__title">No collections yet</p>
-      <p class="empty-state__sub">Create your first one to start organising your favourite movies.</p>
-      <button class="new-collection-btn" mat-stroked-button (click)="goToCreate()">
-        <mat-icon>add</mat-icon> New Collection
-      </button>
-    </div>
+  <div class="empty-state">
+    <mat-icon class="empty-state__icon">video_library</mat-icon>
+    <p class="empty-state__title">No collections yet</p>
+    <p class="empty-state__sub">Create your first one to start organising your favourite movies.</p>
+    <button class="new-collection-btn" mat-stroked-button (click)="goToCreate()">
+      <mat-icon>add</mat-icon> New Collection
+    </button>
+  </div>
   } @else {
-    <div class="collections-grid">
-      @for (collection of collections; track collection.id) {
-        <mat-card
-          class="collection-card"
-          (click)="goToCollection(collection.id)"
-        >
-          <div class="collection-card__body">
-            <div class="collection-card__info">
-              <span class="collection-card__title">{{ collection.title }}</span>
-              @if (collection.description) {
-                <span class="collection-card__desc">{{ collection.description }}</span>
-              }
-            </div>
-            <div class="collection-card__meta">
-              <span class="collection-card__count">
-                <mat-icon>movie</mat-icon>
-                {{ collection.movies.length }} {{ collection.movies.length === 1 ? 'movie' : 'movies' }}
-              </span>
-              <button
-                class="collection-card__delete"
-                mat-icon-button
-                (click)="deleteCollection($event, collection.id)"
-                aria-label="Delete collection"
-              >
-                <mat-icon>delete_outline</mat-icon>
-              </button>
-            </div>
-          </div>
-        </mat-card>
-      }
-    </div>
+  <div class="collections-grid">
+    @for (collection of collections; track collection.id) {
+    <mat-card class="collection-card" (click)="goToCollection(collection.id)">
+      <div class="collection-card__body">
+        <div class="collection-card__info">
+          <span class="collection-card__title">{{ collection.title }}</span>
+          @if (collection.description) {
+          <span class="collection-card__desc">{{ collection.description }}</span>
+          }
+        </div>
+        <div class="collection-card__meta">
+          <span class="collection-card__count">
+            <mat-icon>movie</mat-icon>
+            {{ collection.movies.length }} {{ collection.movies.length === 1 ? 'movie' : 'movies' }}
+          </span>
+          <button
+            class="collection-card__delete"
+            mat-icon-button
+            (click)="deleteCollection($event, collection.id)"
+            aria-label="Delete collection"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+    }
+  </div>
   }
 </div>

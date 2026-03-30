@@ -21,9 +21,7 @@ export class ToastService {
   }
 
   beginDismiss(id: number): void {
-    this.toasts.update((list) =>
-      list.map((t) => (t.id === id ? { ...t, dismissing: true } : t))
-    );
+    this.toasts.update((list) => list.map((t) => (t.id === id ? { ...t, dismissing: true } : t)));
     setTimeout(() => this.remove(id), 350);
   }
 

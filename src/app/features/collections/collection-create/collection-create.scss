@@ -96,7 +96,9 @@
   font-family: Manrope, sans-serif;
   font-weight: normal;
   border-radius: 8px !important;
-  transition: background-color 0.2s ease, color 0.2s ease !important;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease !important;
 
   &:hover {
     background-color: var(--color-accent-dim) !important;
@@ -107,7 +109,11 @@
   font-family: Manrope, sans-serif;
   font-weight: normal;
   border-radius: 8px !important;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease !important;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease !important;
 
   &:hover:not(:disabled) {
     background-color: var(--color-text-primary) !important;

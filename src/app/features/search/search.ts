@@ -86,8 +86,8 @@ export class SearchComponent implements OnInit {
 
   get skeletonItems(): number[] {
     const count = this.showCreatorSelections
-      ? (this.creatorSelections.length || 15)
-      : (this.movies.length || 8);
+      ? this.creatorSelections.length || 15
+      : this.movies.length || 8;
     return Array.from({ length: count }, (_, i) => i);
   }
 
@@ -175,19 +175,24 @@ export class SearchComponent implements OnInit {
           this.currentPage = 1;
           this.search();
         } else {
-          // If user saved their 15, keep them visible as the default grid whenever
-          // the search input is empty/invalid.
+          this.currentQuery = '';
+          this.currentPage = 1;
+
+          // If filters are still active, run a discover search with them.
+          if (this.hasActiveFilters) {
+            this.search();
+            return;
+          }
+
+          // No query and no filters — fall back to creator selections or empty.
           if (this.usingSavedCreatorSelections && this.creatorSelections.length === 15) {
             this.movies = this.creatorSelections;
             this.totalResults = this.creatorSelections.length;
-            this.currentPage = 1;
           } else {
             this.movies = [];
             this.totalResults = 0;
-            this.currentPage = 1;
           }
 
-          this.currentQuery = '';
           this.cdr.markForCheck();
         }
       });
@@ -329,21 +334,141 @@ export class SearchComponent implements OnInit {
       .sort((a, b) => (b.favoriteCount ?? 0) - (a.favoriteCount ?? 0));
 
     const fallback: MovieWithFavoriteCount[] = [
-      { id: 27205, title: 'Inception',                         poster_path: '', vote_average: 8.3, overview: '', release_date: '2010-07-16', favoriteCount: 12 },
-      { id: 155,   title: 'The Dark Knight',                   poster_path: '', vote_average: 8.5, overview: '', release_date: '2008-07-18', favoriteCount: 10 },
-      { id: 603,   title: 'The Matrix',                        poster_path: '', vote_average: 8.7, overview: '', release_date: '1999-03-31', favoriteCount: 8  },
-      { id: 680,   title: 'Pulp Fiction',                      poster_path: '', vote_average: 8.9, overview: '', release_date: '1994-10-14', favoriteCount: 7  },
-      { id: 278,   title: 'The Shawshank Redemption',          poster_path: '', vote_average: 8.7, overview: '', release_date: '1994-09-23', favoriteCount: 6  },
-      { id: 238,   title: 'The Godfather',                     poster_path: '', vote_average: 8.7, overview: '', release_date: '1972-03-14', favoriteCount: 6  },
-      { id: 550,   title: 'Fight Club',                        poster_path: '', vote_average: 8.4, overview: '', release_date: '1999-10-15', favoriteCount: 5  },
-      { id: 13,    title: 'Forrest Gump',                      poster_path: '', vote_average: 8.5, overview: '', release_date: '1994-07-06', favoriteCount: 5  },
-      { id: 120,   title: 'The Lord of the Rings: Fellowship',  poster_path: '', vote_average: 8.4, overview: '', release_date: '2001-12-19', favoriteCount: 4  },
-      { id: 122,   title: 'The Lord of the Rings: Return',      poster_path: '', vote_average: 8.5, overview: '', release_date: '2003-12-17', favoriteCount: 4  },
-      { id: 11,    title: 'Star Wars',                         poster_path: '', vote_average: 8.2, overview: '', release_date: '1977-05-25', favoriteCount: 4  },
-      { id: 637,   title: 'Life is Beautiful',                 poster_path: '', vote_average: 8.5, overview: '', release_date: '1997-12-20', favoriteCount: 3  },
-      { id: 129,   title: 'Spirited Away',                     poster_path: '', vote_average: 8.5, overview: '', release_date: '2001-07-20', favoriteCount: 3  },
-      { id: 429,   title: 'The Good, the Bad and the Ugly',    poster_path: '', vote_average: 8.5, overview: '', release_date: '1966-12-23', favoriteCount: 3  },
-      { id: 240,   title: 'The Godfather Part II',             poster_path: '', vote_average: 8.6, overview: '', release_date: '1974-12-20', favoriteCount: 2  },
+      {
+        id: 27205,
+        title: 'Inception',
+        poster_path: '',
+        vote_average: 8.3,
+        overview: '',
+        release_date: '2010-07-16',
+        favoriteCount: 12,
+      },
+      {
+        id: 155,
+        title: 'The Dark Knight',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: '',
+        release_date: '2008-07-18',
+        favoriteCount: 10,
+      },
+      {
+        id: 603,
+        title: 'The Matrix',
+        poster_path: '',
+        vote_average: 8.7,
+        overview: '',
+        release_date: '1999-03-31',
+        favoriteCount: 8,
+      },
+      {
+        id: 680,
+        title: 'Pulp Fiction',
+        poster_path: '',
+        vote_average: 8.9,
+        overview: '',
+        release_date: '1994-10-14',
+        favoriteCount: 7,
+      },
+      {
+        id: 278,
+        title: 'The Shawshank Redemption',
+        poster_path: '',
+        vote_average: 8.7,
+        overview: '',
+        release_date: '1994-09-23',
+        favoriteCount: 6,
+      },
+      {
+        id: 238,
+        title: 'The Godfather',
+        poster_path: '',
+        vote_average: 8.7,
+        overview: '',
+        release_date: '1972-03-14',
+        favoriteCount: 6,
+      },
+      {
+        id: 550,
+        title: 'Fight Club',
+        poster_path: '',
+        vote_average: 8.4,
+        overview: '',
+        release_date: '1999-10-15',
+        favoriteCount: 5,
+      },
+      {
+        id: 13,
+        title: 'Forrest Gump',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: '',
+        release_date: '1994-07-06',
+        favoriteCount: 5,
+      },
+      {
+        id: 120,
+        title: 'The Lord of the Rings: Fellowship',
+        poster_path: '',
+        vote_average: 8.4,
+        overview: '',
+        release_date: '2001-12-19',
+        favoriteCount: 4,
+      },
+      {
+        id: 122,
+        title: 'The Lord of the Rings: Return',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: '',
+        release_date: '2003-12-17',
+        favoriteCount: 4,
+      },
+      {
+        id: 11,
+        title: 'Star Wars',
+        poster_path: '',
+        vote_average: 8.2,
+        overview: '',
+        release_date: '1977-05-25',
+        favoriteCount: 4,
+      },
+      {
+        id: 637,
+        title: 'Life is Beautiful',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: '',
+        release_date: '1997-12-20',
+        favoriteCount: 3,
+      },
+      {
+        id: 129,
+        title: 'Spirited Away',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: '',
+        release_date: '2001-07-20',
+        favoriteCount: 3,
+      },
+      {
+        id: 429,
+        title: 'The Good, the Bad and the Ugly',
+        poster_path: '',
+        vote_average: 8.5,
+        overview: '',
+        release_date: '1966-12-23',
+        favoriteCount: 3,
+      },
+      {
+        id: 240,
+        title: 'The Godfather Part II',
+        poster_path: '',
+        vote_average: 8.6,
+        overview: '',
+        release_date: '1974-12-20',
+        favoriteCount: 2,
+      },
     ];
 
     // Pad from storage movies up to 15 using unique fallback entries (no cycling)
@@ -371,7 +496,8 @@ export class SearchComponent implements OnInit {
 
     source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
-        // Client-side genre filter when using search API with genre selection
+        // Client-side genre filter when using search API with genre selection.
+        // totalResults must reflect the filtered count so the paginator is accurate.
         const results =
           hasGenres && this.currentQuery
             ? response.results.filter(
@@ -382,7 +508,8 @@ export class SearchComponent implements OnInit {
             : response.results;
 
         this.movies = results;
-        this.totalResults = response.total_results;
+        this.totalResults =
+          hasGenres && this.currentQuery ? results.length : response.total_results;
         this.isLoading = false;
         this.startImageTracking(this.movies.length);
         this.cdr.markForCheck();
@@ -487,6 +614,25 @@ export class SearchComponent implements OnInit {
     this.searchControl.markAsUntouched();
   }
 
+  clearQueryOnly(): void {
+    this.currentQuery = '';
+    this.currentPage = 1;
+    this.searchControl.setValue('', { emitEvent: false });
+    this.searchControl.markAsUntouched();
+
+    if (this.hasActiveFilters) {
+      this.search();
+    } else if (this.usingSavedCreatorSelections && this.creatorSelections.length === 15) {
+      this.movies = this.creatorSelections;
+      this.totalResults = this.creatorSelections.length;
+      this.cdr.markForCheck();
+    } else {
+      this.movies = [];
+      this.totalResults = 0;
+      this.cdr.markForCheck();
+    }
+  }
+
   clearAllResults(): void {
     this.clearSearch();
     this.activeFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
@@ -501,7 +647,8 @@ export class SearchComponent implements OnInit {
 
   get filterSummary(): string {
     const parts: string[] = [];
-    if (this.activeFilters.genreIds.length) parts.push(`${this.activeFilters.genreIds.length} genre(s)`);
+    if (this.activeFilters.genreIds.length)
+      parts.push(`${this.activeFilters.genreIds.length} genre(s)`);
     if (this.activeFilters.yearMin || this.activeFilters.yearMax) {
       const min = this.activeFilters.yearMin ?? '…';
       const max = this.activeFilters.yearMax ?? '…';
@@ -531,17 +678,19 @@ export class SearchComponent implements OnInit {
     }
   }
 
-setCreatorViewMode(mode: 'grid' | 'list'): void {
+  setCreatorViewMode(mode: 'grid' | 'list'): void {
     if (this.creatorViewMode === mode) return;
     this.creatorViewMode = mode;
-    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.creatorViewModeStorageKey, mode);
+    if (isPlatformBrowser(this.platformId))
+      localStorage.setItem(this.creatorViewModeStorageKey, mode);
     this.startImageTracking(this.creatorSelections.length);
   }
 
   setResultsViewMode(mode: 'grid' | 'list'): void {
     if (this.resultsViewMode === mode) return;
     this.resultsViewMode = mode;
-    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.resultsViewModeStorageKey, mode);
+    if (isPlatformBrowser(this.platformId))
+      localStorage.setItem(this.resultsViewModeStorageKey, mode);
     this.startImageTracking(this.movies.length);
   }
 

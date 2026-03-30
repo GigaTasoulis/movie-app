@@ -74,7 +74,9 @@ $text-secondary: rgba(255, 255, 255, 0.5);
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -134,7 +136,9 @@ $text-secondary: rgba(255, 255, 255, 0.5);
   background: $bg-raised;
   cursor: pointer;
   text-align: left;
-  transition: background 0.18s ease, border-color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.07);
@@ -180,7 +184,9 @@ $text-secondary: rgba(255, 255, 255, 0.5);
   color: $text-secondary;
   flex-shrink: 0;
   display: flex;
-  transition: color 0.18s ease, transform 0.18s ease;
+  transition:
+    color 0.18s ease,
+    transform 0.18s ease;
 }
 
 /* ── Footer ── */
@@ -201,7 +207,10 @@ $text-secondary: rgba(255, 255, 255, 0.5);
   padding: 0.5rem 1.1rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.07);

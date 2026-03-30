@@ -1,9 +1,9 @@
-$bg:         #10141e;
-$bg-raised:  #181d2c;
-$border:     rgba(255, 255, 255, 0.10);
-$text:       #f8f9fc;
+$bg: #10141e;
+$bg-raised: #181d2c;
+$border: rgba(255, 255, 255, 0.1);
+$text: #f8f9fc;
 $text-muted: rgba(248, 249, 252, 0.55);
-$accent:     #e50914;
+$accent: #e50914;
 
 .filters-dialog {
   display: flex;
@@ -43,7 +43,9 @@ $accent:     #e50914;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
   flex-shrink: 0;
 
   &:hover {
@@ -63,8 +65,13 @@ $accent:     #e50914;
 
   scrollbar-width: thin;
   scrollbar-color: $border transparent;
-  &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-thumb { background: $border; border-radius: 4px; }
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $border;
+    border-radius: 4px;
+  }
 }
 
 /* ── Section ── */
@@ -74,7 +81,10 @@ $accent:     #e50914;
   gap: 0.5rem;
   margin-bottom: 0.875rem;
 
-  svg { color: $text-muted; flex-shrink: 0; }
+  svg {
+    color: $text-muted;
+    flex-shrink: 0;
+  }
 
   h3 {
     margin: 0;
@@ -100,7 +110,10 @@ $accent:     #e50914;
   font-family: Manrope, sans-serif;
   font-size: 0.8125rem;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.3);
@@ -116,8 +129,12 @@ $accent:     #e50914;
 
 /* ── Skeleton pills (genre loading state) ── */
 @keyframes skel-shimmer-dark {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
 }
 
 .skel-pill {
@@ -128,9 +145,15 @@ $accent:     #e50914;
   background-size: 1200px 100%;
   animation: skel-shimmer-dark 1.5s ease-in-out infinite;
 
-  &:nth-child(3n+1) { width: 60px; }
-  &:nth-child(3n+2) { width: 88px; }
-  &:nth-child(3n)   { width: 74px; }
+  &:nth-child(3n + 1) {
+    width: 60px;
+  }
+  &:nth-child(3n + 2) {
+    width: 88px;
+  }
+  &:nth-child(3n) {
+    width: 74px;
+  }
 }
 
 /* ── Year range ── */
@@ -167,10 +190,14 @@ $accent:     #e50914;
     transition: border-color 0.2s ease;
     outline: none;
 
-    &:focus { border-color: $accent; }
+    &:focus {
+      border-color: $accent;
+    }
 
     &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button { -webkit-appearance: none; }
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
     -moz-appearance: textfield;
   }
 }
@@ -228,7 +255,9 @@ $accent:     #e50914;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     transition: transform 0.15s ease;
 
-    &:hover { transform: scale(1.2); }
+    &:hover {
+      transform: scale(1.2);
+    }
   }
 
   &::-moz-range-thumb {
@@ -265,7 +294,9 @@ $accent:     #e50914;
   outline: none;
   transition: border-color 0.2s ease;
 
-  &:focus { border-color: $accent; }
+  &:focus {
+    border-color: $accent;
+  }
 
   option {
     background: $bg;
@@ -300,7 +331,9 @@ $accent:     #e50914;
   font-family: Manrope, sans-serif;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 
   &:hover {
     background: $bg-raised;
@@ -318,7 +351,9 @@ $accent:     #e50914;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.15s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
 
   &:hover {
     opacity: 0.88;

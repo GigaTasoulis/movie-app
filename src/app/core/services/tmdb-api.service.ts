@@ -24,31 +24,65 @@ export class TmdbApiService {
     })
     .pipe(shareReplay(1));
 
-  searchMovies(query: string, page: number = 1, filters?: MovieFilters): Observable<MovieSearchResponse> {
-    let params = new HttpParams()
-      .set('api_key', this.apiKey)
-      .set('query', query)
-      .set('page', page.toString());
+  private movieDetailsCache = new Map<number, Observable<MovieDetails>>();
+  private searchCache = new Map<string, Observable<MovieSearchResponse>>();
 
-    if (filters?.yearMin) params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
-    if (filters?.yearMax) params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
-    if (filters?.language) params = params.set('with_original_language', filters.language);
+  searchMovies(
+    query: string,
+    page: number = 1,
+    filters?: MovieFilters
+  ): Observable<MovieSearchResponse> {
+    const key = `search:${query}:${page}:${this.filtersKey(filters)}`;
+    if (!this.searchCache.has(key)) {
+      let params = new HttpParams()
+        .set('api_key', this.apiKey)
+        .set('query', query)
+        .set('page', page.toString());
 
-    return this.http.get<MovieSearchResponse>(`${this.baseUrl}/search/movie`, { params });
+      if (filters?.yearMin)
+        params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
+      if (filters?.yearMax)
+        params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
+      if (filters?.language) params = params.set('with_original_language', filters.language);
+
+      this.searchCache.set(
+        key,
+        this.http
+          .get<MovieSearchResponse>(`${this.baseUrl}/search/movie`, { params })
+          .pipe(shareReplay(1))
+      );
+    }
+    return this.searchCache.get(key)!;
   }
 
   discoverMovies(page: number = 1, filters?: MovieFilters): Observable<MovieSearchResponse> {
-    let params = new HttpParams()
-      .set('api_key', this.apiKey)
-      .set('page', page.toString())
-      .set('sort_by', 'popularity.desc');
+    const key = `discover:${page}:${this.filtersKey(filters)}`;
+    if (!this.searchCache.has(key)) {
+      let params = new HttpParams()
+        .set('api_key', this.apiKey)
+        .set('page', page.toString())
+        .set('sort_by', 'popularity.desc');
 
-    if (filters?.genreIds?.length) params = params.set('with_genres', filters.genreIds.join(','));
-    if (filters?.yearMin) params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
-    if (filters?.yearMax) params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
-    if (filters?.language) params = params.set('with_original_language', filters.language);
+      if (filters?.genreIds?.length) params = params.set('with_genres', filters.genreIds.join(','));
+      if (filters?.yearMin)
+        params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
+      if (filters?.yearMax)
+        params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
+      if (filters?.language) params = params.set('with_original_language', filters.language);
 
-    return this.http.get<MovieSearchResponse>(`${this.baseUrl}/discover/movie`, { params });
+      this.searchCache.set(
+        key,
+        this.http
+          .get<MovieSearchResponse>(`${this.baseUrl}/discover/movie`, { params })
+          .pipe(shareReplay(1))
+      );
+    }
+    return this.searchCache.get(key)!;
+  }
+
+  private filtersKey(filters?: MovieFilters): string {
+    if (!filters) return '';
+    return `${filters.genreIds.join('-')}|${filters.yearMin ?? ''}|${filters.yearMax ?? ''}|${filters.language ?? ''}`;
   }
 
   getGenres(): Observable<{ genres: Genre[] }> {
@@ -56,9 +90,14 @@ export class TmdbApiService {
   }
 
   getMovieDetails(movieId: number): Observable<MovieDetails> {
-    const params = new HttpParams().set('api_key', this.apiKey);
-
-    return this.http.get<MovieDetails>(`${this.baseUrl}/movie/${movieId}`, { params });
+    if (!this.movieDetailsCache.has(movieId)) {
+      const params = new HttpParams().set('api_key', this.apiKey);
+      const request$ = this.http
+        .get<MovieDetails>(`${this.baseUrl}/movie/${movieId}`, { params })
+        .pipe(shareReplay(1));
+      this.movieDetailsCache.set(movieId, request$);
+    }
+    return this.movieDetailsCache.get(movieId)!;
   }
 
   createGuestSession(): Observable<GuestSession> {

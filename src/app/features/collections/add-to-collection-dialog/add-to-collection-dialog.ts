@@ -27,7 +27,10 @@ export class AddToCollectionDialog implements OnInit {
 
   addToCollection(collectionId: string): void {
     const collection = this.collections.find((c) => c.id === collectionId);
-    const { added, skipped } = this.collectionsService.addMoviesToCollection(collectionId, this.data.movies);
+    const { added, skipped } = this.collectionsService.addMoviesToCollection(
+      collectionId,
+      this.data.movies
+    );
     const name = collection?.title ?? 'collection';
 
     if (added > 0 && skipped === 0) {
@@ -36,15 +39,9 @@ export class AddToCollectionDialog implements OnInit {
         'success'
       );
     } else if (added > 0 && skipped > 0) {
-      this.toastService.show(
-        `${added} added, ${skipped} already in "${name}"`,
-        'warning'
-      );
+      this.toastService.show(`${added} added, ${skipped} already in "${name}"`, 'warning');
     } else {
-      this.toastService.show(
-        `All movies are already in "${name}"`,
-        'info'
-      );
+      this.toastService.show(`All movies are already in "${name}"`, 'info');
     }
 
     this.dialogRef.close(true);

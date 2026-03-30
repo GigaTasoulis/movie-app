@@ -1,5 +1,4 @@
 <div class="search-container">
-
   <div class="search-block">
     <div class="search-field-layout">
       <div class="search-field-outer bg-search-input">
@@ -23,7 +22,7 @@
               />
             </svg>
             @if (hasActiveFilters) {
-              <span class="filter-active-dot" aria-hidden="true"></span>
+            <span class="filter-active-dot" aria-hidden="true"></span>
             }
           </button>
           <div class="search-input-wrapper">
@@ -74,35 +73,33 @@
     }
   </div>
 
-  @if (isLoading || imagesLoading) {
-    @if (activeViewMode === 'list') {
-      <div class="movies-list">
-        @for (item of skeletonItems; track item) {
-          <div class="skel-list-card">
-            <div class="skel skel-list-image"></div>
-            <div class="skel-list-body">
-              <div class="skel skel-line skel-line--title"></div>
-              <div class="skel skel-line skel-line--sub"></div>
-              <div class="skel skel-line"></div>
-              <div class="skel skel-line skel-line--short"></div>
-            </div>
-          </div>
-        }
+  @if (isLoading || imagesLoading) { @if (activeViewMode === 'list') {
+  <div class="movies-list">
+    @for (item of skeletonItems; track item) {
+    <div class="skel-list-card">
+      <div class="skel skel-list-image"></div>
+      <div class="skel-list-body">
+        <div class="skel skel-line skel-line--title"></div>
+        <div class="skel skel-line skel-line--sub"></div>
+        <div class="skel skel-line"></div>
+        <div class="skel skel-line skel-line--short"></div>
       </div>
-    } @else {
-      <div class="movies-grid">
-        @for (item of skeletonItems; track item) {
-          <div class="skel-card">
-            <div class="skel skel-poster"></div>
-            <div class="skel-card-body">
-              <div class="skel skel-line skel-line--title"></div>
-              <div class="skel skel-line skel-line--sub"></div>
-            </div>
-          </div>
-        }
-      </div>
+    </div>
     }
-  }
+  </div>
+  } @else {
+  <div class="movies-grid">
+    @for (item of skeletonItems; track item) {
+    <div class="skel-card">
+      <div class="skel skel-poster"></div>
+      <div class="skel-card-body">
+        <div class="skel skel-line skel-line--title"></div>
+        <div class="skel skel-line skel-line--sub"></div>
+      </div>
+    </div>
+    }
+  </div>
+  } }
 
   <div class="creator-selections" *ngIf="showCreatorSelections">
     <div class="creator-header">
@@ -456,34 +453,52 @@
     style="background: transparent; border: 0; box-shadow: none; padding: 0"
   >
     <span style="display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap">
-      Found <b>{{ totalResults }}</b> results for:
-      @if (currentQuery) {
-        <button
-          type="button"
-          class="select-pill"
-          (click)="clearAllResults()"
-          style="background: #111; border-color: #111; color: #fff"
-          aria-label="Clear search query"
+      Found <b>{{ totalResults }}</b> results for: @if (currentQuery) {
+      <button
+        type="button"
+        class="select-pill"
+        (click)="clearQueryOnly()"
+        style="background: #111; border-color: #111; color: #fff"
+        aria-label="Clear search query"
+      >
+        {{ currentQuery }}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="14"
+          height="14"
+          aria-hidden="true"
         >
-          {{ currentQuery }}
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
-            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-          </svg>
-        </button>
-      }
-      @if (hasActiveFilters) {
-        <button
-          type="button"
-          class="select-pill filter-summary-pill"
-          (click)="openFiltersDialog()"
-          aria-label="Edit active filters"
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
+      } @if (hasActiveFilters) {
+      <button
+        type="button"
+        class="select-pill filter-summary-pill"
+        (click)="openFiltersDialog()"
+        aria-label="Edit active filters"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 256 256"
+          fill="currentColor"
+          width="13"
+          height="13"
+          aria-hidden="true"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="13" height="13" aria-hidden="true">
-            <path d="M40,86H74.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12H133.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12Zm64-24A18,18,0,1,1,86,80,18,18,0,0,1,104,62ZM216,170H197.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12h98.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12Zm-48,24a18,18,0,1,1,18-18A18,18,0,0,1,168,194Z"/>
-          </svg>
-          {{ filterSummary }}
-        </button>
+          <path
+            d="M40,86H74.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12H133.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12Zm64-24A18,18,0,1,1,86,80,18,18,0,0,1,104,62ZM216,170H197.4a30,30,0,0,0-58.8,0H40a6,6,0,0,0,0,12h98.6a30,30,0,0,0,58.8,0H216a6,6,0,0,0,0-12Zm-48,24a18,18,0,1,1,18-18A18,18,0,0,1,168,194Z"
+          />
+        </svg>
+        {{ filterSummary }}
+      </button>
       }
     </span>
 
@@ -722,10 +737,23 @@
         (keydown)="onPosterKeydown($event, movie.id)"
       >
         @if (movie.poster_path) {
-        <img #posterImg mat-card-image [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" (load)="posterImg.style.opacity='1'; onMovieImageLoad()" (error)="posterImg.style.opacity='1'; onMovieImageLoad()" />
+        <img
+          #posterImg
+          mat-card-image
+          [src]="imageBaseUrl + movie.poster_path"
+          [alt]="movie.title + ' poster'"
+          (load)="posterImg.style.opacity='1'; onMovieImageLoad()"
+          (error)="posterImg.style.opacity='1'; onMovieImageLoad()"
+        />
         } @else {
         <div class="poster-placeholder">
-          <img mat-card-image [src]="getPosterSrc(movie)" [alt]="'Movie image default placeholder for ' + movie.title" (load)="onMovieImageLoad()" (error)="onPosterImgError($event)" />
+          <img
+            mat-card-image
+            [src]="getPosterSrc(movie)"
+            [alt]="'Movie image default placeholder for ' + movie.title"
+            (load)="onMovieImageLoad()"
+            (error)="onPosterImgError($event)"
+          />
           <span class="poster-placeholder-title">{{ movie.title }}</span>
         </div>
         }
@@ -770,7 +798,13 @@
           (keydown)="onPosterKeydown($event, movie.id)"
         >
           @if (movie.poster_path) {
-          <img #posterImg [src]="imageBaseUrl + movie.poster_path" [alt]="movie.title + ' poster'" (load)="posterImg.style.opacity='1'; onMovieImageLoad()" (error)="posterImg.style.opacity='1'; onMovieImageLoad()" />
+          <img
+            #posterImg
+            [src]="imageBaseUrl + movie.poster_path"
+            [alt]="movie.title + ' poster'"
+            (load)="posterImg.style.opacity='1'; onMovieImageLoad()"
+            (error)="posterImg.style.opacity='1'; onMovieImageLoad()"
+          />
           } @else {
           <div class="poster-placeholder">
             <img
@@ -820,4 +854,3 @@
     (page)="onPageChange($event)"
   ></mat-paginator>
 </div>
-

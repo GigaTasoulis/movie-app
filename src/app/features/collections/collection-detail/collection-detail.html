@@ -10,51 +10,47 @@
   </div>
 
   @if (imagesLoading) {
-    <div class="movies-grid">
-      @for (item of skeletonItems; track item) {
-        <div class="skel-card">
-          <div class="skel skel-poster"></div>
-          <div class="skel-card-body">
-            <div class="skel skel-line skel-line--title"></div>
-            <div class="skel skel-line skel-line--sub"></div>
-          </div>
-        </div>
-      }
+  <div class="movies-grid">
+    @for (item of skeletonItems; track item) {
+    <div class="skel-card">
+      <div class="skel skel-poster"></div>
+      <div class="skel-card-body">
+        <div class="skel skel-line skel-line--title"></div>
+        <div class="skel skel-line skel-line--sub"></div>
+      </div>
     </div>
-  }
-
-  @if (!imagesLoading && (!collection || collection.movies.length === 0)) {
-    <div class="empty-state">
-      <p>No movies in this collection yet. Add some from the search page!</p>
-    </div>
-  }
-
-  @if (collection && collection.movies.length > 0) {
-    <div class="movies-grid" [hidden]="imagesLoading">
-      @for (movie of collection.movies; track movie.id) {
-        <mat-card class="movie-card">
-          <div class="poster-wrap">
-            <img
-              #posterImg
-              mat-card-image
-              [src]="imageBaseUrl + movie.poster_path"
-              [alt]="movie.title"
-              (click)="openMovieDetails(movie.id)"
-              (load)="posterImg.style.opacity='1'; onMovieImageLoad()"
-              (error)="posterImg.style.opacity='1'; onMovieImageLoad()"
-            />
-          </div>
-          <mat-card-content>
-            <h3>{{ movie.title }}</h3>
-            <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
-          </mat-card-content>
-          <mat-card-actions align="end">
-            <button mat-icon-button color="warn" (click)="removeMovie(movie.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      }
-    </div>
+    }
+  </div>
+  } @if (!imagesLoading && (!collection || collection.movies.length === 0)) {
+  <div class="empty-state">
+    <p>No movies in this collection yet. Add some from the search page!</p>
+  </div>
+  } @if (collection && collection.movies.length > 0) {
+  <div class="movies-grid" [hidden]="imagesLoading">
+    @for (movie of collection.movies; track movie.id) {
+    <mat-card class="movie-card">
+      <div class="poster-wrap">
+        <img
+          #posterImg
+          mat-card-image
+          [src]="imageBaseUrl + movie.poster_path"
+          [alt]="movie.title"
+          (click)="openMovieDetails(movie.id)"
+          (load)="posterImg.style.opacity='1'; onMovieImageLoad()"
+          (error)="posterImg.style.opacity='1'; onMovieImageLoad()"
+        />
+      </div>
+      <mat-card-content>
+        <h3>{{ movie.title }}</h3>
+        <p>⭐ {{ movie.vote_average | number:'1.1-1' }}</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-icon-button color="warn" (click)="removeMovie(movie.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    }
+  </div>
   }
 </div>

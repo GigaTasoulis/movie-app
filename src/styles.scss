@@ -219,8 +219,12 @@ a {
 
 /* ── Skeleton shimmer (global) ── */
 @keyframes skel-shimmer {
-  0%   { background-position: -800px 0; }
-  100% { background-position:  800px 0; }
+  0% {
+    background-position: -800px 0;
+  }
+  100% {
+    background-position: 800px 0;
+  }
 }
 
 .skel {
@@ -271,7 +275,12 @@ a {
   line-height: 1;
   font-weight: 700;
   pointer-events: none;
-  font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+  font-family:
+    Segoe UI,
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
   color: #fff;
   -webkit-text-stroke: 0.1rem #10141e;
   text-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
