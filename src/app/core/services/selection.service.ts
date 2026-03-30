@@ -1,32 +1,29 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Movie } from '../models/movie.model';
 
 @Injectable({ providedIn: 'root' })
 export class SelectionService {
-  private _movies: Movie[] = [];
+  private readonly _movies = signal<Movie[]>([]);
 
-  get movies(): Movie[] {
-    return this._movies;
-  }
+  readonly movies = this._movies.asReadonly();
+  readonly count = computed(() => this._movies().length);
 
   toggle(movie: Movie): void {
-    const index = this._movies.findIndex((m) => m.id === movie.id);
-    if (index === -1) {
-      this._movies = [...this._movies, movie];
-    } else {
-      this._movies = this._movies.filter((m) => m.id !== movie.id);
-    }
+    this._movies.update((list) => {
+      const exists = list.some((m) => m.id === movie.id);
+      return exists ? list.filter((m) => m.id !== movie.id) : [...list, movie];
+    });
   }
 
   remove(movie: Movie): void {
-    this._movies = this._movies.filter((m) => m.id !== movie.id);
+    this._movies.update((list) => list.filter((m) => m.id !== movie.id));
   }
 
   isSelected(movieId: number): boolean {
-    return this._movies.some((m) => m.id === movieId);
+    return this._movies().some((m) => m.id === movieId);
   }
 
   clear(): void {
-    this._movies = [];
+    this._movies.set([]);
   }
 }

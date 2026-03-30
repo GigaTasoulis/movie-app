@@ -67,7 +67,7 @@ export class SearchComponent implements OnInit {
   private readonly resultsViewModeStorageKey = 'results_view_mode';
 
   get selectedMovies(): Movie[] {
-    return this.selectionService.movies;
+    return this.selectionService.movies();
   }
 
   activeFilters: MovieFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
@@ -461,7 +461,7 @@ export class SearchComponent implements OnInit {
   }
 
   isSelected(movieId: number): boolean {
-    return this.selectionService.isSelected(movieId);
+    return this.selectionService.movies().some((m) => m.id === movieId);
   }
 
   saveCreatorSelections(): void {

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,7 @@ import { environment } from '../environments/environment';
   imports: [RouterOutlet, RouterLink, RouterLinkActive, MatToolbarModule, MatButtonModule, ToastComponent, SelectionTrayComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   private collectionsService = inject(CollectionsService);
@@ -23,11 +24,8 @@ export class App {
   private dialog = inject(MatDialog);
 
   readonly imageBaseUrl = environment.tmdbImageBaseUrl;
+  readonly collectionsCount = this.collectionsService.count;
   menuOpen = signal(false);
-
-  get collectionsCount(): number {
-    return this.collectionsService.getCollections().length;
-  }
 
   toggleMenu() {
     this.menuOpen.update(v => !v);
@@ -42,7 +40,7 @@ export class App {
       width: '420px',
       maxWidth: '96vw',
       panelClass: 'add-to-collection-dialog-panel',
-      data: { movies: this.selectionService.movies },
+      data: { movies: this.selectionService.movies() },
     });
     ref.afterClosed().subscribe((added: boolean | undefined) => {
       if (added) this.selectionService.clear();

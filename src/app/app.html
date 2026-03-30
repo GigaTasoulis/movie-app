@@ -45,8 +45,8 @@
       </button>
       <button mat-button routerLink="/collections" routerLinkActive="active">
         <span class="nav-collections-label">
-          Collections @if (collectionsCount > 0) {
-          <span class="collections-badge">{{ collectionsCount }}</span>
+          Collections @if (collectionsCount() > 0) {
+          <span class="collections-badge">{{ collectionsCount() }}</span>
           }
         </span>
       </button>
@@ -77,8 +77,8 @@
   </button>
   <button mat-button routerLink="/collections" routerLinkActive="active" (click)="closeMenu()">
     <span class="nav-collections-label">
-      Collections @if (collectionsCount > 0) {
-      <span class="collections-badge">{{ collectionsCount }}</span>
+      Collections @if (collectionsCount() > 0) {
+      <span class="collections-badge">{{ collectionsCount() }}</span>
       }
     </span>
   </button>
@@ -90,9 +90,9 @@
 
 <app-toast />
 
-@if (selectionService.movies.length > 0) {
+@if (selectionService.movies().length > 0) {
   <app-selection-tray
-    [movies]="selectionService.movies"
+    [movies]="selectionService.movies()"
     [imageBaseUrl]="imageBaseUrl"
     (addToCollection)="openAddToCollection()"
     (clearAll)="selectionService.clear()"
