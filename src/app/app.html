@@ -90,6 +90,16 @@
 
 <app-toast />
 
+@if (selectionService.movies.length > 0) {
+  <app-selection-tray
+    [movies]="selectionService.movies"
+    [imageBaseUrl]="imageBaseUrl"
+    (addToCollection)="openAddToCollection()"
+    (clearAll)="selectionService.clear()"
+    (removeMovie)="removeFromSelection($event)"
+  ></app-selection-tray>
+}
+
 <footer class="app-footer">
   <div class="app-footer-inner">
     <hr class="app-footer-divider" />

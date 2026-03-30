@@ -821,12 +821,3 @@
   ></mat-paginator>
 </div>
 
-@if (selectedMovies.length > 0) {
-  <app-selection-tray
-    [movies]="selectedMovies"
-    [imageBaseUrl]="imageBaseUrl"
-    (addToCollection)="openAddToCollection()"
-    (clearAll)="selectedMovies = []"
-    (removeMovie)="removeFromSelection($event)"
-  ></app-selection-tray>
-}

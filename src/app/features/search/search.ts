@@ -23,12 +23,11 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details/movie-details-dialog/movie-details-dialog';
-import { AddToCollectionDialog } from '../collections/add-to-collection-dialog/add-to-collection-dialog';
 import { MovieFiltersDialog } from './movie-filters-dialog/movie-filters-dialog';
-import { SelectionTrayComponent } from './selection-tray/selection-tray';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CollectionsService } from '../../core/services/collections';
+import { SelectionService } from '../../core/services/selection.service';
 import { MovieFilters } from '../../core/models/movie.model';
 
 type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
@@ -44,7 +43,6 @@ type MovieWithFavoriteCount = Movie & { favoriteCount?: number };
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
-    SelectionTrayComponent,
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
@@ -58,6 +56,7 @@ export class SearchComponent implements OnInit {
   private dialog = inject(MatDialog);
   private location = inject(Location);
   private collectionsService = inject(CollectionsService);
+  private selectionService = inject(SelectionService);
   private platformId = inject(PLATFORM_ID);
   private readonly creatorSelectionsStorageKey = 'creator_selections_movie_ids';
   private usingSavedCreatorSelections = false;
@@ -66,7 +65,10 @@ export class SearchComponent implements OnInit {
   private readonly creatorViewModeStorageKey = 'creator_view_mode';
   resultsViewMode: 'grid' | 'list' = 'grid';
   private readonly resultsViewModeStorageKey = 'results_view_mode';
-  selectedMovies: Movie[] = [];
+
+  get selectedMovies(): Movie[] {
+    return this.selectionService.movies;
+  }
 
   activeFilters: MovieFilters = { genreIds: [], yearMin: null, yearMax: null, language: '' };
 
@@ -454,49 +456,12 @@ export class SearchComponent implements OnInit {
 
   toggleMovieSelection(event: Event, movie: Movie): void {
     event.stopPropagation();
-    const index = this.selectedMovies.findIndex((m) => m.id === movie.id);
-    if (index === -1) {
-      this.selectedMovies = [...this.selectedMovies, movie];
-    } else {
-      this.selectedMovies = this.selectedMovies.filter((m) => m.id !== movie.id);
-    }
+    this.selectionService.toggle(movie);
     this.cdr.markForCheck();
   }
 
   isSelected(movieId: number): boolean {
-    return this.selectedMovies.some((m) => m.id === movieId);
-  }
-
-  removeFromSelection(movie: Movie): void {
-    this.selectedMovies = this.selectedMovies.filter((m) => m.id !== movie.id);
-    this.cdr.markForCheck();
-  }
-
-  openAddToCollection(): void {
-    const ref = this.dialog.open(AddToCollectionDialog, {
-      width: '420px',
-      maxWidth: '96vw',
-      panelClass: 'add-to-collection-dialog-panel',
-      data: { movies: this.selectedMovies },
-    });
-
-    ref.afterClosed().subscribe((added: boolean | undefined) => {
-      if (!added) return;
-
-      if (this.usingSavedCreatorSelections && this.savedCreatorSelectionIds?.length === 15) {
-        this.loadCreatorSelectionsByIds(this.savedCreatorSelectionIds, undefined, true);
-        return;
-      }
-
-      // If not using saved selections, we keep the original behavior:
-      // rank by collection frequency and re-fill to 15.
-      const fallback = this.buildCreatorSelections();
-      this.loadCreatorSelectionsByIds(
-        fallback.map((m) => m.id),
-        fallback,
-        false
-      );
-    });
+    return this.selectionService.isSelected(movieId);
   }
 
   saveCreatorSelections(): void {
@@ -511,7 +476,7 @@ export class SearchComponent implements OnInit {
 
     // Clear the "Add to Collection" selection so you can immediately see
     // the updated Creator's Selections list.
-    this.selectedMovies = [];
+    this.selectionService.clear();
     this.loadCreatorSelectionsByIds(ids, undefined, true);
     this.cdr.markForCheck();
   }
