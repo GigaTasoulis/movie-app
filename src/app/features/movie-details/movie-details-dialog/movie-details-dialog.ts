@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,13 +10,7 @@ import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-movie-details-dialog',
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    FormsModule,
-  ],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatProgressSpinnerModule, FormsModule],
   templateUrl: './movie-details-dialog.html',
   styleUrl: './movie-details-dialog.scss',
 })
@@ -24,31 +18,44 @@ export class MovieDetailsDialogComponent implements OnInit {
   private tmdbService = inject(TmdbApiService);
   private dialogRef = inject(MatDialogRef<MovieDetailsDialogComponent>);
   private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
   data = inject(MAT_DIALOG_DATA) as { movie: MovieDetails };
 
   imageBaseUrl = environment.tmdbImageBaseUrl;
   rating = 5;
   isRating = false;
+  imageLoaded = false;
+
+  ngOnInit(): void {
+    if (!this.data.movie.poster_path) {
+      this.imageLoaded = true;
+    } else {
+      const img = new Image();
+      const done = () => this.zone.run(() => { this.imageLoaded = true; });
+      img.onload = done;
+      img.onerror = done;
+      img.src = this.imageBaseUrl + this.data.movie.poster_path;
+    }
+
+    this.tmdbService.createGuestSession().subscribe((session) => {
+      this.guestSessionId = session.guest_session_id;
+    });
+  }
 
   get ratingPercent(): string {
-    return ((this.rating - 0.5) / 9.5 * 100).toFixed(1) + '%';
+    return (((this.rating - 0.5) / 9.5) * 100).toFixed(1) + '%';
   }
 
   formatMoney(value: number): string {
     if (!value) return 'N/A';
-    if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(1).replace(/\.0$/, '')}B`;
+    if (value >= 1_000_000_000)
+      return `$${(value / 1_000_000_000).toFixed(1).replace(/\.0$/, '')}B`;
     if (value >= 1_000_000) return `$${Math.round(value / 1_000_000)}M`;
     if (value >= 1_000) return `$${Math.round(value / 1_000)}K`;
     return `$${value}`;
   }
   ratingSuccess = false;
   guestSessionId: string | null = null;
-
-  ngOnInit(): void {
-    this.tmdbService.createGuestSession().subscribe((session) => {
-      this.guestSessionId = session.guest_session_id;
-    });
-  }
 
   submitRating(): void {
     if (!this.guestSessionId) return;
