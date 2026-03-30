@@ -65,11 +65,17 @@
   padding: 0;
   transition: color 0.2s ease;
 
-  svg { display: block; }
+  svg {
+    display: block;
+  }
 
-  &:hover { color: var(--color-text-primary); }
+  &:hover {
+    color: var(--color-text-primary);
+  }
 
-  &.search-sliders--active { color: var(--color-accent); }
+  &.search-sliders--active {
+    color: var(--color-accent);
+  }
 }
 
 .filter-active-dot {
@@ -298,7 +304,6 @@
   z-index: 2;
 }
 
-
 /* Text side */
 .list-text-side {
   flex: 1;
@@ -438,7 +443,6 @@
     position: relative;
     z-index: 1;
   }
-
 }
 
 /* Hover-reveal "+" select button — shared by grid and list */
@@ -461,7 +465,10 @@
   z-index: 3;
   opacity: 0;
   transform: scale(0.75);
-  transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    background 0.18s ease;
   pointer-events: none;
 
   mat-icon {
@@ -510,7 +517,6 @@
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
 }
-
 
 .card-meta {
   min-width: 0;

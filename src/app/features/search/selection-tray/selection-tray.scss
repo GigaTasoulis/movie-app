@@ -10,22 +10,32 @@
 }
 
 @keyframes tray-in {
-  from { opacity: 0; transform: translateY(16px) scale(0.92); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ── Tray card ── */
 .tray {
   width: 220px;
   background: #10141e;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   user-select: none;
   cursor: grab;
 
-  &.tray--dragging { cursor: grabbing; }
+  &.tray--dragging {
+    cursor: grabbing;
+  }
 }
 
 /* ── Top row ── */
@@ -53,7 +63,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.14);
@@ -96,7 +108,9 @@
   flex-shrink: 0;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
 
   img {
     width: 100%;
@@ -110,7 +124,9 @@
     border-color: rgba(229, 9, 20, 0.7);
   }
 
-  &:hover .tray-poster-x { opacity: 1; }
+  &:hover .tray-poster-x {
+    opacity: 1;
+  }
 
   &--extra {
     display: flex;
@@ -122,7 +138,10 @@
     color: rgba(255, 255, 255, 0.6);
     cursor: default;
 
-    &:hover { transform: none; border-color: rgba(255, 255, 255, 0.15); }
+    &:hover {
+      transform: none;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
   }
 }
 
@@ -167,7 +186,9 @@
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
   letter-spacing: 0.01em;
 
   &:hover {
@@ -187,8 +208,14 @@
   }
 
   @keyframes tray-in-mobile {
-    from { opacity: 0; transform: translateY(100%); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .tray {
@@ -201,7 +228,9 @@
     cursor: default;
     transform: none !important;
 
-    &.tray--dragging { cursor: default; }
+    &.tray--dragging {
+      cursor: default;
+    }
   }
 
   .tray-top {
@@ -212,7 +241,9 @@
     gap: 0.5rem;
   }
 
-  .tray-drag-handle { display: none; }
+  .tray-drag-handle {
+    display: none;
+  }
 
   .tray-body {
     flex: 1;

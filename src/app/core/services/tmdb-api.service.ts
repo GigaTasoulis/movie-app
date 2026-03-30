@@ -27,7 +27,11 @@ export class TmdbApiService {
   private movieDetailsCache = new Map<number, Observable<MovieDetails>>();
   private searchCache = new Map<string, Observable<MovieSearchResponse>>();
 
-  searchMovies(query: string, page: number = 1, filters?: MovieFilters): Observable<MovieSearchResponse> {
+  searchMovies(
+    query: string,
+    page: number = 1,
+    filters?: MovieFilters
+  ): Observable<MovieSearchResponse> {
     const key = `search:${query}:${page}:${this.filtersKey(filters)}`;
     if (!this.searchCache.has(key)) {
       let params = new HttpParams()
@@ -35,12 +39,17 @@ export class TmdbApiService {
         .set('query', query)
         .set('page', page.toString());
 
-      if (filters?.yearMin) params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
-      if (filters?.yearMax) params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
+      if (filters?.yearMin)
+        params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
+      if (filters?.yearMax)
+        params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
       if (filters?.language) params = params.set('with_original_language', filters.language);
 
-      this.searchCache.set(key,
-        this.http.get<MovieSearchResponse>(`${this.baseUrl}/search/movie`, { params }).pipe(shareReplay(1))
+      this.searchCache.set(
+        key,
+        this.http
+          .get<MovieSearchResponse>(`${this.baseUrl}/search/movie`, { params })
+          .pipe(shareReplay(1))
       );
     }
     return this.searchCache.get(key)!;
@@ -55,12 +64,17 @@ export class TmdbApiService {
         .set('sort_by', 'popularity.desc');
 
       if (filters?.genreIds?.length) params = params.set('with_genres', filters.genreIds.join(','));
-      if (filters?.yearMin) params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
-      if (filters?.yearMax) params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
+      if (filters?.yearMin)
+        params = params.set('primary_release_date.gte', `${filters.yearMin}-01-01`);
+      if (filters?.yearMax)
+        params = params.set('primary_release_date.lte', `${filters.yearMax}-12-31`);
       if (filters?.language) params = params.set('with_original_language', filters.language);
 
-      this.searchCache.set(key,
-        this.http.get<MovieSearchResponse>(`${this.baseUrl}/discover/movie`, { params }).pipe(shareReplay(1))
+      this.searchCache.set(
+        key,
+        this.http
+          .get<MovieSearchResponse>(`${this.baseUrl}/discover/movie`, { params })
+          .pipe(shareReplay(1))
       );
     }
     return this.searchCache.get(key)!;

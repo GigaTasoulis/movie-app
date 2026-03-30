@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -42,7 +48,10 @@ export class CollectionDetail implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.collection = this.collectionsService.getCollectionById(id);
-    if (!this.collection) { this.router.navigate(['/collections']); return; }
+    if (!this.collection) {
+      this.router.navigate(['/collections']);
+      return;
+    }
     const count = this.collection.movies?.length ?? 0;
     if (count > 0) {
       this.pendingImages = count;
@@ -63,10 +72,7 @@ export class CollectionDetail implements OnInit {
     const movie = this.collection!.movies.find((m) => m.id === movieId);
     this.collectionsService.removeMovieFromCollection(this.collection!.id, movieId);
     this.collection = this.collectionsService.getCollectionById(this.collection!.id);
-    this.toastService.show(
-      `"${movie?.title ?? 'Movie'}" removed from collection`,
-      'info'
-    );
+    this.toastService.show(`"${movie?.title ?? 'Movie'}" removed from collection`, 'info');
   }
 
   openMovieDetails(movieId: number): void {

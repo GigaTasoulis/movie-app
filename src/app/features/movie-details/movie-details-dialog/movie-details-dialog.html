@@ -1,106 +1,106 @@
 <!-- Skeleton -->
 @if (!imageLoaded) {
-  <div class="dialog-container dialog-skeleton">
-    <div class="skel skel-poster"></div>
-    <div class="details">
-      <div class="skel skel-title"></div>
-      <div class="skel skel-line" style="width:100%;margin-top:1rem"></div>
-      <div class="skel skel-line" style="width:92%"></div>
-      <div class="skel skel-line" style="width:80%"></div>
-      <div class="skel skel-line" style="width:60%;margin-bottom:1.25rem"></div>
-      <div class="skel-grid">
-        <div class="skel skel-box"></div>
-        <div class="skel skel-box"></div>
-        <div class="skel skel-box"></div>
-        <div class="skel skel-box"></div>
-        <div class="skel skel-box"></div>
-        <div class="skel skel-box"></div>
-      </div>
-      <div class="skel skel-rating"></div>
+<div class="dialog-container dialog-skeleton">
+  <div class="skel skel-poster"></div>
+  <div class="details">
+    <div class="skel skel-title"></div>
+    <div class="skel skel-line" style="width: 100%; margin-top: 1rem"></div>
+    <div class="skel skel-line" style="width: 92%"></div>
+    <div class="skel skel-line" style="width: 80%"></div>
+    <div class="skel skel-line" style="width: 60%; margin-bottom: 1.25rem"></div>
+    <div class="skel-grid">
+      <div class="skel skel-box"></div>
+      <div class="skel skel-box"></div>
+      <div class="skel skel-box"></div>
+      <div class="skel skel-box"></div>
+      <div class="skel skel-box"></div>
+      <div class="skel skel-box"></div>
     </div>
+    <div class="skel skel-rating"></div>
   </div>
+</div>
 }
 
 <!-- Real content -->
 @if (imageLoaded) {
-  <div class="dialog-container">
-    @if (data.movie.poster_path) {
-      <img [src]="imageBaseUrl + data.movie.poster_path" [alt]="data.movie.title" class="poster" />
-    }
+<div class="dialog-container">
+  @if (data.movie.poster_path) {
+  <img [src]="imageBaseUrl + data.movie.poster_path" [alt]="data.movie.title" class="poster" />
+  }
 
-    <div class="details">
-      <div class="dialog-title-row">
-        <h2 mat-dialog-title>{{ data.movie.title }}</h2>
+  <div class="details">
+    <div class="dialog-title-row">
+      <h2 mat-dialog-title>{{ data.movie.title }}</h2>
+    </div>
+
+    <p class="overview">{{ data.movie.overview }}</p>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="label">Release Date</span>
+        <span>{{ data.movie.release_date }}</span>
       </div>
-
-      <p class="overview">{{ data.movie.overview }}</p>
-
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="label">Release Date</span>
-          <span>{{ data.movie.release_date }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Budget</span>
-          <span>{{ formatMoney(data.movie.budget) }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Revenue</span>
-          <span>{{ formatMoney(data.movie.revenue) }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Vote Average</span>
-          <span>⭐ {{ data.movie.vote_average | number:'1.1-1' }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Vote Count</span>
-          <span>{{ data.movie.vote_count }}</span>
-        </div>
-        <div class="info-item">
-          <span class="label">Languages</span>
-          <span>{{ data.movie.spoken_languages.map(l => l.english_name).join(', ') }}</span>
-        </div>
+      <div class="info-item">
+        <span class="label">Budget</span>
+        <span>{{ formatMoney(data.movie.budget) }}</span>
       </div>
-
-      <div class="rating-section">
-        <div class="rating-header">
-          <p class="rating-label">Rate this movie</p>
-          <div class="rating-display">
-            <span class="rating-number">{{ rating }}</span>
-            <span class="rating-denom">&thinsp;/ 10</span>
-          </div>
-        </div>
-        <input
-          type="range"
-          class="rating-slider"
-          min="0.5"
-          max="10"
-          step="0.5"
-          [(ngModel)]="rating"
-          [style.--fill]="ratingPercent"
-        />
-        <div class="slider-ticks">
-          <span>0.5</span>
-          <span>5</span>
-          <span>10</span>
-        </div>
-        @if (ratingSuccess) {
-          <div class="success-message">Rating submitted!</div>
-        }
+      <div class="info-item">
+        <span class="label">Revenue</span>
+        <span>{{ formatMoney(data.movie.revenue) }}</span>
       </div>
-
-      <div class="dialog-actions">
-        <button mat-button (click)="close()">Close</button>
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="submitRating()"
-          [disabled]="isRating || ratingSuccess"
-          [class.is-rated]="ratingSuccess"
-        >
-          {{ isRating ? 'Submitting...' : ratingSuccess ? 'Rated ✓' : 'Submit Rating' }}
-        </button>
+      <div class="info-item">
+        <span class="label">Vote Average</span>
+        <span>⭐ {{ data.movie.vote_average | number:'1.1-1' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Vote Count</span>
+        <span>{{ data.movie.vote_count }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Languages</span>
+        <span>{{ data.movie.spoken_languages.map(l => l.english_name).join(', ') }}</span>
       </div>
     </div>
+
+    <div class="rating-section">
+      <div class="rating-header">
+        <p class="rating-label">Rate this movie</p>
+        <div class="rating-display">
+          <span class="rating-number">{{ rating }}</span>
+          <span class="rating-denom">&thinsp;/ 10</span>
+        </div>
+      </div>
+      <input
+        type="range"
+        class="rating-slider"
+        min="0.5"
+        max="10"
+        step="0.5"
+        [(ngModel)]="rating"
+        [style.--fill]="ratingPercent"
+      />
+      <div class="slider-ticks">
+        <span>0.5</span>
+        <span>5</span>
+        <span>10</span>
+      </div>
+      @if (ratingSuccess) {
+      <div class="success-message">Rating submitted!</div>
+      }
+    </div>
+
+    <div class="dialog-actions">
+      <button mat-button (click)="close()">Close</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submitRating()"
+        [disabled]="isRating || ratingSuccess"
+        [class.is-rated]="ratingSuccess"
+      >
+        {{ isRating ? 'Submitting...' : ratingSuccess ? 'Rated ✓' : 'Submit Rating' }}
+      </button>
+    </div>
   </div>
+</div>
 }

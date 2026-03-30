@@ -9,7 +9,13 @@ import { CollectionsService } from '../../../core/services/collections';
 
 @Component({
   selector: 'app-collection-create',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './collection-create.html',
   styleUrl: './collection-create.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +28,11 @@ export class CollectionCreate {
   readonly descMax = 300;
 
   form = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(60)]),
+    title: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(60),
+    ]),
     description: new FormControl('', [Validators.required, Validators.maxLength(300)]),
   });
 
