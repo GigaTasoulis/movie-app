@@ -175,19 +175,24 @@ export class SearchComponent implements OnInit {
           this.currentPage = 1;
           this.search();
         } else {
-          // If user saved their 15, keep them visible as the default grid whenever
-          // the search input is empty/invalid.
+          this.currentQuery = '';
+          this.currentPage = 1;
+
+          // If filters are still active, run a discover search with them.
+          if (this.hasActiveFilters) {
+            this.search();
+            return;
+          }
+
+          // No query and no filters — fall back to creator selections or empty.
           if (this.usingSavedCreatorSelections && this.creatorSelections.length === 15) {
             this.movies = this.creatorSelections;
             this.totalResults = this.creatorSelections.length;
-            this.currentPage = 1;
           } else {
             this.movies = [];
             this.totalResults = 0;
-            this.currentPage = 1;
           }
 
-          this.currentQuery = '';
           this.cdr.markForCheck();
         }
       });
@@ -488,6 +493,25 @@ export class SearchComponent implements OnInit {
   clearSearch(): void {
     this.searchControl.setValue('');
     this.searchControl.markAsUntouched();
+  }
+
+  clearQueryOnly(): void {
+    this.currentQuery = '';
+    this.currentPage = 1;
+    this.searchControl.setValue('', { emitEvent: false });
+    this.searchControl.markAsUntouched();
+
+    if (this.hasActiveFilters) {
+      this.search();
+    } else if (this.usingSavedCreatorSelections && this.creatorSelections.length === 15) {
+      this.movies = this.creatorSelections;
+      this.totalResults = this.creatorSelections.length;
+      this.cdr.markForCheck();
+    } else {
+      this.movies = [];
+      this.totalResults = 0;
+      this.cdr.markForCheck();
+    }
   }
 
   clearAllResults(): void {
